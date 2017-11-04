@@ -51,7 +51,7 @@ export default class Game {
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x101010, 1);
+        renderer.setClearColor(0xffffff, 1);
         renderer.shadowMapEnabled = true;
         renderer.shadowMapType = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);

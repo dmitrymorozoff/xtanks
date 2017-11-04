@@ -1,6 +1,7 @@
 import Player from "../Player/index.js";
 import { TweenMax } from "gsap";
-import ModelLoader from "../../../utils/model.js";
+import Tank from "../Tank/index.js";
+import * as THREE from "three";
 
 export default class Scene {
     constructor(scene, light, camera, renderer) {
@@ -12,9 +13,16 @@ export default class Scene {
     }
     draw() {
         const self = this;
+        const tank = new Tank(this.scene, "./models/Panther_obj.obj");
+        tank.load();
 
-        const model = new ModelLoader(this.scene, "./models/Panther_obj.obj");
-        model.load();
+        var geometry = new THREE.BoxGeometry(800, 5, 800);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xcccccc
+        });
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.z = -150;
+        this.scene.add(cube);
 
         window.addEventListener("keydown", function(event) {
             var keyCode = event.which;
