@@ -30,8 +30,8 @@ export default class Game {
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
 
-        const axisHelper = new THREE.AxisHelper(1000);
-        scene.add(axisHelper);
+        /*const axisHelper = new THREE.AxisHelper(1000);
+        scene.add(axisHelper);*/
 
         // Вершшхний свет
         var shadowlight = new THREE.DirectionalLight(0xffffff, 0.3);
@@ -40,18 +40,18 @@ export default class Game {
         shadowlight.shadowDarkness = 0.1;
         scene.add(shadowlight);
 
-        var light = new THREE.DirectionalLight(0xffffff, 0.6);
+        var light = new THREE.DirectionalLight(0xf6f6f6, 0.5);
         light.position.set(-60, 100, 20);
         scene.add(light);
 
-        var backLight = new THREE.DirectionalLight(0x777777, 0.45);
+        var backLight = new THREE.DirectionalLight(0x777777, 0.65);
         backLight.position.set(-10, 100, 60);
         scene.add(backLight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0xffffff, 1);
+        renderer.setClearColor(0x161b2f, 1);
         renderer.shadowMapEnabled = true;
         renderer.shadowMapType = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
