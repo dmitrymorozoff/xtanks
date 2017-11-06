@@ -4,7 +4,9 @@ import { level1 } from "./Level/index.js";
 import Cube from "./components/Cube/index.js";
 import Tree from "../Tree/index.js";
 import Rock from "../Rock/index.js";
+import Tank from "../Tank/index.js";
 import getRandomInt from "../../../utils/index.js";
+import Clouds from "../Clouds/index.js";
 
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0, scale = 0) {
@@ -28,6 +30,30 @@ export default class Map {
         const landIndex = 0;
         const centerMapI = level1[0].length / 2 * this.cubeSize;
         const centerMapJ = level1[0][0].length / 2 * this.cubeSize;
+        const tank = new Tank(
+            this.scene,
+            this.cubeSize,
+            400,
+            200,
+            400,
+            0x4F9C4F  
+        );
+        tank.load();
+        for (let i = 0; i < 3; i++) {
+            const clouds = new Clouds(
+                this.scene,
+                getRandomInt(
+                    0 - centerMapI - centerMapI / 4,
+                    centerMapI + centerMapI / 4
+                ),
+                500,
+                getRandomInt(
+                    0 - centerMapJ - centerMapJ / 4,
+                    centerMapJ + centerMapJ / 4
+                )
+            );
+            clouds.draw();
+        }
         for (let i = 0; i < level1.length; i++) {
             for (let j = 0; j < level1[i].length; j++) {
                 for (let k = 0; k < level1[i][j].length; k++) {
@@ -75,7 +101,7 @@ export default class Map {
                                 this.cubeSize / 1.5,
                                 getRandomInt(this.cubeSize, this.cubeSize * 5),
                                 k * this.cubeSize - centerMapJ,
-                                i * this.cubeSize +10,
+                                i * this.cubeSize + 10,
                                 j * this.cubeSize - centerMapI,
                                 0x674c41
                             );

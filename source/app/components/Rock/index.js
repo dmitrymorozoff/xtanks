@@ -1,5 +1,4 @@
 import * as THREE from "three";
-const OBJLoader = require("three-obj-loader");
 
 export default class Rock {
     constructor(scene, size, height, x = 0, y = 0, z = 0, color) {
@@ -13,7 +12,7 @@ export default class Rock {
     }
     load() {
         const geometry = new THREE.ConeGeometry(this.size, this.height, 150);
-        const material = new THREE.MeshBasicMaterial({ color: this.color });
+        const material = new THREE.MeshPhongMaterial({ color: this.color });
         const rock = new THREE.Mesh(geometry, material);
 
         rock.position.x = this.x;
