@@ -14,107 +14,8 @@ export default class Tank {
         this.y = y;
         this.z = z;
         this.meshes = [];
-        this.details = {
-            tower: ["Box003", "Cylinder001"],
-            body: "Box002",
-            caterpillar: ["Plane004", "Plane003"],
-            bumper: ["Box024", "Box025", "Box026", "Box027"],
-            trunk: "Cylinder025",
-            luke: "Cylinder026",
-            wings: ["Plane001", "Object015"],
-            brone: [
-                "Plane014",
-                "Plane013",
-                "Plane012",
-                "Plane011",
-                "Plane010",
-                "Plane005",
-                "Plane006",
-                "Plane007",
-                "Plane008",
-                "Plane009"
-            ],
-            wheels: [
-                "Cylinder021",
-                "Cylinder012",
-                "Cylinder009",
-                "Object008",
-                "Object009",
-                "Object030",
-                "Object031",
-                "Object011",
-                "Cylinder011",
-                "Object029",
-                "Object010",
-                "Cylinder016",
-                "Cylinder022",
-                "Object012",
-                "Object013",
-                "Object014",
-                "Object016",
-                "Object032",
-                "Object033",
-                "Object034",
-                "Object001"
-            ],
-            bodyDetails: [
-                "Cylinder035",
-                "Box037",
-                "Box036",
-                "Box035",
-                "Box033",
-                "Box034",
-                "Cylinder036",
-                "Cylinder030",
-                "Cylinder029",
-                "Cylinder037",
-                "Cylinder027",
-                "Cylinder028",
-                "Cylinder038",
-                "Cylinder039",
-                "Cylinder023",
-                "Cylinder024",
-                "Cylinder031",
-                "Cylinder033",
-                "Object019",
-                "Object017",
-                "Object023",
-                "Object026",
-                "Object016",
-                "Object018",
-                "Plane018",
-                "Plane017",
-                "Box004",
-                "Box005",
-                "Box006",
-                "Box007",
-                "Box008",
-                "Box009",
-                "Box010",
-                "Box011",
-                "Box014",
-                "Box015",
-                "Box016",
-                "Box017",
-                "Box018",
-                "Box019",
-                "Box020",
-                "Box031",
-                "Box029",
-                "Box030",
-                "Box032",
-                "Torus002",
-                "Torus001",
-                "Box021"
-            ]
-        };
     }
     load() {
-        const bodyTexture = new THREE.TextureLoader().load("textures/arm.png");
-        bodyTexture.wrapS = THREE.RepeatWrapping;
-        bodyTexture.wrapT = THREE.RepeatWrapping;
-        bodyTexture.repeat.set(1, 1);
-        console.log(bodyTexture);
         this.loader.load(this.path, object => {
             this.object = object;
             object.traverse(child => {
@@ -122,9 +23,14 @@ export default class Tank {
                     this.meshes.push(child);
                 }
             });
+            object.scale.x = 30;
+            object.scale.y = 30;
+            object.scale.z = 30;
+
             object.position.z = this.z;
             object.position.x = this.x;
             object.position.y = this.y;
+
             this.meshes[0].material = new THREE.MeshPhongMaterial({
                 color: 0x424243
             });
