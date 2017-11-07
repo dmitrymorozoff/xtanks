@@ -1,10 +1,11 @@
 import * as THREE from "three";
-const OBJLoader = require("three-obj-loader");
 import { level1 } from "./Level/index.js";
 import Cube from "./components/Cube/index.js";
 import Tree from "../Tree/index.js";
+import FriTree from "../FriTree/index.js";
 import Rock from "../Rock/index.js";
 import Tank from "../Tank/index.js";
+import Home from "../Home/index.js";
 import getRandomInt from "../../../utils/index.js";
 import Clouds from "../Clouds/index.js";
 
@@ -12,8 +13,6 @@ export default class Map {
     constructor(scene, x = 0, y = 0, z = 0, scale = 0) {
         this.scene = scene;
         this.scale = scale;
-        this.objLoader = OBJLoader(THREE);
-        this.loader = new THREE.OBJLoader();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -21,7 +20,8 @@ export default class Map {
         this.cubesLand = [];
         this.cubesBarrier = [];
         this.colors = {
-            landColors: [0x98cf4f, 0x91c25a, 0x6da248]
+            landColors: [0x98cf4f, 0x91c25a, 0x6da248],
+            landBottomColors: [0x674c41, 0x9d7b60, 0xad693d]
         };
     }
 
@@ -30,16 +30,7 @@ export default class Map {
         const landIndex = 0;
         const centerMapI = level1[0].length / 2 * this.cubeSize;
         const centerMapJ = level1[0][0].length / 2 * this.cubeSize;
-        const tank = new Tank(
-            this.scene,
-            this.cubeSize,
-            400,
-            200,
-            400,
-            0x4F9C4F  
-        );
-        tank.load();
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
             const clouds = new Clouds(
                 this.scene,
                 getRandomInt(
@@ -53,6 +44,7 @@ export default class Map {
                 )
             );
             clouds.draw();
+            clouds.move();
         }
         for (let i = 0; i < level1.length; i++) {
             for (let j = 0; j < level1[i].length; j++) {
@@ -70,9 +62,26 @@ export default class Map {
                                 getRandomInt(0, this.colors.landColors.length)
                             ]
                         );
+                        const landBottom = new Cube(
+                            this.scene,
+                            this.cubeSize,
+                            this.cubeSize,
+                            this.cubeSize,
+                            k * this.cubeSize - centerMapJ,
+                            i * this.cubeSize - this.cubeSize,
+                            j * this.cubeSize - centerMapI,
+                            this.colors.landBottomColors[
+                                getRandomInt(
+                                    0,
+                                    this.colors.landBottomColors.length
+                                )
+                            ]
+                        );
+                        landBottom.draw();
                         land.draw();
-                    } else {
-                        if (level1[i][j][k] === 1) {
+                    }
+                    switch (level1[i][j][k]) {
+                        case 1:
                             color = 0x9e9e9e;
                             const barrier = new Cube(
                                 this.scene,
@@ -85,7 +94,8 @@ export default class Map {
                                 color
                             );
                             barrier.draw();
-                        } else if (level1[i][j][k] === 2) {
+                            break;
+                        case 2:
                             const tree = new Tree(
                                 this.scene,
                                 k * this.cubeSize - centerMapJ,
@@ -95,7 +105,8 @@ export default class Map {
                                 0x4c9e0c
                             );
                             tree.load();
-                        } else if (level1[i][j][k] === 3) {
+                            break;
+                        case 3:
                             const rock = new Rock(
                                 this.scene,
                                 this.cubeSize / 1.5,
@@ -106,7 +117,8 @@ export default class Map {
                                 0x674c41
                             );
                             rock.load();
-                        } else if (level1[i][j][k] === 4) {
+                            break;
+                        case 4:
                             const road = new Cube(
                                 this.scene,
                                 this.cubeSize,
@@ -118,7 +130,54 @@ export default class Map {
                                 0xfed78a
                             );
                             road.draw();
-                        }
+                            break;
+                        case 5:
+                            const friTree = new FriTree(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                0x4c9e0c
+                            );
+                            friTree.load();
+                            break;
+                        case 6:
+                            const home = new Home(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                0x6f5e5e
+                            );
+                            home.load();
+                            break;
+                        case 9:
+                            const tankRed = new Tank(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                0xf83f46
+                            );
+                            tankRed.load();
+                            break;
+                        case 10:
+                            const tankBlue = new Tank(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                0x53baed,
+                                -180
+                            );
+                            tankBlue.load();
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

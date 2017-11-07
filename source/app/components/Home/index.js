@@ -1,53 +1,58 @@
 import * as THREE from "three";
-const OBJLoader = require("three-obj-loader");
 
 export default class Home {
-    constructor(scene, path, x = 0, y = 0, z = 0, color, scale = 0) {
+    constructor(scene, size, x = 0, y = 0, z = 0, color, rotate = 0) {
         this.scene = scene;
-        this.path = path;
-        this.scale = scale;
+        this.size = size;
         this.color = color;
-        this.model = null;
-        this.objLoader = OBJLoader(THREE);
-        this.loader = new THREE.OBJLoader();
         this.x = x;
         this.y = y;
         this.z = z;
-        this.meshes = [];
+        this.home = new THREE.Group();
+        this.rotate = rotate;
     }
     load() {
-        this.loader.load(this.path, object => {
-            this.object = object;
-            object.traverse(child => {
-                this.meshes.push(child);
-                console.log(child);
-            });
-            object.scale.x = 110;
-            object.scale.y = 110;
-            object.scale.z = 110;
-
-            object.position.x = this.x;
-            object.position.y = this.y;
-            object.position.z = this.z;
-
-            object.rotation.y = 205;
-
-            this.meshes[0].material = new THREE.MeshPhongMaterial({
-                color: 0xfac95f
-            });
-            this.meshes[1].material = new THREE.MeshPhongMaterial({
-                color: 0xfac95f
-            });
-            this.meshes[2].material = new THREE.MeshPhongMaterial({
-                color: 0xf8d54a
-            });
-            this.meshes[3].material = new THREE.MeshPhongMaterial({
-                color: 0xee594a
-            });
-            this.meshes[4].material = new THREE.MeshPhongMaterial({
-                color: 0x415159
-            });
-            this.scene.add(object);
+        const cubeGeometry = new THREE.BoxGeometry(
+            this.size,
+            this.size,
+            this.size
+        );
+        const cubeMaterial = new THREE.MeshPhongMaterial({
+            color: this.color
         });
+        const main = new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+        const tubeGeometry = new THREE.BoxGeometry(
+            this.size / 8,
+            this.size / 2,
+            this.size / 8
+        );
+        const tubeMaterial = new THREE.MeshPhongMaterial({
+            color: 0x7a3d2a
+        });
+        const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+        tube.position.x += this.size / 4;
+        tube.position.y += this.size / 2 + this.size / 3;
+        tube.position.z += this.size / 4;
+
+        const roofGeometry = new THREE.ConeGeometry(
+            this.size,
+            this.size / 2,
+            4
+        );
+        const roofMaterial = new THREE.MeshPhongMaterial({ color: 0xea5139 });
+        const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+
+        roof.position.y += this.size / 2 + this.size / 4;
+        roof.rotation.y = 45 * 0.0174533;
+
+        this.home.position.x = this.x;
+        this.home.position.y = this.y;
+        this.home.position.z = this.z;
+
+        this.home.add(main);
+        this.home.add(roof);
+        this.home.add(tube);
+        this.scene.add(this.home);
     }
 }

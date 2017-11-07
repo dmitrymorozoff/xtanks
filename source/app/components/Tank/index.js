@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Cube from "../Map/components/Cube/index.js";
 
 export default class Tank {
-    constructor(scene, size, x = 0, y = 0, z = 0, color) {
+    constructor(scene, size, x = 0, y = 0, z = 0, color, rotate = 0) {
         this.scene = scene;
         this.size = size;
         this.color = color;
@@ -10,6 +10,7 @@ export default class Tank {
         this.y = y;
         this.z = z;
         this.tank = new THREE.Group();
+        this.rotate = rotate;
     }
     load() {
         let geometryMain = new THREE.BoxGeometry(
@@ -34,22 +35,48 @@ export default class Tank {
         mainTop.position.y += this.size / 2;
 
         const geometryGun = new THREE.BoxGeometry(
-            this.size / 4,
-            this.size / 7,
+            this.size / 6,
+            this.size / 8,
             this.size
         );
 
-        const gun = new THREE.Mesh(geometryGun, materialMain);
+        let materialGun = new THREE.MeshPhongMaterial({
+            color: 0xaea19e
+        });
+
+        const gun = new THREE.Mesh(geometryGun, materialGun);
         gun.position.y += this.size / 2;
         gun.position.z += this.size / 2;
+
+        const geometryTrack = new THREE.BoxGeometry(
+            this.size / 4,
+            this.size / 8,
+            this.size
+        );
+
+        let materialTrack = new THREE.MeshPhongMaterial({
+            color: 0x4a4246
+        });
+
+        const leftTrack = new THREE.Mesh(geometryTrack, materialTrack);
+        const rightTrack = new THREE.Mesh(geometryTrack, materialTrack);
+
+        leftTrack.position.y -= this.size / 4 + this.size / 14;
+        leftTrack.position.x -= this.size / 4 + this.size / 10;
+        rightTrack.position.y -= this.size / 4 + this.size / 14;
+        rightTrack.position.x += this.size / 4 + this.size / 10;
 
         this.tank.position.x = this.x;
         this.tank.position.z = this.z;
         this.tank.position.y = this.y;
 
+        this.tank.rotation.y = this.rotate * 0.0174533;
+
         this.tank.add(main);
         this.tank.add(mainTop);
         this.tank.add(gun);
+        this.tank.add(leftTrack);
+        this.tank.add(rightTrack);
 
         this.scene.add(this.tank);
     }
