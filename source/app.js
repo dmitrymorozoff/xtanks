@@ -19,7 +19,8 @@ const gameSettings = {
     camera: {
         x: -1000,
         y: 1300,
-        z: 1500
+        z: 1500,
+        cameraCoeff: 1.7
     }
 };
 

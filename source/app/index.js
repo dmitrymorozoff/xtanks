@@ -13,14 +13,13 @@ export default class Game {
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 3200;
         const camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -2,
-            frustumSize * aspect / 2,
-            frustumSize / 2,
-            frustumSize / -2,
+            frustumSize * aspect / -this.settings.camera.cameraCoeff,
+            frustumSize * aspect / this.settings.camera.cameraCoeff,
+            frustumSize / this.settings.camera.cameraCoeff,
+            frustumSize / -this.settings.camera.cameraCoeff,
             1,
             10000
         );
-        camera.position.y = 400;
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
@@ -32,7 +31,7 @@ export default class Game {
 
         const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);
-        
+
         var shadowlight = new THREE.DirectionalLight(0xffffff, 0.4);
         shadowlight.position.set(0, 100, 0);
         shadowlight.castShadow = true;
@@ -53,10 +52,12 @@ export default class Game {
 
         function resize() {
             const aspect = window.innerWidth / window.innerHeight;
-            camera.left = -frustumSize * aspect / 2;
-            camera.right = frustumSize * aspect / 2;
-            camera.top = frustumSize / 2;
-            camera.bottom = -frustumSize / 2;
+            camera.left =
+                -frustumSize * aspect / this.settings.camera.cameraCoeff;
+            camera.right =
+                frustumSize * aspect / this.settings.camera.cameraCoeff;
+            camera.top = frustumSize / this.settings.camera.cameraCoeff;
+            camera.bottom = -frustumSize / this.settings.camera.cameraCoeff;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
