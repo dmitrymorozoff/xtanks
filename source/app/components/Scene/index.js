@@ -16,6 +16,10 @@ export default class Scene {
         this.animationId = 0;
         this.cubeSize = 100;
         this.player = null;
+        this.flagLeft = false;
+        this.flagRight = false;
+        this.flagTop = false;
+        this.flagBottom = false;
     }
     draw() {
         const map = new Map(this.scene);
@@ -32,19 +36,37 @@ export default class Scene {
         );
         this.player.draw();
 
-        window.addEventListener("keypress", event => {
-            switch (event.key) {
-                case "a":
-                    this.player.moveLeft();
+        window.addEventListener("keydown", event => {
+            switch (event.keyCode) {
+                case 65:
+                    this.flagLeft = true;
                     break;
-                case "d":
-                    this.player.moveRight();
+                case 68:
+                    this.flagRight = true;
                     break;
-                case "w":
-                    this.player.moveTop();
+                case 87:
+                    this.flagTop = true;
                     break;
-                case "s":
-                    this.player.moveBottom();
+                case 83:
+                    this.flagBottom = true;
+                    break;
+                default:
+                    break;
+            }
+        });
+        window.addEventListener("keyup", event => {
+            switch (event.keyCode) {
+                case 65:
+                    this.flagLeft = false;
+                    break;
+                case 68:
+                    this.flagRight = false;
+                    break;
+                case 87:
+                    this.flagTop = false;
+                    break;
+                case 83:
+                    this.flagBottom = false;
                     break;
                 default:
                     break;
@@ -52,6 +74,18 @@ export default class Scene {
         });
     }
     animate() {
+        if (this.flagLeft) {
+            this.player.moveLeft();
+        }
+        if (this.flagRight) {
+            this.player.moveRight();
+        }
+        if (this.flagTop) {
+            this.player.moveTop();
+        }
+        if (this.flagBottom) {
+            this.player.moveBottom();
+        }
         this.animationId = requestAnimationFrame(this.animate.bind(this));
         this.renderer.render(this.scene, this.camera);
     }

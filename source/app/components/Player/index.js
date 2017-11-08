@@ -12,7 +12,7 @@ export default class Player {
         this.color = color;
         this.player = null;
         this.rotate = rotate;
-        this.speed = 15;
+        this.speed = 10;
         this.angle = 0;
     }
     draw() {
@@ -29,12 +29,12 @@ export default class Player {
         this.player.load();
     }
     moveLeft() {
-        let newAngleLeft = 5 * 0.0174533;
+        let newAngleLeft = this.speed * 0.0174533;
         this.player.tank.rotation.y += newAngleLeft;
         this.angle += newAngleLeft;
     }
     moveRight() {
-        let newAngleRight = 5 * 0.0174533;
+        let newAngleRight = this.speed  * 0.0174533;
         this.player.tank.rotation.y -= newAngleRight;
         this.angle -= newAngleRight;
     }
@@ -46,10 +46,4 @@ export default class Player {
         this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
         this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
     }
-    /*let newPositionZ =
-            this.speed * this.mod * Math.cos(Math.PI / 180 * this.angle);
-        let newPositionX =
-            this.speed * this.mod * Math.sin(Math.PI / 180 * this.angle);
-        this.player.tank.position.x += newPositionX;
-        this.player.tank.position.z += newPositionZ;*/
 }
