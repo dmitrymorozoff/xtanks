@@ -2,6 +2,7 @@ import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
 import Scene from "./components/Scene/index.js";
 import getRandomInt from "../utils/index.js";
+import Supertank from "./components/Supertank/index.js";
 
 export default class Game {
     constructor(settings) {
@@ -49,6 +50,9 @@ export default class Game {
         const gameScene = new Scene(scene, shadowlight, camera, renderer);
         gameScene.draw();
         gameScene.animate();
+
+        const tank = new Supertank(scene);
+        tank.draw();
 
         function resize() {
             const aspect = window.innerWidth / window.innerHeight;
