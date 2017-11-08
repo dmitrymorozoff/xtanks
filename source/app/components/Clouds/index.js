@@ -39,11 +39,10 @@ export default class Clouds {
         this.clouds.position.x = this.x;
         this.clouds.position.y = this.y;
         this.clouds.position.z = this.z;
-        console.log(this.clouds);
         this.scene.add(this.clouds);
     }
     move() {
-        TweenMax.to(this.clouds.position, 50, {
+        TweenMax.to(this.clouds.position, 30, {
             x: 0,
             repeat: -1,
             yoyo: true,

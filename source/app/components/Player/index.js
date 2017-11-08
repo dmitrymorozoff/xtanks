@@ -34,7 +34,7 @@ export default class Player {
         this.angle += newAngleLeft;
     }
     moveRight() {
-        let newAngleRight = this.speed  * 0.0174533;
+        let newAngleRight = this.speed * 0.0174533;
         this.player.tank.rotation.y -= newAngleRight;
         this.angle -= newAngleRight;
     }
@@ -45,5 +45,11 @@ export default class Player {
     moveBottom() {
         this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
         this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
+    }
+    rotateGun(x, y) {
+        let angle = Math.atan2(y - this.y, x - this.x);
+        console.log(angle);
+        let newAngle = angle  * this.speed - this.angle;
+        this.player.tank.rotation.y = newAngle;
     }
 }

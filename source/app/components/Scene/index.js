@@ -72,6 +72,11 @@ export default class Scene {
                     break;
             }
         });
+        document.onmousemove = (event) => {
+            let cursorX = event.pageX;
+            let cursorY = event.pageY;
+            this.player.rotateGun(cursorX, cursorY);
+        };
     }
     animate() {
         if (this.flagLeft) {

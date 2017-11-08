@@ -4,6 +4,8 @@ import Cube from "./components/Cube/index.js";
 import Tree from "../Tree/index.js";
 import FriTree from "../FriTree/index.js";
 import Rock from "../Rock/index.js";
+import Water from "../Water/index.js";
+import BigTree from "../BigTree/index.js";
 import Tank from "../Tank/index.js";
 import Home from "../Home/index.js";
 import getRandomInt from "../../../utils/index.js";
@@ -50,18 +52,24 @@ export default class Map {
             for (let j = 0; j < level1[i].length; j++) {
                 for (let k = 0; k < level1[i][j].length; k++) {
                     if (i === 0) {
-                        const land = new Cube(
-                            this.scene,
-                            this.cubeSize,
-                            this.cubeSize,
-                            this.cubeSize,
-                            k * this.cubeSize - centerMapJ,
-                            i * this.cubeSize,
-                            j * this.cubeSize - centerMapI,
-                            this.colors.landColors[
-                                getRandomInt(0, this.colors.landColors.length)
-                            ]
-                        );
+                        if (level1[i][j][k] !== 8) {
+                            const land = new Cube(
+                                this.scene,
+                                this.cubeSize,
+                                this.cubeSize,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.colors.landColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.landColors.length
+                                    )
+                                ]
+                            );
+                            land.draw();
+                        }
                         const landBottom = new Cube(
                             this.scene,
                             this.cubeSize,
@@ -78,7 +86,6 @@ export default class Map {
                             ]
                         );
                         landBottom.draw();
-                        land.draw();
                     }
                     switch (level1[i][j][k]) {
                         case 1:
@@ -175,6 +182,28 @@ export default class Map {
                                 -180
                             );
                             tankBlue.load();
+                            break;
+                        case 7:
+                            const bigTree = new BigTree(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize - this.cubeSize / 4,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize * 1.5,
+                                0x4c9e0c
+                            );
+                            bigTree.load();
+                            break;
+                        case 8:
+                            const water = new Water(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize - this.cubeSize / 4,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize * 1.5,
+                                0x4fbaf0
+                            );
+                            water.draw();
                             break;
                         default:
                             break;
