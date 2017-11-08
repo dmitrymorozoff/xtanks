@@ -15,12 +15,13 @@ export default class Scene {
         this.renderer = renderer;
         this.animationId = 0;
         this.cubeSize = 100;
+        this.player = null;
     }
     draw() {
         const map = new Map(this.scene);
         map.load();
 
-        const player = new Player(
+        this.player = new Player(
             this.scene,
             this.cubeSize,
             3 * this.cubeSize,
@@ -29,21 +30,24 @@ export default class Scene {
             0x53baed,
             180
         );
-        player.draw();
+        this.player.draw();
 
-        window.addEventListener("keydown", function(event) {
-            var keyCode = event.which;
-            if (keyCode == 65) {
-                player.moveLeft();
-            }
-            if (keyCode == 68) {
-                player.moveRight();
-            }
-            if (keyCode == 87) {
-                player.moveBottom();
-            }
-            if (keyCode == 83) {
-                player.moveTop();
+        window.addEventListener("keypress", event => {
+            switch (event.key) {
+                case "a":
+                    this.player.moveLeft();
+                    break;
+                case "d":
+                    this.player.moveRight();
+                    break;
+                case "w":
+                    this.player.moveTop();
+                    break;
+                case "s":
+                    this.player.moveBottom();
+                    break;
+                default:
+                    break;
             }
         });
     }

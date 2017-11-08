@@ -12,6 +12,8 @@ export default class Player {
         this.color = color;
         this.player = null;
         this.rotate = rotate;
+        this.speed = 15;
+        this.angle = 0;
     }
     draw() {
         this.player = new Tank(
@@ -23,20 +25,31 @@ export default class Player {
             this.color,
             this.rotate
         );
+        this.angle = this.rotate * 0.0174533;
         this.player.load();
     }
-    moveTop() {
-        this.player.tank.position.z += 5;
-    }
-    moveBottom() {
-        this.player.tank.position.z -= 5;
-    }
     moveLeft() {
-        this.player.tank.position.x -= 5;
-        this.player.tank.rotation.y += 0.2 * 0.0174533;
+        let newAngleLeft = 5 * 0.0174533;
+        this.player.tank.rotation.y += newAngleLeft;
+        this.angle += newAngleLeft;
     }
     moveRight() {
-        this.player.tank.position.x += 5;
-        this.player.tank.rotation.y -= 0.2 * 0.0174533;
+        let newAngleRight = 5 * 0.0174533;
+        this.player.tank.rotation.y -= newAngleRight;
+        this.angle -= newAngleRight;
     }
+    moveTop() {
+        this.player.tank.position.x += Math.sin(this.angle) * this.speed;
+        this.player.tank.position.z += Math.cos(-this.angle) * this.speed;
+    }
+    moveBottom() {
+        this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
+        this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
+    }
+    /*let newPositionZ =
+            this.speed * this.mod * Math.cos(Math.PI / 180 * this.angle);
+        let newPositionX =
+            this.speed * this.mod * Math.sin(Math.PI / 180 * this.angle);
+        this.player.tank.position.x += newPositionX;
+        this.player.tank.position.z += newPositionZ;*/
 }
