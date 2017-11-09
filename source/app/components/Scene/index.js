@@ -37,13 +37,10 @@ export default class Scene {
         );
         this.player.draw();
         console.log(this.player.player.tank.position);
-        /*const tank = new Supertank(
+        const tank = new Supertank(
             this.scene,
-            3 * this.cubeSize,
-            1 * this.cubeSize,
-            6 * this.cubeSize
         );
-        tank.draw();*/
+        tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {

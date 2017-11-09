@@ -8,6 +8,7 @@ export default class Tank {
         x = 0,
         y = 0,
         z = 0,
+        scale = 0.2,
         corpsParam = {
             size: {
                 width: 200,
@@ -15,7 +16,7 @@ export default class Tank {
                 length: 600
             },
             type: 1,
-            color: 0xff0000
+            color: 0x53baed
         },
         towerParam = {
             size: {
@@ -24,7 +25,7 @@ export default class Tank {
                 length: 350
             },
             type: 1,
-            color: 0x00ff00
+            color: 0x53baed
         },
         gunParam = {
             size: {
@@ -32,7 +33,7 @@ export default class Tank {
                 length: 300
             },
             type: 1,
-            color: 0x0000ff
+            color: 0xaea19e
         },
         trackParam = {
             size: {
@@ -41,27 +42,37 @@ export default class Tank {
                 length: 600
             },
             type: 1,
-            color: 0x000000
+            color: 0x4a4246
         },
-        scale = 1
     ) {
-        this.scene = scene;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.scale = scale;
+        this.scene 	= scene;
+        this.x 		= x;
+        this.y 		= y + 50;
+        this.z 		= z;
+        this.scale 	= scale;
 
         this.corpsParam = corpsParam;
         this.towerParam = towerParam;
-        this.gunParam = gunParam;
+        this.gunParam 	= gunParam;
         this.trackParam = trackParam;
 
-        this.corps = new THREE.Group();
-        this.tower = new THREE.Group();
-        this.gun = new THREE.Group();
-        this.track = new THREE.Group();
+        this.corps 	= this.createGroup();
+        this.tower 	= this.createGroup();
+        this.gun 	= this.createGroup();
+        this.track 	= this.createGroup();
 
-        this.tank = new THREE.Group();
+        this.tank 	= this.createGroup();
+
+        this.tankInfo = {
+        	size: {
+        		width: null,
+        		height: null,
+        		length: null
+        	}
+        };
+
+        this.setScale();
+        this.setTankInformation();
     }
     draw() {
         this.corps = this.createCorps();
@@ -85,125 +96,114 @@ export default class Tank {
         this.scene.add(this.tank);
     }
     createCorps() {
-        let geometry,
-            material,
-            obj,
-            corps = new THREE.Group();
+        let obj, corps = this.createGroup();
 
         switch (this.corpsParam.type) {
             case 1:
                 //верхний слой крпуса
-                geometry = new THREE.BoxGeometry(
-                    this.corpsParam.size.width,
-                    this.corpsParam.size.height,
-                    this.corpsParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.corpsParam.size.width,
+	                    this.corpsParam.size.height,
+	                    this.corpsParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(obj, this.x, this.y, this.z);
                 corps.add(obj);
 
                 //нижний слой корпуса (центральная часть)
-                geometry = new THREE.BoxGeometry(
-                    this.corpsParam.size.width,
-                    this.corpsParam.size.height * 2,
-                    this.corpsParam.size.length / 2
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.corpsParam.size.width,
+	                    this.corpsParam.size.height * 2,
+	                    this.corpsParam.size.length / 2
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y -
-                        (this.corpsParam.size.height / 2 +
-                            this.corpsParam.size.height),
+                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
                     this.z
                 );
                 corps.add(obj);
 
                 //нижний слой корпуса (передняя скошенная часть)
-                geometry = new THREE.BoxGeometry(
-                    this.corpsParam.size.width,
-                    this.corpsParam.size.height * 2,
-                    this.corpsParam.size.length / 4
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.corpsParam.size.width,
+	                    this.corpsParam.size.height * 2,
+	                    this.corpsParam.size.length / 4
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y -
-                        (this.corpsParam.size.height / 2 +
-                            this.corpsParam.size.height),
-                    this.z +
-                        this.corpsParam.size.length / 4 +
-                        this.corpsParam.size.length / 8
+                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
+                    this.z + this.corpsParam.size.length / 4 + this.corpsParam.size.length / 8
                 );
                 corps.add(obj);
 
                 //нижний слой корпуса (задняя скошенная часть)
-                geometry = new THREE.BoxGeometry(
-                    this.corpsParam.size.width,
-                    this.corpsParam.size.height * 2,
-                    this.corpsParam.size.length / 4
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.corpsParam.size.width,
+	                    this.corpsParam.size.height * 2,
+	                    this.corpsParam.size.length / 4
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y -
-                        (this.corpsParam.size.height / 2 +
-                            this.corpsParam.size.height),
-                    this.z -
-                        (this.corpsParam.size.length / 4 +
-                            this.corpsParam.size.length / 8)
+                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
+                    this.z - (this.corpsParam.size.length / 4 + this.corpsParam.size.length / 8)
                 );
                 corps.add(obj);
 
                 //право крыло
-                geometry = new THREE.BoxGeometry(
-                    this.trackParam.size.width + this.trackParam.size.width / 4,
-                    this.corpsParam.size.height,
-                    this.corpsParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.trackParam.size.width + this.trackParam.size.width / 4,
+	                    this.corpsParam.size.height,
+	                    this.corpsParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
-                    this.x +
-                        this.corpsParam.size.width / 2 +
-                        this.trackParam.size.width / 2,
+                    this.x + this.corpsParam.size.width / 2 + this.trackParam.size.width / 2,
                     this.y,
                     this.z
                 );
                 corps.add(obj);
 
                 //левое крыло
-                geometry = new THREE.BoxGeometry(
-                    this.trackParam.size.width + this.trackParam.size.width / 4,
-                    this.corpsParam.size.height,
-                    this.corpsParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.trackParam.size.width + this.trackParam.size.width / 4,
+	                    this.corpsParam.size.height,
+	                    this.corpsParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.corpsParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.corpsParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
-                    this.x -
-                        (this.corpsParam.size.width / 2 +
-                            this.trackParam.size.width / 2),
+                    this.x - (this.corpsParam.size.width / 2 +this.trackParam.size.width / 2),
                     this.y,
                     this.z
                 );
@@ -218,55 +218,45 @@ export default class Tank {
         return corps;
     }
     createTower() {
-        let geometry,
-            material,
-            obj,
-            tower = new THREE.Group();
+        let obj, tower = this.createGroup();
 
         switch (this.towerParam.type) {
             case 1:
                 //вращательный элемент
-                geometry = new THREE.CylinderGeometry(
-                    this.corpsParam.size.width < this.corpsParam.size.length
-                        ? this.corpsParam.size.width / 2
-                        : this.corpsParam.size.length / 2,
-                    this.corpsParam.size.width < this.corpsParam.size.length
-                        ? this.corpsParam.size.width / 2
-                        : this.corpsParam.size.length / 2,
-                    this.towerParam.size.height / 4,
-                    32
+                obj = this.getObj(
+                	this.getCylinderGeometry(
+            			this.corpsParam.size.width < this.corpsParam.size.length ? this.corpsParam.size.width / 2 : this.corpsParam.size.length / 2,
+                    	this.corpsParam.size.width < this.corpsParam.size.length ? this.corpsParam.size.width / 2 : this.corpsParam.size.length / 2,
+	                    this.towerParam.size.height / 4,
+	                    32
+                	),
+                	this.getMeshPhongMaterial(
+                		this.towerParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.towerParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y +
-                        this.corpsParam.size.height / 2 +
-                        this.towerParam.size.height / 8,
+                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 8,
                     this.z
                 );
                 tower.add(obj);
 
                 //башня
-                geometry = new THREE.BoxGeometry(
-                    this.towerParam.size.width,
-                    this.towerParam.size.height,
-                    this.towerParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.towerParam.size.width,
+	                    this.towerParam.size.height,
+	                    this.towerParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.towerParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.towerParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y +
-                        this.corpsParam.size.height / 2 +
-                        this.towerParam.size.height / 4 +
-                        this.towerParam.size.height / 2,
+                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 4 + this.towerParam.size.height / 2,
                     this.z
                 );
                 tower.add(obj);
@@ -280,34 +270,27 @@ export default class Tank {
         return tower;
     }
     createGun() {
-        let geometry,
-            material,
-            obj,
-            gun = new THREE.Group();
+        let obj, gun = this.createGroup();
 
         switch (this.gunParam.type) {
             case 1:
                 //пушка
-                geometry = new THREE.CylinderGeometry(
-                    this.gunParam.size.radius,
-                    this.gunParam.size.radius,
-                    this.gunParam.size.length,
-                    32
+                obj = this.getObj(
+                	this.getCylinderGeometry(
+                		this.gunParam.size.radius,
+	                    this.gunParam.size.radius,
+	                    this.gunParam.size.length,
+	                    32
+                	),
+                	this.getMeshPhongMaterial(
+                		this.gunParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.gunParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
                     this.x,
-                    this.y +
-                        this.corpsParam.size.height / 2 +
-                        this.towerParam.size.height / 4 +
-                        this.towerParam.size.height / 2,
-                    this.z -
-                        (this.towerParam.size.length / 2 +
-                            this.gunParam.size.length / 2)
+                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 4 + this.towerParam.size.height / 2,
+                    this.z - (this.towerParam.size.length / 2 + this.gunParam.size.length / 2)
                 );
                 obj.rotateX(90 * DEG_TO_RAD);
                 gun.add(obj);
@@ -321,57 +304,44 @@ export default class Tank {
         return gun;
     }
     createTrack() {
-        let geometry,
-            material,
-            obj,
-            track = new THREE.Group();
+        let obj, track = this.createGroup();
 
         switch (this.trackParam.type) {
             case 1:
                 //левая гусеница
-                geometry = new THREE.BoxGeometry(
-                    this.trackParam.size.width,
-                    this.trackParam.size.height,
-                    this.trackParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.trackParam.size.width,
+	                    this.trackParam.size.height,
+	                    this.trackParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.trackParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.trackParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
-                    this.x -
-                        (this.corpsParam.size.width / 2 +
-                            this.trackParam.size.width / 4 +
-                            this.trackParam.size.width / 2),
-                    this.y -
-                        (this.corpsParam.size.height / 2 +
-                            this.corpsParam.size.height +
-                            this.corpsParam.size.height / 4),
+                    this.x - (this.corpsParam.size.width / 2 + this.trackParam.size.width / 4 + this.trackParam.size.width / 2),
+                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height + this.corpsParam.size.height / 4),
                     this.z
                 );
                 track.add(obj);
 
                 //правая гусеница
-                geometry = new THREE.BoxGeometry(
-                    this.trackParam.size.width,
-                    this.trackParam.size.height,
-                    this.trackParam.size.length
+                obj = this.getObj(
+                	this.getBoxGeometry(
+                		this.trackParam.size.width,
+	                    this.trackParam.size.height,
+	                    this.trackParam.size.length
+                	),
+                	this.getMeshPhongMaterial(
+                		this.trackParam.color
+                	)
                 );
-                material = new THREE.MeshPhongMaterial({
-                    color: this.trackParam.color
-                });
-                obj = new THREE.Mesh(geometry, material);
                 this.objSetPosition(
                     obj,
-                    this.x +
-                        this.corpsParam.size.width / 2 +
-                        this.trackParam.size.width / 4 +
-                        this.trackParam.size.width / 2,
-                    this.y -
-                        (this.corpsParam.size.height / 2 +
-                            this.corpsParam.size.height +
-                            this.corpsParam.size.height / 4),
+                    this.x + this.corpsParam.size.width / 2 + this.trackParam.size.width / 4 + this.trackParam.size.width / 2,
+                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height + this.corpsParam.size.height / 4),
                     this.z
                 );
                 track.add(obj);
@@ -384,9 +354,50 @@ export default class Tank {
 
         return track;
     }
+    setScale() {
+    	this.corpsParam.size.width *= this.scale;
+    	this.corpsParam.size.height *= this.scale;
+    	this.corpsParam.size.length *= this.scale;
+
+    	this.towerParam.size.width *= this.scale;
+    	this.towerParam.size.height *= this.scale;
+    	this.towerParam.size.length *= this.scale;
+
+    	this.gunParam.size.radius *= this.scale;
+    	this.gunParam.size.length *= this.scale;
+
+    	this.trackParam.size.width *= this.scale;
+    	this.trackParam.size.height *= this.scale;
+    	this.trackParam.size.length *= this.scale;
+    }
+    createGroup() {
+    	return new THREE.Group();
+    }
+    getObj(geometry, material) {
+    	return new THREE.Mesh(geometry, material);
+    }
+    getBoxGeometry(widht, height, length) {
+    	return new THREE.BoxGeometry(widht, height, length);
+    }
+    getCylinderGeometry(radiusTop, radiusBottom, height, roundness) {
+    	return new THREE.CylinderGeometry(radiusTop, radiusBottom, height, roundness);
+    }
+    getMeshPhongMaterial(color) {
+    	return new THREE.MeshPhongMaterial({
+            color: color
+        });
+    }
     objSetPosition(obj, x, y, z) {
         obj.position.x = x;
         obj.position.y = y;
         obj.position.z = z;
+    }
+    setTankInformation() {
+    	this.tankInfo.size.width = 1;
+    	this.tankInfo.size.height = 1;
+    	this.tankInfo.size.length = 1;
+    }
+    getTankInformation() {
+    	return this.tankInfo;
     }
 }
