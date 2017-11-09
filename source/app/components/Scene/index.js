@@ -5,6 +5,7 @@ import Lamp from "../Lamp/index.js";
 import Home from "../Home/index.js";
 import Map from "../Map/index.js";
 import Player from "../Player/index.js";
+import Supertank from "../Supertank/index.js";
 import * as THREE from "three";
 
 export default class Scene {
@@ -35,6 +36,14 @@ export default class Scene {
             180
         );
         this.player.draw();
+        console.log(this.player.player.tank.position);
+        /*const tank = new Supertank(
+            this.scene,
+            3 * this.cubeSize,
+            1 * this.cubeSize,
+            6 * this.cubeSize
+        );
+        tank.draw();*/
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
@@ -72,10 +81,10 @@ export default class Scene {
                     break;
             }
         });
-        document.onmousemove = (event) => {
+        document.onmousemove = event => {
             let cursorX = event.pageX;
             let cursorY = event.pageY;
-            this.player.rotateGun(cursorX, cursorY);
+            // this.player.rotateGun(cursorX, cursorY);
         };
     }
     animate() {
@@ -91,6 +100,8 @@ export default class Scene {
         if (this.flagBottom) {
             this.player.moveBottom();
         }
+      
+        this.camera.lookAt(this.player.player.tank.position);
         this.animationId = requestAnimationFrame(this.animate.bind(this));
         this.renderer.render(this.scene, this.camera);
     }

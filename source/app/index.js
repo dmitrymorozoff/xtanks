@@ -2,7 +2,6 @@ import * as THREE from "three";
 import OrbitControls from "orbit-controls-es6";
 import Scene from "./components/Scene/index.js";
 import getRandomInt from "../utils/index.js";
-import Supertank from "./components/Supertank/index.js";
 
 export default class Game {
     constructor(settings) {
@@ -13,11 +12,17 @@ export default class Game {
         const scene = new THREE.Scene();
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 3200;
-        const camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -this.settings.camera.cameraCoeff,
-            frustumSize * aspect / this.settings.camera.cameraCoeff,
-            frustumSize / this.settings.camera.cameraCoeff,
-            frustumSize / -this.settings.camera.cameraCoeff,
+        /*const camera = new THREE.OrthographicCamera(
+            frustumSize * aspect / -1.7,
+            frustumSize * aspect / 1.7,
+            frustumSize / 1.7,
+            frustumSize / -1.7,
+            1,
+            10000
+        );*/
+        const camera = new THREE.PerspectiveCamera(
+            70,
+            window.innerWidth / window.innerHeight,
             1,
             10000
         );
@@ -51,17 +56,18 @@ export default class Game {
         gameScene.draw();
         gameScene.animate();
 
-        const tank = new Supertank(scene);
-        tank.draw();
-
         function resize() {
-            const aspect = window.innerWidth / window.innerHeight;
+            /* const aspect = window.innerWidth / window.innerHeight;
             camera.left =
-                -frustumSize * aspect / this.settings.camera.cameraCoeff;
+                -frustumSize * aspect / 1.7;
             camera.right =
-                frustumSize * aspect / this.settings.camera.cameraCoeff;
-            camera.top = frustumSize / this.settings.camera.cameraCoeff;
-            camera.bottom = -frustumSize / this.settings.camera.cameraCoeff;
+                frustumSize * aspect / 1.7;
+            camera.top = frustumSize / 1.7;
+            camera.bottom = -frustumSize / 1.7;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);*/
+
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
