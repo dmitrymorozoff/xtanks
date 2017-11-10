@@ -3,16 +3,17 @@ import { TweenMax, Power2, TimelineLite } from "gsap";
 import Tank from "../Tank/index.js";
 
 export default class Player {
-    constructor(scene, size, x, y, z, color, rotate) {
+    constructor(scene,camera, size, x, y, z, color, rotate) {
         this.scene = scene;
         this.size = size;
+        this.camera =camera;
         this.x = x;
         this.y = y;
         this.z = z;
         this.color = color;
         this.player = null;
         this.rotate = rotate;
-        this.speed = 10;
+        this.speed = 12;
         this.angle = 0;
     }
     draw() {
@@ -31,11 +32,13 @@ export default class Player {
     moveLeft() {
         let newAngleLeft = this.speed * 0.0174533;
         this.player.tank.rotation.y += newAngleLeft;
+        this.camera.rotation.y += newAngleLeft;
         this.angle += newAngleLeft;
     }
     moveRight() {
         let newAngleRight = this.speed * 0.0174533;
         this.player.tank.rotation.y -= newAngleRight;
+        this.camera.rotation.y -= newAngleRight;
         this.angle -= newAngleRight;
     }
     moveTop() {
