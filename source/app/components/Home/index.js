@@ -28,7 +28,7 @@ export default class Home {
             this.size / 8
         );
         const tubeMaterial = new THREE.MeshPhongMaterial({
-            color: 0x7a3d2a
+            color: 0x777777
         });
         const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
         tube.position.x += this.size / 4;
@@ -40,7 +40,7 @@ export default class Home {
             this.size / 2,
             4
         );
-        const roofMaterial = new THREE.MeshPhongMaterial({ color: 0xea5139 });
+        const roofMaterial = new THREE.MeshPhongMaterial({ color: 0x666666 });
         const roof = new THREE.Mesh(roofGeometry, roofMaterial);
 
         roof.position.y += this.size / 2 + this.size / 4;
@@ -52,7 +52,7 @@ export default class Home {
             this.size / 6
         );
         const windowMaterial = new THREE.MeshPhongMaterial({
-            color: 0x6997b7
+            color: 0xffffff
         });
         let homeWindow = new THREE.Mesh(windowGeometry, windowMaterial);
         const windowPosition = this.size / 2;

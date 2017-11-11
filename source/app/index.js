@@ -38,16 +38,16 @@ export default class Game {
         const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);
 
-        var shadowlight = new THREE.DirectionalLight(0xffffff, 0.4);
+        const shadowlight = new THREE.DirectionalLight(0xffffff, 0.4);
         shadowlight.position.set(0, 100, 0);
         shadowlight.castShadow = true;
         shadowlight.shadowDarkness = 0.1;
         scene.add(shadowlight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        // renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0xf6f6f6, 1);
+        renderer.setClearColor(0x000000, 1);
         renderer.shadowMapEnabled = true;
         renderer.shadowMapType = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);

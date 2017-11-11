@@ -35,7 +35,7 @@ export default class Scene {
             3 * this.cubeSize,
             1 * this.cubeSize,
             6 * this.cubeSize,
-            0x53baed,
+            0x575757,
             180
         );
         this.player.draw();

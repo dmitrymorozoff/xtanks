@@ -24,8 +24,8 @@ export default class Map {
         this.cubesLand = [];
         this.cubesBarrier = [];
         this.colors = {
-            landColors: [0x98cf4f, 0x91c25a, 0x6da248],
-            landBottomColors: [0x674c41, 0x9d7b60, 0xad693d]
+            landColors: [0x111111, 0x222222, 0x111111],
+            landBottomColors: [0x111111, 0x222222, 0x111111]
         };
     }
 
@@ -91,7 +91,7 @@ export default class Map {
                     }
                     switch (level1[i][j][k]) {
                         case 1:
-                            color = 0x9e9e9e;
+                            color = 0x333333;
                             const barrier = new Wall(
                                 this.scene,
                                 this.cubeSize,
@@ -110,7 +110,7 @@ export default class Map {
                                 i * this.cubeSize - this.cubeSize / 4,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                0x4c9e0c
+                                0xffffff
                             );
                             tree.load();
                             break;
@@ -135,7 +135,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 (i - 2) * this.cubeSize + 55,
                                 j * this.cubeSize - centerMapI,
-                                0xfed78a
+                                0x555555
                             );
                             road.draw();
                             break;
@@ -146,7 +146,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0x4c9e0c
+                                0x333333
                             );
                             friTree.load();
                             break;
@@ -157,7 +157,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0x6f5e5e
+                                0x555555
                             );
                             home.load();
                             break;
@@ -168,7 +168,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0xf83f46
+                                0xffffff
                             );
                             tankRed.load();
                             break;
@@ -179,7 +179,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0x53baed,
+                                0x575757,
                                 -180
                             );
                             tankBlue.load();
@@ -191,7 +191,7 @@ export default class Map {
                                 i * this.cubeSize - this.cubeSize / 4,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize * 1.5,
-                                0x4c9e0c
+                                0x333333
                             );
                             bigTree.load();
                             break;
@@ -202,7 +202,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0x4fbaf0
+                                0x555555
                             );
                             cactus.draw();
                             break;

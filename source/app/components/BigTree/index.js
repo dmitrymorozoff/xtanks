@@ -3,9 +3,9 @@ import Cube from "../Map/components/Cube/index.js";
 import getRandomInt from "../../../utils/index.js";
 
 export default class BigTree {
-    constructor(scene, x = 0, y = 0, z = 0, size, scale = 0) {
+    constructor(scene, x = 0, y = 0, z = 0, size, color) {
         this.scene = scene;
-        this.scale = scale;
+        this.color = color;
         this.size = size;
         this.x = x;
         this.y = y;
@@ -24,7 +24,7 @@ export default class BigTree {
                 this.x,
                 positionY,
                 this.z,
-                0x7bca33
+                this.color
             );
             size /= 1.2;
             positionY += this.size / 2;
@@ -38,7 +38,7 @@ export default class BigTree {
             this.x,
             this.y,
             this.z,
-            0x7a3d2a
+            0x555555
         );
         trunk.draw();
     }

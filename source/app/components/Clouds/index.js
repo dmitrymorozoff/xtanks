@@ -21,7 +21,7 @@ export default class Clouds {
                 50
             );
             let materialCloud = new THREE.MeshPhongMaterial({
-                color: 0xffffff
+                color: 0x444444
             });
             let cloud = new THREE.Mesh(geometryCloud, materialCloud);
            if (i === 1) {

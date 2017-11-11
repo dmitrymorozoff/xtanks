@@ -41,7 +41,7 @@ export default class Tank {
         );
 
         let materialGun = new THREE.MeshPhongMaterial({
-            color: 0xaea19e
+            color: 0x444444
         });
 
         const gun = new THREE.Mesh(geometryGun, materialGun);
@@ -55,7 +55,7 @@ export default class Tank {
         );
 
         let materialTrack = new THREE.MeshPhongMaterial({
-            color: 0x4a4246
+            color: 0x222222
         });
 
         const leftTrack = new THREE.Mesh(geometryTrack, materialTrack);

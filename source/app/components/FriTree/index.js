@@ -20,12 +20,12 @@ export default class FriTree {
             this.x,
             this.y - this.size / 4,
             this.z,
-            0x7a3d2a
+            0x555555
         );
 
         const geometry = new THREE.ConeGeometry(this.size / 2, this.size, 150);
         const materialTop = new THREE.MeshPhongMaterial({ color: this.color });
-        const materialBottom = new THREE.MeshPhongMaterial({ color: 0x378a3f });
+        const materialBottom = new THREE.MeshPhongMaterial({ color: 0x222222 });
 
         const treeBottom = new THREE.Mesh(geometry, materialBottom);
         const treeCenter = new THREE.Mesh(geometry, materialTop);
