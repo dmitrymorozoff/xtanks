@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { level1 } from "./Level/index.js";
 import Cube from "./components/Cube/index.js";
 import Tree from "../Tree/index.js";
+import Wall from "../Wall/index.js";
 import FriTree from "../FriTree/index.js";
 import Rock from "../Rock/index.js";
 import Water from "../Water/index.js";
@@ -90,11 +91,10 @@ export default class Map {
                     switch (level1[i][j][k]) {
                         case 1:
                             color = 0x9e9e9e;
-                            const barrier = new Cube(
+                            const barrier = new Wall(
                                 this.scene,
                                 this.cubeSize,
-                                this.cubeSize,
-                                this.cubeSize,
+                                getRandomInt(1, 5),
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,

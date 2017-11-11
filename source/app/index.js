@@ -45,7 +45,7 @@ export default class Game {
         scene.add(shadowlight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0xf6f6f6, 1);
         renderer.shadowMapEnabled = true;

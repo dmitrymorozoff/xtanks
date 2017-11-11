@@ -46,11 +46,41 @@ export default class Home {
         roof.position.y += this.size / 2 + this.size / 4;
         roof.rotation.y = 45 * 0.0174533;
 
+        const windowGeometry = new THREE.BoxGeometry(
+            this.size / 3,
+            this.size / 3,
+            this.size / 6
+        );
+        const windowMaterial = new THREE.MeshPhongMaterial({
+            color: 0x6997b7
+        });
+        let homeWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+        const windowPosition = this.size / 2;
+        const windowPositions = [
+            windowPosition,
+            -windowPosition,
+            windowPosition,
+            -windowPosition
+        ];
+        const windowRotations = [0, 0, 90 * 0.0174533, 90 * 0.0174533];
+        for (let i = 0; i < 4; i++) {
+            homeWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+            if (i < 2) {
+                homeWindow.position.z = windowPositions[i];
+            } else {
+                homeWindow.position.x = windowPositions[i];
+            }
+
+            homeWindow.rotation.y = windowRotations[i];
+            this.home.add(homeWindow);
+        }
+
         this.home.position.x = this.x;
         this.home.position.y = this.y;
         this.home.position.z = this.z;
 
         this.home.add(main);
+
         this.home.add(roof);
         this.home.add(tube);
         this.scene.add(this.home);
