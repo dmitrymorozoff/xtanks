@@ -1,7 +1,6 @@
 import { TweenMax } from "gsap";
 import Tank from "../Tank/index.js";
 import Tree from "../Tree/index.js";
-import Lamp from "../Lamp/index.js";
 import Home from "../Home/index.js";
 import Map from "../Map/index.js";
 import Player from "../Player/index.js";

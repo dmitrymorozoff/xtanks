@@ -3,6 +3,7 @@ import { level1 } from "./Level/index.js";
 import Cube from "./components/Cube/index.js";
 import Tree from "../Tree/index.js";
 import Wall from "../Wall/index.js";
+import Cactus from "../Cactus/index.js";
 import FriTree from "../FriTree/index.js";
 import Rock from "../Rock/index.js";
 import Water from "../Water/index.js";
@@ -195,15 +196,15 @@ export default class Map {
                             bigTree.load();
                             break;
                         case 8:
-                            const water = new Water(
+                            const cactus = new Cactus(
                                 this.scene,
+                                this.cubeSize,
                                 k * this.cubeSize - centerMapJ,
-                                i * this.cubeSize - this.cubeSize / 4,
+                                i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                this.cubeSize * 1.5,
                                 0x4fbaf0
                             );
-                            water.draw();
+                            cactus.draw();
                             break;
                         default:
                             break;
