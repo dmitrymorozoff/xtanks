@@ -20,7 +20,8 @@ export default class FriTree {
             this.x,
             this.y - this.size / 4,
             this.z,
-            0x555555
+            0x555555,
+            "phong"
         );
 
         const geometry = new THREE.ConeGeometry(this.size / 2, this.size, 150);

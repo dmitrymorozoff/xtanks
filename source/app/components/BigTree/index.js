@@ -24,7 +24,8 @@ export default class BigTree {
                 this.x,
                 positionY,
                 this.z,
-                this.color
+                this.color,
+                "phong"
             );
             size /= 1.2;
             positionY += this.size / 2;
@@ -38,7 +39,8 @@ export default class BigTree {
             this.x,
             this.y,
             this.z,
-            0x555555
+            0x555555,
+            "phong"
         );
         trunk.draw();
     }

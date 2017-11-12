@@ -24,8 +24,10 @@ export default class Map {
         this.cubesLand = [];
         this.cubesBarrier = [];
         this.colors = {
-            landColors: [0x111111, 0x222222, 0x111111],
-            landBottomColors: [0x111111, 0x222222, 0x111111]
+            landColors: [0x1D0346, 0x0c082c, 0x1f095c],
+            wallColors: [0x1a0fce, 0xe829ab],
+            lampColors: [0x1a0fce, 0xe829ab, 0xfd0000],
+            landBottomColors: [0x111111, 0x0c082c, 0x1f095c]
         };
     }
 
@@ -68,11 +70,12 @@ export default class Map {
                                         0,
                                         this.colors.landColors.length
                                     )
-                                ]
+                                ],
+                                "phong"
                             );
                             land.draw();
                         }
-                        const landBottom = new Cube(
+                        /*const landBottom = new Cube(
                             this.scene,
                             this.cubeSize,
                             this.cubeSize,
@@ -85,21 +88,35 @@ export default class Map {
                                     0,
                                     this.colors.landBottomColors.length
                                 )
-                            ]
+                            ],
+                            "basic"
                         );
-                        landBottom.draw();
+                        landBottom.draw();*/
                     }
                     switch (level1[i][j][k]) {
                         case 1:
                             color = 0x333333;
+                            let height = getRandomInt(1, 3);
+                            let type = 0;
+                            if (height > 1) {
+                                type = 2;
+                            } else {
+                                type = 1;
+                            }
                             const barrier = new Wall(
                                 this.scene,
                                 this.cubeSize,
-                                getRandomInt(1, 5),
+                                height,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                color
+                                this.colors.wallColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.wallColors.length
+                                    )
+                                ],
+                                type
                             );
                             barrier.draw();
                             break;
@@ -110,7 +127,12 @@ export default class Map {
                                 i * this.cubeSize - this.cubeSize / 4,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                0xffffff
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
                             );
                             tree.load();
                             break;
@@ -135,7 +157,8 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 (i - 2) * this.cubeSize + 55,
                                 j * this.cubeSize - centerMapI,
-                                0x555555
+                                0x000000,
+                                "edge"
                             );
                             road.draw();
                             break;

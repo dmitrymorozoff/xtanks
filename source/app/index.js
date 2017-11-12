@@ -29,7 +29,7 @@ export default class Game {
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0xcccccc, 0.7));
+        scene.add(new THREE.AmbientLight(0x1F095C, 0.7));
 
         const controls = new OrbitControls(camera);
         controls.enableDamping = true;
@@ -45,9 +45,9 @@ export default class Game {
         scene.add(shadowlight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 1);
+        renderer.setClearColor(0x0c082c, 1);
         renderer.shadowMapEnabled = true;
         renderer.shadowMapType = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);

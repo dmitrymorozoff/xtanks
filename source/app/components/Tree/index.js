@@ -20,7 +20,8 @@ export default class Tree {
             this.x,
             this.y,
             this.z,
-            0x555555
+            0x222222,
+            "basic"
         );
         const cap = new Cube(
             this.scene,
@@ -30,9 +31,10 @@ export default class Tree {
             this.x,
             this.y + this.size / 1.5,
             this.z,
-            this.color
+            this.color,
+            "basic"
         );
-        var light = new THREE.PointLight(0xffffff, 1.5, 1600);
+        var light = new THREE.PointLight(this.color, 1.5, 1600);
         light.position.set(
             this.x,
             this.y + this.size / 1.5,
