@@ -24,32 +24,28 @@ export default class Game {
             70,
             window.innerWidth / window.innerHeight,
             1,
-            10000
+            5000
         );
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
         scene.add(new THREE.AmbientLight(0x1F095C, 0.7));
 
-        const controls = new OrbitControls(camera);
+        /*const controls = new OrbitControls(camera);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
+        controls.dampingFactor = 0.25;*/
 
-        const axisHelper = new THREE.AxisHelper(1000);
-        scene.add(axisHelper);
+        /*const axisHelper = new THREE.AxisHelper(1000);
+        scene.add(axisHelper);*/
 
-        const shadowlight = new THREE.DirectionalLight(0xffffff, 0.4);
-        shadowlight.position.set(0, 100, 0);
-        shadowlight.castShadow = true;
-        shadowlight.shadowDarkness = 0.1;
+        const shadowlight = new THREE.PointLight(0xffffff, 0.4);
+        shadowlight.position.set(0, 1, 0);
         scene.add(shadowlight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x0c082c, 1);
-        renderer.shadowMapEnabled = true;
-        renderer.shadowMapType = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
 
         const gameScene = new Scene(scene, shadowlight, camera, renderer);

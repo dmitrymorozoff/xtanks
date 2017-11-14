@@ -56,7 +56,7 @@ export default class Wall {
                     }
                 }
                 let rand = getRandomInt(0, 100);
-                if (rand > 40) {
+                if (rand > 80) {
                     const light = new THREE.PointLight(this.color, 1, 600);
                     light.position.set(this.x, this.y + this.size, this.z);
                     this.scene.add(light);

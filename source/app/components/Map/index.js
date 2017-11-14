@@ -12,7 +12,15 @@ import Home from "../Home/index.js";
 import getRandomInt from "../../../utils/index.js";
 import Clouds from "../Clouds/index.js";
 import PlaneCube from "../PlaneCube/index.js";
-
+function makeCube(size, color) {
+    const geom = new THREE.BoxGeometry(size, size, size);
+    for (let i = 0; i < geom.faces.length; i++) {
+        let face = geom.faces[i];
+        face.color.setHex(color);
+    }
+    const cube = new THREE.Mesh(geom);
+    return cube;
+}
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0, scale = 0) {
         this.scene = scene;
@@ -52,17 +60,11 @@ export default class Map {
             clouds.draw();
             clouds.move();
         }
-        const landMaterials = [
-            new THREE.MeshLambertMaterial({
-                color: this.colors.landColors[0]
-            }),
-            new THREE.MeshLambertMaterial({
-                color: this.colors.landColors[1]
-            }),
-            new THREE.MeshLambertMaterial({
-                color: this.colors.landColors[2]
-            })
-        ];
+        const landMaterial = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            shading: THREE.SmoothShading,
+            vertexColors: THREE.VertexColors
+        });
         const landGeometry = new THREE.BoxGeometry(
             this.cubeSize,
             this.cubeSize,
@@ -100,19 +102,27 @@ export default class Map {
                 })
             ]
         };
-
+        var mergedLandGeometry = new THREE.Geometry();
         for (let i = 0; i < level1.length; i++) {
             for (let j = 0; j < level1[i].length; j++) {
                 for (let k = 0; k < level1[i][j].length; k++) {
                     if (i === 0) {
-                        const land = new THREE.Mesh(
-                            landGeometry,
-                            landMaterials[getRandomInt(0, landMaterials.length)]
+                        let landGeometry = makeCube(
+                            this.cubeSize,
+                            this.colors.landColors[
+                                getRandomInt(0, this.colors.landColors.length)
+                            ]
                         );
-                        land.position.x = k * this.cubeSize - centerMapJ;
-                        land.position.y = i * this.cubeSize;
-                        land.position.z = j * this.cubeSize - centerMapI;
-                        this.scene.add(land);
+
+                        let x = k * this.cubeSize - centerMapJ;
+                        let y = i * this.cubeSize;
+                        let z = j * this.cubeSize - centerMapI;
+                        landGeometry.position.set(x, y, z);
+                        landGeometry.updateMatrix();
+                        mergedLandGeometry.merge(
+                            landGeometry.geometry,
+                            landGeometry.matrix
+                        );
                     }
                     switch (level1[i][j][k]) {
                         case 1:
@@ -197,7 +207,7 @@ export default class Map {
                             friTree.load();
                             break;
                         case 6:
-                            const home = new Home(
+                            /*const home = new Home(
                                 this.scene,
                                 this.cubeSize,
                                 k * this.cubeSize - centerMapJ,
@@ -205,7 +215,7 @@ export default class Map {
                                 j * this.cubeSize - centerMapI,
                                 0x555555
                             );
-                            home.load();
+                            home.load();*/
                             break;
                         case 9:
                             const tankRed = new Tank(
@@ -258,5 +268,8 @@ export default class Map {
                 }
             }
         }
+
+        const land = new THREE.Mesh(mergedLandGeometry, landMaterial);
+        this.scene.add(land);
     }
 }

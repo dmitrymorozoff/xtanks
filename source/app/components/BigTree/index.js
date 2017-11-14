@@ -14,7 +14,7 @@ export default class BigTree {
     load() {
         let positionY = this.y + this.size * 2;
         let size = this.size;
-        const capMaterial = new THREE.MeshPhongMaterial({
+        const capMaterial = new THREE.MeshLambertMaterial({
             color: this.color
         });
         for (let i = 0; i < 5; i++) {
@@ -31,7 +31,7 @@ export default class BigTree {
             size /= 1.2;
             positionY += this.size / 2;
         }
-        const trunkMaterial = new THREE.MeshPhongMaterial({
+        const trunkMaterial = new THREE.MeshLambertMaterial({
             color: 0x555555
         });
 

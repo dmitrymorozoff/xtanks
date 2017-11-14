@@ -11,7 +11,7 @@ export default class FriTree {
         this.tree = new THREE.Group();
     }
     load() {
-        const trunkMaterial = new THREE.MeshPhongMaterial({
+        const trunkMaterial = new THREE.MeshLambertMaterial({
             color: 0x555555
         });
 
@@ -26,8 +26,8 @@ export default class FriTree {
         trunk.position.z = this.z;
 
         const geometry = new THREE.ConeGeometry(this.size / 2, this.size, 150);
-        const materialTop = new THREE.MeshPhongMaterial({ color: this.color });
-        const materialBottom = new THREE.MeshPhongMaterial({ color: 0x222222 });
+        const materialTop = new THREE.MeshLambertMaterial({ color: this.color });
+        const materialBottom = new THREE.MeshLambertMaterial({ color: 0x222222 });
 
         const treeBottom = new THREE.Mesh(geometry, materialBottom);
         const treeCenter = new THREE.Mesh(geometry, materialTop);
