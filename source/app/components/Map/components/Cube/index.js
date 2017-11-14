@@ -10,63 +10,47 @@ export default class Cube {
         y = 0,
         z = 0,
         color,
-        material
+        materialType,
+        mat = "",
     ) {
         this.scene = scene;
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+        this.geometry = geometry;
         this.color = color;
         this.cube = null;
-        this.material = material;
+        this.materialType = materialType;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.material = material;        
     }
     draw() {
-        const cubeGeometry = new THREE.BoxGeometry(
-            this.width,
-            this.height,
-            this.depth
-        );
-        let cubeMaterial = null;
         let lineGeometry = new THREE.EdgesGeometry(cubeGeometry);
-        switch (this.material) {
+        switch (this.materialType) {
             case "basic":
                 cubeMaterial = new THREE.MeshBasicMaterial({
                     color: this.color
                 });
+                break;
+            case "lambert":
+                cubeMaterial = this.material;
                 break;
             case "phong":
                 cubeMaterial = new THREE.MeshPhongMaterial({
                     color: this.color
                 });
                 break;
-            case "edge":
-                cubeMaterial = new THREE.LineBasicMaterial({
-                    color: this.color,
-                    linewidth: 4
-                });
-
-                break;
             default:
                 break;
         }
-        const wireframe = new THREE.LineSegments(lineGeometry, cubeMaterial);
-        wireframe.renderOrder = 1;
-
-        if (this.material !== "edge") {
-            this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        } else {
-            this.cube = wireframe;
-        }
-
-        this.cube.position.x = this.x;
-        this.cube.position.y = this.y;
-        this.cube.position.z = this.z;
-        this.cube.castShadow = true;
-        this.cube.receiveShadow = false;
-        this.scene.add(this.cube);
+        let cube = null;
+        cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+       
+        cube.position.x = this.x;
+        cube.position.y = this.y;
+        cube.position.z = this.z;
+        // this.cube.castShadow = true;
+        // this.cube.receiveShadow = false;
+        this.scene.add(cube);
     }
     move(x = 0, y = 0, z = 0) {
         this.cube.position.x = x;

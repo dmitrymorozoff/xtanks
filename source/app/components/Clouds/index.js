@@ -20,20 +20,18 @@ export default class Clouds {
                 50,
                 50
             );
-            let materialCloud = new THREE.MeshPhongMaterial({
+            let materialCloud = new THREE.MeshLambertMaterial({
                 color: 0x444444
             });
             let cloud = new THREE.Mesh(geometryCloud, materialCloud);
-           if (i === 1) {
-                cloud.position.x +=
-                    this.clouds.children[0].geometry.parameters.radius;
+            if (i === 1) {
+                cloud.position.x += this.clouds.children[0].geometry.parameters.radius;
             }
             if (i === 2) {
-                cloud.position.x -=
-                    this.clouds.children[0].geometry.parameters.radius;
+                cloud.position.x -= this.clouds.children[0].geometry.parameters.radius;
             }
-            min -=20;
-            max -=20;
+            min -= 20;
+            max -= 20;
             this.clouds.add(cloud);
         }
         this.clouds.position.x = this.x;

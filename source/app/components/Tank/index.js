@@ -19,7 +19,7 @@ export default class Tank {
             this.size
         );
 
-        let materialMain = new THREE.MeshPhongMaterial({
+        let materialMain = new THREE.MeshLambertMaterial({
             color: this.color
         });
 
@@ -40,7 +40,7 @@ export default class Tank {
             this.size
         );
 
-        let materialGun = new THREE.MeshPhongMaterial({
+        let materialGun = new THREE.MeshLambertMaterial({
             color: 0x444444
         });
 
@@ -54,7 +54,7 @@ export default class Tank {
             this.size
         );
 
-        let materialTrack = new THREE.MeshPhongMaterial({
+        let materialTrack = new THREE.MeshLambertMaterial({
             color: 0x222222
         });
 

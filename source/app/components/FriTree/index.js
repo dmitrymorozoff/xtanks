@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import Cube from "../Map/components/Cube/index.js";
 
 export default class FriTree {
     constructor(scene, size, x = 0, y = 0, z = 0, color) {
@@ -12,17 +11,19 @@ export default class FriTree {
         this.tree = new THREE.Group();
     }
     load() {
-        const trunk = new Cube(
-            this.scene,
+        const trunkMaterial = new THREE.MeshPhongMaterial({
+            color: 0x555555
+        });
+
+        const trunkGeometry = new THREE.BoxGeometry(
             this.size / 4,
             this.size / 1.5,
-            this.size / 4,
-            this.x,
-            this.y - this.size / 4,
-            this.z,
-            0x555555,
-            "phong"
+            this.size / 4
         );
+        const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+        trunk.position.x = this.x;
+        trunk.position.y = this.y - this.size / 4;
+        trunk.position.z = this.z;
 
         const geometry = new THREE.ConeGeometry(this.size / 2, this.size, 150);
         const materialTop = new THREE.MeshPhongMaterial({ color: this.color });
@@ -38,9 +39,7 @@ export default class FriTree {
 
         this.tree.add(treeBottom);
         this.tree.add(treeCenter);
-        this.tree.add(trunk.cube);
-
-        trunk.draw();
+        this.tree.add(trunk);
 
         this.tree.position.x = this.x;
         this.tree.position.y = this.y;

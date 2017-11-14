@@ -1,17 +1,17 @@
 import * as THREE from "three";
 import { level1 } from "./Level/index.js";
 import Cube from "./components/Cube/index.js";
-import Tree from "../Tree/index.js";
+import Light from "../Light/index.js";
 import Wall from "../Wall/index.js";
 import Cactus from "../Cactus/index.js";
 import FriTree from "../FriTree/index.js";
 import Rock from "../Rock/index.js";
-import Water from "../Water/index.js";
 import BigTree from "../BigTree/index.js";
 import Tank from "../Tank/index.js";
 import Home from "../Home/index.js";
 import getRandomInt from "../../../utils/index.js";
 import Clouds from "../Clouds/index.js";
+import PlaneCube from "../PlaneCube/index.js";
 
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0, scale = 0) {
@@ -24,7 +24,7 @@ export default class Map {
         this.cubesLand = [];
         this.cubesBarrier = [];
         this.colors = {
-            landColors: [0x1D0346, 0x0c082c, 0x1f095c],
+            landColors: [0x1d0346, 0x0c082c, 0x1f095c],
             wallColors: [0x1a0fce, 0xe829ab],
             lampColors: [0x1a0fce, 0xe829ab, 0xfd0000],
             landBottomColors: [0x111111, 0x0c082c, 0x1f095c]
@@ -52,46 +52,67 @@ export default class Map {
             clouds.draw();
             clouds.move();
         }
+        const landMaterials = [
+            new THREE.MeshLambertMaterial({
+                color: this.colors.landColors[0]
+            }),
+            new THREE.MeshLambertMaterial({
+                color: this.colors.landColors[1]
+            }),
+            new THREE.MeshLambertMaterial({
+                color: this.colors.landColors[2]
+            })
+        ];
+        const landGeometry = new THREE.BoxGeometry(
+            this.cubeSize,
+            this.cubeSize,
+            this.cubeSize
+        );
+
+        const wallGeometries = {
+            dark: new THREE.BoxGeometry(
+                this.cubeSize,
+                this.cubeSize / 4,
+                this.cubeSize
+            ),
+            full: new THREE.BoxGeometry(
+                this.cubeSize,
+                this.cubeSize,
+                this.cubeSize
+            ),
+            light: new THREE.BoxGeometry(
+                this.cubeSize - 25,
+                this.cubeSize / 4,
+                this.cubeSize - 25
+            )
+        };
+
+        const wallMaterials = {
+            dark: new THREE.MeshPhongMaterial({
+                color: 0x0c082c
+            }),
+            light: [
+                new THREE.MeshBasicMaterial({
+                    color: this.colors.wallColors[0]
+                }),
+                new THREE.MeshBasicMaterial({
+                    color: this.colors.wallColors[1]
+                })
+            ]
+        };
+
         for (let i = 0; i < level1.length; i++) {
             for (let j = 0; j < level1[i].length; j++) {
                 for (let k = 0; k < level1[i][j].length; k++) {
                     if (i === 0) {
-                        if (level1[i][j][k] !== 8) {
-                            const land = new Cube(
-                                this.scene,
-                                this.cubeSize,
-                                this.cubeSize,
-                                this.cubeSize,
-                                k * this.cubeSize - centerMapJ,
-                                i * this.cubeSize,
-                                j * this.cubeSize - centerMapI,
-                                this.colors.landColors[
-                                    getRandomInt(
-                                        0,
-                                        this.colors.landColors.length
-                                    )
-                                ],
-                                "phong"
-                            );
-                            land.draw();
-                        }
-                        /*const landBottom = new Cube(
-                            this.scene,
-                            this.cubeSize,
-                            this.cubeSize,
-                            this.cubeSize,
-                            k * this.cubeSize - centerMapJ,
-                            i * this.cubeSize - this.cubeSize,
-                            j * this.cubeSize - centerMapI,
-                            this.colors.landBottomColors[
-                                getRandomInt(
-                                    0,
-                                    this.colors.landBottomColors.length
-                                )
-                            ],
-                            "basic"
+                        const land = new THREE.Mesh(
+                            landGeometry,
+                            landMaterials[getRandomInt(0, landMaterials.length)]
                         );
-                        landBottom.draw();*/
+                        land.position.x = k * this.cubeSize - centerMapJ;
+                        land.position.y = i * this.cubeSize;
+                        land.position.z = j * this.cubeSize - centerMapI;
+                        this.scene.add(land);
                     }
                     switch (level1[i][j][k]) {
                         case 1:
@@ -116,12 +137,14 @@ export default class Map {
                                         this.colors.wallColors.length
                                     )
                                 ],
-                                type
+                                type,
+                                wallMaterials,
+                                wallGeometries
                             );
                             barrier.draw();
                             break;
                         case 2:
-                            const tree = new Tree(
+                            const light = new Light(
                                 this.scene,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize - this.cubeSize / 4,
@@ -134,7 +157,7 @@ export default class Map {
                                     )
                                 ]
                             );
-                            tree.load();
+                            light.load();
                             break;
                         case 3:
                             const rock = new Rock(
@@ -149,7 +172,7 @@ export default class Map {
                             rock.load();
                             break;
                         case 4:
-                            const road = new Cube(
+                            /*const road = new Cube(
                                 this.scene,
                                 this.cubeSize,
                                 this.cubeSize / 5,
@@ -158,9 +181,9 @@ export default class Map {
                                 (i - 2) * this.cubeSize + 55,
                                 j * this.cubeSize - centerMapI,
                                 0x000000,
-                                "edge"
+                                "lambert"
                             );
-                            road.draw();
+                            road.draw();*/
                             break;
                         case 5:
                             const friTree = new FriTree(
