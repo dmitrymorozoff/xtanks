@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import Cube from "../Map/components/Cube/index.js";
 
 export default class Tank {
     constructor(scene, size, x = 0, y = 0, z = 0, color, rotate = 0) {

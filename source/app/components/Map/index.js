@@ -1,26 +1,23 @@
 import * as THREE from "three";
 import { level1 } from "./Level/index.js";
-import Cube from "./components/Cube/index.js";
 import Light from "../Light/index.js";
 import Wall from "../Wall/index.js";
 import Cactus from "../Cactus/index.js";
-import FriTree from "../FriTree/index.js";
+import Pyramid from "../Pyramid/index.js";
 import Rock from "../Rock/index.js";
+import Lamp from "../Lamp/index.js";
 import BigTree from "../BigTree/index.js";
 import Tank from "../Tank/index.js";
 import Home from "../Home/index.js";
 import getRandomInt from "../../../utils/index.js";
+import { makeCube } from "../../../utils/index.js";
 import Clouds from "../Clouds/index.js";
 import PlaneCube from "../PlaneCube/index.js";
-function makeCube(size, color) {
-    const geom = new THREE.BoxGeometry(size, size, size);
-    for (let i = 0; i < geom.faces.length; i++) {
-        let face = geom.faces[i];
-        face.color.setHex(color);
-    }
-    const cube = new THREE.Mesh(geom);
-    return cube;
-}
+
+const PURPLE = 0x403bf7;
+const RED = 0xfc0101;
+const PINK = 0xd000f8;
+
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0, scale = 0) {
         this.scene = scene;
@@ -33,8 +30,9 @@ export default class Map {
         this.cubesBarrier = [];
         this.colors = {
             landColors: [0x1d0346, 0x0c082c, 0x1f095c],
-            wallColors: [0x1a0fce, 0xe829ab],
-            lampColors: [0x1a0fce, 0xe829ab, 0xfd0000],
+            wallColors: [PURPLE, PINK, RED, RED],
+            lampColors: [PURPLE, PINK, RED],
+            pyramidColors: [PURPLE, PINK, RED],
             landBottomColors: [0x111111, 0x0c082c, 0x1f095c]
         };
     }
@@ -44,22 +42,22 @@ export default class Map {
         const landIndex = 0;
         const centerMapI = level1[0].length / 2 * this.cubeSize;
         const centerMapJ = level1[0][0].length / 2 * this.cubeSize;
-        for (let i = 0; i < 5; i++) {
-            const clouds = new Clouds(
-                this.scene,
-                getRandomInt(
-                    0 - centerMapI - centerMapI / 4,
-                    centerMapI + centerMapI / 4
-                ),
-                500,
-                getRandomInt(
-                    0 - centerMapJ - centerMapJ / 4,
-                    centerMapJ + centerMapJ / 4
-                )
-            );
-            clouds.draw();
-            clouds.move();
-        }
+        // for (let i = 0; i < 5; i++) {
+        //     const clouds = new Clouds(
+        //         this.scene,
+        //         getRandomInt(
+        //             0 - centerMapI - centerMapI / 4,
+        //             centerMapI + centerMapI / 4
+        //         ),
+        //         500,
+        //         getRandomInt(
+        //             0 - centerMapJ - centerMapJ / 4,
+        //             centerMapJ + centerMapJ / 4
+        //         )
+        //     );
+        //     clouds.draw();
+        //     clouds.move();
+        // }
         const landMaterial = new THREE.MeshLambertMaterial({
             color: 0xffffff,
             shading: THREE.SmoothShading,
@@ -74,7 +72,7 @@ export default class Map {
         const wallGeometries = {
             dark: new THREE.BoxGeometry(
                 this.cubeSize,
-                this.cubeSize / 4,
+                this.cubeSize / 5,
                 this.cubeSize
             ),
             full: new THREE.BoxGeometry(
@@ -84,13 +82,18 @@ export default class Map {
             ),
             light: new THREE.BoxGeometry(
                 this.cubeSize - 25,
-                this.cubeSize / 4,
+                this.cubeSize / 5,
                 this.cubeSize - 25
+            ),
+            miniCubes: new THREE.BoxGeometry(
+                this.cubeSize / 8,
+                this.cubeSize / 8,
+                this.cubeSize / 8
             )
         };
 
         const wallMaterials = {
-            dark: new THREE.MeshPhongMaterial({
+            dark: new THREE.MeshLambertMaterial({
                 color: 0x0c082c
             }),
             light: [
@@ -99,6 +102,9 @@ export default class Map {
                 }),
                 new THREE.MeshBasicMaterial({
                     color: this.colors.wallColors[1]
+                }),
+                new THREE.MeshBasicMaterial({
+                    color: this.colors.wallColors[2]
                 })
             ]
         };
@@ -113,7 +119,6 @@ export default class Map {
                                 getRandomInt(0, this.colors.landColors.length)
                             ]
                         );
-
                         let x = k * this.cubeSize - centerMapJ;
                         let y = i * this.cubeSize;
                         let z = j * this.cubeSize - centerMapI;
@@ -126,13 +131,12 @@ export default class Map {
                     }
                     switch (level1[i][j][k]) {
                         case 1:
-                            color = 0x333333;
                             let height = getRandomInt(1, 3);
                             let type = 0;
                             if (height > 1) {
-                                type = 2;
-                            } else {
                                 type = 1;
+                            } else {
+                                type = getRandomInt(2, 3);
                             }
                             const barrier = new Wall(
                                 this.scene,
@@ -196,15 +200,16 @@ export default class Map {
                             road.draw();*/
                             break;
                         case 5:
-                            const friTree = new FriTree(
+                            const pyramid = new Pyramid(
                                 this.scene,
                                 this.cubeSize,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0x333333
+                                this.colors.pyramidColors
                             );
-                            friTree.load();
+                            pyramid.load();
+                            pyramid.move();
                             break;
                         case 6:
                             /*const home = new Home(
@@ -217,6 +222,22 @@ export default class Map {
                             );
                             home.load();*/
                             break;
+                        case 15:
+                            const lamp = new Lamp(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                1200,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            lamp.load();
+                            break;
                         case 9:
                             const tankRed = new Tank(
                                 this.scene,
@@ -224,7 +245,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                0xffffff
+                                0x575757
                             );
                             tankRed.load();
                             break;

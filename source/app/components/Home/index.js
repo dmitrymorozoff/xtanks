@@ -55,22 +55,16 @@ export default class Home {
             color: 0xffffff
         });
         let homeWindow = new THREE.Mesh(windowGeometry, windowMaterial);
-        const windowPosition = this.size / 2;
-        const windowPositions = [
-            windowPosition,
-            -windowPosition,
-            windowPosition,
-            -windowPosition
-        ];
+        let windowPosition = this.size / 2;
         const windowRotations = [0, 0, 90 * 0.0174533, 90 * 0.0174533];
         for (let i = 0; i < 4; i++) {
             homeWindow = new THREE.Mesh(windowGeometry, windowMaterial);
             if (i < 2) {
-                homeWindow.position.z = windowPositions[i];
+                homeWindow.position.z = windowPosition;
             } else {
-                homeWindow.position.x = windowPositions[i];
+                homeWindow.position.x = windowPosition;
             }
-
+            windowPosition *= -1;
             homeWindow.rotation.y = windowRotations[i];
             this.home.add(homeWindow);
         }

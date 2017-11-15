@@ -33,7 +33,6 @@ export default class Cactus {
         rightCube.position.x = this.size;
         rightCube.position.y = this.size;
 
-
         this.cactus.add(main);
         this.cactus.add(leftCube);
         this.cactus.add(rightCube);

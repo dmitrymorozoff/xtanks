@@ -45,7 +45,7 @@ export default class Game {
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x0c082c, 1);
+        renderer.setClearColor(0x07041A, 1);
         document.body.appendChild(renderer.domElement);
 
         const gameScene = new Scene(scene, shadowlight, camera, renderer);
