@@ -1,12 +1,11 @@
 import * as THREE from "three";
-import { TweenMax, Power2, TimelineLite } from "gsap";
 import Tank from "../Tank/index.js";
 
 export default class Player {
-    constructor(scene,camera, size, x, y, z, color, rotate) {
+    constructor(scene, camera, size, x, y, z, color, rotate) {
         this.scene = scene;
         this.size = size;
-        this.camera =camera;
+        this.camera = camera;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -52,7 +51,7 @@ export default class Player {
     rotateGun(x, y) {
         let angle = Math.atan2(y - this.y, x - this.x);
         console.log(angle);
-        let newAngle = angle  * this.speed - this.angle;
+        let newAngle = angle * this.speed - this.angle;
         this.player.tank.rotation.y = newAngle;
     }
 }

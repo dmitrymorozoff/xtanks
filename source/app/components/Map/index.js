@@ -4,7 +4,6 @@ import Light from "../Light/index.js";
 import Wall from "../Wall/index.js";
 import Cactus from "../Cactus/index.js";
 import Pyramid from "../Pyramid/index.js";
-import Rock from "../Rock/index.js";
 import Lamp from "../Lamp/index.js";
 import BigTree from "../BigTree/index.js";
 import Tank from "../Tank/index.js";
@@ -13,6 +12,7 @@ import getRandomInt from "../../../utils/index.js";
 import { makeCube } from "../../../utils/index.js";
 import Clouds from "../Clouds/index.js";
 import PlaneCube from "../PlaneCube/index.js";
+import MovingCube from "../MovingCube/index.js";
 
 const PURPLE = 0x403bf7;
 const RED = 0xfc0101;
@@ -108,7 +108,7 @@ export default class Map {
                 })
             ]
         };
-        var mergedLandGeometry = new THREE.Geometry();
+        let mergedLandGeometry = new THREE.Geometry();
         for (let i = 0; i < level1.length; i++) {
             for (let j = 0; j < level1[i].length; j++) {
                 for (let k = 0; k < level1[i][j].length; k++) {
@@ -174,16 +174,21 @@ export default class Map {
                             light.load();
                             break;
                         case 3:
-                            const rock = new Rock(
+                            const movingCube = new MovingCube(
                                 this.scene,
-                                this.cubeSize / 1.5,
-                                getRandomInt(this.cubeSize, this.cubeSize * 5),
+                                this.cubeSize,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize + 10,
                                 j * this.cubeSize - centerMapI,
-                                0x674c41
+                                this.colors.landColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.landColors.length
+                                    )
+                                ]
                             );
-                            rock.load();
+                            movingCube.load();
+                            movingCube.move();
                             break;
                         case 4:
                             /*const road = new Cube(
@@ -226,7 +231,7 @@ export default class Map {
                             const lamp = new Lamp(
                                 this.scene,
                                 k * this.cubeSize - centerMapJ,
-                                1200,
+                                500,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
                                 this.colors.lampColors[
@@ -289,7 +294,6 @@ export default class Map {
                 }
             }
         }
-
         const land = new THREE.Mesh(mergedLandGeometry, landMaterial);
         this.scene.add(land);
     }

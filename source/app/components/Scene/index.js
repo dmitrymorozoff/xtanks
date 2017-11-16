@@ -20,8 +20,8 @@ export default class Scene {
         this.flagTop = false;
         this.flagBottom = false;
         this.camPos = new THREE.Vector3(0, 0, 0);
-        this.targetPos = new THREE.Vector3(0, 200, 300); // Target position
-        this.origin = new THREE.Vector3(0, 0, 0); // Optional origin
+        this.targetPos = new THREE.Vector3(0, 200, 300);
+        this.origin = new THREE.Vector3(0, 0, 0);
     }
     draw() {
         const map = new Map(this.scene);

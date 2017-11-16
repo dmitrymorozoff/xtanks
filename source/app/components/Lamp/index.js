@@ -20,6 +20,7 @@ export default class Lamp {
             this.size / 1.5,
             this.size / 1.5
         );
+
         const cap = new THREE.Mesh(capGeometry, capMaterial);
         cap.position.x = this.x;
         cap.position.y = this.y;
@@ -35,6 +36,7 @@ export default class Lamp {
             this.size * 5,
             this.size / 15
         );
+
         const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
         trunk.position.x = this.x;
         trunk.position.y = this.y + this.size * 2.5;
@@ -44,7 +46,6 @@ export default class Lamp {
         const light = new THREE.PointLight(this.color, 1.5, 3500,2.0);
         light.position.set(this.x, this.y, this.z);
         this.scene.add(light);
-
         this.scene.add(this.lamp);
     }
 }

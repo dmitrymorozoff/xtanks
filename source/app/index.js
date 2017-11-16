@@ -12,14 +12,6 @@ export default class Game {
         const scene = new THREE.Scene();
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 3200;
-        /*const camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -1.7,
-            frustumSize * aspect / 1.7,
-            frustumSize / 1.7,
-            frustumSize / -1.7,
-            1,
-            10000
-        );*/
         const camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
@@ -42,16 +34,16 @@ export default class Game {
         shadowlight.position.set(0, 1, 0);
         scene.add(shadowlight);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer(/*{ antialias: true }*/);
         // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x07041A, 1);
-        document.body.appendChild(renderer.domElement);
-
+        
         const gameScene = new Scene(scene, shadowlight, camera, renderer);
         gameScene.draw();
         gameScene.animate();
 
+        document.body.appendChild(renderer.domElement);
         function resize() {
             /* const aspect = window.innerWidth / window.innerHeight;
             camera.left =
@@ -67,7 +59,6 @@ export default class Game {
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
-        renderer.render(scene, camera);
         addEventListener("resize", resize);
     }
 }
