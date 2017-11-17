@@ -39,10 +39,7 @@ export default class Scene {
         );
         this.player.draw();
         console.log(this.player.player.tank.position);
-        /*const tank = new Supertank(
-            this.scene,
-        );
-        tank.draw();*/
+        const tank = new Supertank(this.scene); tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {

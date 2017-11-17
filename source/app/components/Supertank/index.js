@@ -1,403 +1,83 @@
 import * as THREE from "three";
+import model from "./Supertank.js";
 
 const DEG_TO_RAD = 0.0174533;
 
 export default class Tank {
-    constructor(
-        scene,
-        x = 0,
-        y = 0,
-        z = 0,
-        scale = 0.2,
-        corpsParam = {
-            size: {
-                width: 200,
-                height: 50,
-                length: 600
-            },
-            type: 1,
-            color: 0x53baed
-        },
-        towerParam = {
-            size: {
-                width: 250,
-                height: 100,
-                length: 350
-            },
-            type: 1,
-            color: 0x53baed
-        },
-        gunParam = {
-            size: {
-                radius: 15,
-                length: 300
-            },
-            type: 1,
-            color: 0xaea19e
-        },
-        trackParam = {
-            size: {
-                width: 100,
-                height: 100,
-                length: 600
-            },
-            type: 1,
-            color: 0x4a4246
-        },
-    ) {
-        this.scene 	= scene;
-        this.x 		= x;
-        this.y 		= y + 50;
-        this.z 		= z;
-        this.scale 	= scale;
-
-        this.corpsParam = corpsParam;
-        this.towerParam = towerParam;
-        this.gunParam 	= gunParam;
-        this.trackParam = trackParam;
-
-        this.corps 	= this.createGroup();
-        this.tower 	= this.createGroup();
-        this.gun 	= this.createGroup();
-        this.track 	= this.createGroup();
-
-        this.tank 	= this.createGroup();
-
-        this.tankInfo = {
-        	size: {
-        		width: null,
-        		height: null,
-        		length: null
-        	}
-        };
-
-        this.setScale();
-        this.setTankInformation();
+    constructor(scene, x = 0, y = 0, z = 0, scale = 1) {
+        this.model  = model;
+        this.scene  = scene;
+        this.x      = x;
+        this.y      = y + this.model.styles.geometries[1].params.height / 2 + 100;
+        this.z      = z;
+        this.tank   = new THREE.Group();
     }
     draw() {
-        this.corps = this.createCorps();
-        this.tower = this.createTower();
-        this.gun = this.createGun();
-        this.track = this.createTrack();
-
-        this.tank.add(this.corps);
-        this.tank.add(this.tower);
-        this.tank.add(this.gun);
-        this.tank.add(this.track);
-
+        let geometries  = this.getGeometries(),
+            materials   = this.getMaterials(),
+            object, objects = new THREE.Group();;
+        for (let i = 0; i < this.model.map.length; i++) {
+            for (let y = 0; y < this.model.map[i].map.length; y++) {
+                for (let x = 0; x < this.model.map[i].map[y].length; x++) {
+                    for (let z = 0; z < this.model.map[i].map[y][x].length; z++) {
+                        if (this.model.map[i].map[y][x][z]) {
+                            object = new THREE.Mesh(
+                                geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry],
+                                materials[this.model.objects[this.model.map[i].map[y][x][z]].material]
+                            );
+                            this.setPosition(object, x, y + this.model.map[i].height, z);
+                            objects.add(object);
+                        }
+                    }
+                }
+            }
+            this.tank.add(objects);
+        }
         this.tank.position.x = this.x;
         this.tank.position.y = this.y;
         this.tank.position.z = this.z;
-
-        this.tank.scale.x = this.scale;
-        this.tank.scale.y = this.scale;
-        this.tank.scale.z = this.scale;
-
         this.scene.add(this.tank);
     }
-    createCorps() {
-        let obj, corps = this.createGroup();
-
-        switch (this.corpsParam.type) {
-            case 1:
-                //верхний слой крпуса
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.corpsParam.size.width,
-	                    this.corpsParam.size.height,
-	                    this.corpsParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(obj, this.x, this.y, this.z);
-                corps.add(obj);
-
-                //нижний слой корпуса (центральная часть)
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.corpsParam.size.width,
-	                    this.corpsParam.size.height * 2,
-	                    this.corpsParam.size.length / 2
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
-                    this.z
-                );
-                corps.add(obj);
-
-                //нижний слой корпуса (передняя скошенная часть)
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.corpsParam.size.width,
-	                    this.corpsParam.size.height * 2,
-	                    this.corpsParam.size.length / 4
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
-                    this.z + this.corpsParam.size.length / 4 + this.corpsParam.size.length / 8
-                );
-                corps.add(obj);
-
-                //нижний слой корпуса (задняя скошенная часть)
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.corpsParam.size.width,
-	                    this.corpsParam.size.height * 2,
-	                    this.corpsParam.size.length / 4
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height),
-                    this.z - (this.corpsParam.size.length / 4 + this.corpsParam.size.length / 8)
-                );
-                corps.add(obj);
-
-                //право крыло
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.trackParam.size.width + this.trackParam.size.width / 4,
-	                    this.corpsParam.size.height,
-	                    this.corpsParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x + this.corpsParam.size.width / 2 + this.trackParam.size.width / 2,
-                    this.y,
-                    this.z
-                );
-                corps.add(obj);
-
-                //левое крыло
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.trackParam.size.width + this.trackParam.size.width / 4,
-	                    this.corpsParam.size.height,
-	                    this.corpsParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.corpsParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x - (this.corpsParam.size.width / 2 +this.trackParam.size.width / 2),
-                    this.y,
-                    this.z
-                );
-                corps.add(obj);
-                break;
-
-            default:
-                corps = null;
-                break;
+    getGeometries() {
+        let geometries = {};
+        for (let i = 1; i <= Object.keys(this.model.styles.geometries).length; i++) {
+            switch (this.model.styles.geometries[i].type) {
+                case 1:
+                    geometries[i] = new THREE.BoxGeometry(
+                        this.model.styles.geometries[i].params.width,
+                        this.model.styles.geometries[i].params.height,
+                        this.model.styles.geometries[i].params.length
+                    );
+                    break;
+                case 2:
+                    geometries[i] = new THREE.CylinderGeometry(
+                        this.model.styles.geometries[i].params.radiusBegin,
+                        this.model.styles.geometries[i].params.radiusEnd,
+                        this.model.styles.geometries[i].params.length,
+                        this.model.styles.geometries[i].params.quality
+                    );
+                    geometries[i].rotateZ(90 * DEG_TO_RAD);
+                    break;
+            }
         }
-
-        return corps;
+        return geometries;
     }
-    createTower() {
-        let obj, tower = this.createGroup();
-
-        switch (this.towerParam.type) {
-            case 1:
-                //вращательный элемент
-                obj = this.getObj(
-                	this.getCylinderGeometry(
-            			this.corpsParam.size.width < this.corpsParam.size.length ? this.corpsParam.size.width / 2 : this.corpsParam.size.length / 2,
-                    	this.corpsParam.size.width < this.corpsParam.size.length ? this.corpsParam.size.width / 2 : this.corpsParam.size.length / 2,
-	                    this.towerParam.size.height / 4,
-	                    32
-                	),
-                	this.getMeshPhongMaterial(
-                		this.towerParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 8,
-                    this.z
-                );
-                tower.add(obj);
-
-                //башня
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.towerParam.size.width,
-	                    this.towerParam.size.height,
-	                    this.towerParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.towerParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 4 + this.towerParam.size.height / 2,
-                    this.z
-                );
-                tower.add(obj);
-                break;
-
-            default:
-                tower = null;
-                break;
+    getMaterials() {
+        let materials = {};
+        for (let i = 1; i <= Object.keys(this.model.styles.materials).length; i++) {
+            switch (this.model.styles.materials[i].type) {
+                case 1:
+                    materials[i] = new THREE.MeshBasicMaterial(
+                        this.model.styles.materials[i].params
+                    );
+                    break;
+            }
         }
-
-        return tower;
+        return materials;
     }
-    createGun() {
-        let obj, gun = this.createGroup();
-
-        switch (this.gunParam.type) {
-            case 1:
-                //пушка
-                obj = this.getObj(
-                	this.getCylinderGeometry(
-                		this.gunParam.size.radius,
-	                    this.gunParam.size.radius,
-	                    this.gunParam.size.length,
-	                    32
-                	),
-                	this.getMeshPhongMaterial(
-                		this.gunParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x,
-                    this.y + this.corpsParam.size.height / 2 + this.towerParam.size.height / 4 + this.towerParam.size.height / 2,
-                    this.z - (this.towerParam.size.length / 2 + this.gunParam.size.length / 2)
-                );
-                obj.rotateX(90 * DEG_TO_RAD);
-                gun.add(obj);
-                break;
-
-            default:
-                gun = null;
-                break;
-        }
-
-        return gun;
-    }
-    createTrack() {
-        let obj, track = this.createGroup();
-
-        switch (this.trackParam.type) {
-            case 1:
-                //левая гусеница
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.trackParam.size.width,
-	                    this.trackParam.size.height,
-	                    this.trackParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.trackParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x - (this.corpsParam.size.width / 2 + this.trackParam.size.width / 4 + this.trackParam.size.width / 2),
-                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height + this.corpsParam.size.height / 4),
-                    this.z
-                );
-                track.add(obj);
-
-                //правая гусеница
-                obj = this.getObj(
-                	this.getBoxGeometry(
-                		this.trackParam.size.width,
-	                    this.trackParam.size.height,
-	                    this.trackParam.size.length
-                	),
-                	this.getMeshPhongMaterial(
-                		this.trackParam.color
-                	)
-                );
-                this.objSetPosition(
-                    obj,
-                    this.x + this.corpsParam.size.width / 2 + this.trackParam.size.width / 4 + this.trackParam.size.width / 2,
-                    this.y - (this.corpsParam.size.height / 2 + this.corpsParam.size.height + this.corpsParam.size.height / 4),
-                    this.z
-                );
-                track.add(obj);
-                break;
-
-            default:
-                track = null;
-                break;
-        }
-
-        return track;
-    }
-    setScale() {
-    	this.corpsParam.size.width *= this.scale;
-    	this.corpsParam.size.height *= this.scale;
-    	this.corpsParam.size.length *= this.scale;
-
-    	this.towerParam.size.width *= this.scale;
-    	this.towerParam.size.height *= this.scale;
-    	this.towerParam.size.length *= this.scale;
-
-    	this.gunParam.size.radius *= this.scale;
-    	this.gunParam.size.length *= this.scale;
-
-    	this.trackParam.size.width *= this.scale;
-    	this.trackParam.size.height *= this.scale;
-    	this.trackParam.size.length *= this.scale;
-    }
-    createGroup() {
-    	return new THREE.Group();
-    }
-    getObj(geometry, material) {
-    	return new THREE.Mesh(geometry, material);
-    }
-    getBoxGeometry(widht, height, length) {
-    	return new THREE.BoxGeometry(widht, height, length);
-    }
-    getCylinderGeometry(radiusTop, radiusBottom, height, roundness) {
-    	return new THREE.CylinderGeometry(radiusTop, radiusBottom, height, roundness);
-    }
-    getMeshPhongMaterial(color) {
-    	return new THREE.MeshPhongMaterial({
-            color: color
-        });
-    }
-    objSetPosition(obj, x, y, z) {
-        obj.position.x = x;
-        obj.position.y = y;
-        obj.position.z = z;
-    }
-    setTankInformation() {
-    	this.tankInfo.size.width = 1;
-    	this.tankInfo.size.height = 1;
-    	this.tankInfo.size.length = 1;
-    }
-    getTankInformation() {
-    	return this.tankInfo;
+    setPosition(object, x, y, z) {
+        object.position.x += x * this.model.styles.geometries[1].params.width - (this.model.info.size.width * this.model.styles.geometries[1].params.width) / 2;
+        object.position.y += y * this.model.styles.geometries[1].params.height;
+        object.position.z += z * this.model.styles.geometries[1].params.length - (this.model.info.size.length * this.model.styles.geometries[1].params.length) / 2;
     }
 }
