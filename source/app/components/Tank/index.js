@@ -10,6 +10,7 @@ export default class Tank {
         this.z = z;
         this.tank = new THREE.Group();
         this.rotate = rotate;
+        this.main = null;
     }
     load() {
         let geometryMain = new THREE.BoxGeometry(
@@ -22,7 +23,7 @@ export default class Tank {
             color: this.color
         });
 
-        const main = new THREE.Mesh(geometryMain, materialMain);
+        this.main = new THREE.Mesh(geometryMain, materialMain);
 
         let geometryMainTB = new THREE.BoxGeometry(
             this.size / 2,
@@ -70,13 +71,13 @@ export default class Tank {
         this.tank.position.y = this.y;
 
         this.tank.rotation.y = this.rotate * 0.0174533;
-
-        this.tank.add(main);
+        console.log(this.main);
+        this.tank.add( this.main);
         this.tank.add(mainTop);
         this.tank.add(gun);
         this.tank.add(leftTrack);
         this.tank.add(rightTrack);
-
+        console.log(this.tank);
         this.scene.add(this.tank);
     }
 }

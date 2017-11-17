@@ -38,9 +38,7 @@ export default class Light {
 
         const light = new THREE.PointLight(this.color, 1.6, 2500);
         light.add(new THREE.Mesh(capGeometry, capMaterial))
-        light.position.x = this.x;
-        light.position.y = this.y + this.size / 1.5;
-        light.position.z = this.z;
+        light.position.set(this.x, this.y + this.size / 1.5, this.z);
         this.scene.add(light);
 
         this.scene.add(this.light);

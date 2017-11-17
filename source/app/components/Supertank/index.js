@@ -33,9 +33,7 @@ export default class Tank {
             }
             this.tank.add(objects);
         }
-        this.tank.position.x = this.x;
-        this.tank.position.y = this.y;
-        this.tank.position.z = this.z;
+        this.tank.position.set(this.x, this.y, this.z);
         this.scene.add(this.tank);
     }
     getGeometries() {
@@ -67,7 +65,7 @@ export default class Tank {
         for (let i = 1; i <= Object.keys(this.model.styles.materials).length; i++) {
             switch (this.model.styles.materials[i].type) {
                 case 1:
-                    materials[i] = new THREE.MeshBasicMaterial(
+                    materials[i] = new THREE.MeshLambertMaterial(
                         this.model.styles.materials[i].params
                     );
                     break;
@@ -76,8 +74,11 @@ export default class Tank {
         return materials;
     }
     setPosition(object, x, y, z) {
-        object.position.x += x * this.model.styles.geometries[1].params.width - (this.model.info.size.width * this.model.styles.geometries[1].params.width) / 2;
-        object.position.y += y * this.model.styles.geometries[1].params.height;
-        object.position.z += z * this.model.styles.geometries[1].params.length - (this.model.info.size.length * this.model.styles.geometries[1].params.length) / 2;
+        let geomWidth = this.model.styles.geometries[1].params.width;
+        let geomHeight = this.model.styles.geometries[1].params.height;
+        let geomLength = this.model.styles.geometries[1].params.length;
+        object.position.x += x * geomWidth - (this.model.info.size.width * geomWidth) / 2;
+        object.position.y += y * geomHeight;
+        object.position.z += z * geomLength - (this.model.info.size.length * geomLength) / 2;
     }
 }

@@ -1,6 +1,6 @@
 import { TweenMax } from "gsap";
+import Stats from "stats.js";
 import Tank from "../Tank/index.js";
-import Home from "../Home/index.js";
 import Map from "../Map/index.js";
 import Player from "../Player/index.js";
 import Supertank from "../Supertank/index.js";
@@ -22,8 +22,14 @@ export default class Scene {
         this.camPos = new THREE.Vector3(0, 0, 0);
         this.targetPos = new THREE.Vector3(0, 200, 300);
         this.origin = new THREE.Vector3(0, 0, 0);
+        this.stats = new Stats();
     }
     draw() {
+        this.stats.domElement.style.position = "absolute";
+        this.stats.domElement.style.top = "0px";
+        this.stats.domElement.style.right = "0px";
+        document.body.appendChild(this.stats.domElement);
+
         const map = new Map(this.scene);
         map.load();
 
@@ -35,11 +41,13 @@ export default class Scene {
             1 * this.cubeSize,
             6 * this.cubeSize,
             0x575757,
-            180
+            180,
+            map.collidableMeshList
         );
         this.player.draw();
-        console.log(this.player.player.tank.position);
-        const tank = new Supertank(this.scene); tank.draw();
+
+        // const tank = new Supertank(this.scene);
+        // tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
@@ -97,6 +105,7 @@ export default class Scene {
         if (this.flagBottom) {
             this.player.moveBottom();
         }
+        // this.player.detectCollision();
         /*this.camera.position.set(this.player.player.tank.position.x,this.player.player.tank.position.y+200,this.player.player.tank.position.z+200);*/
         // Interpolate camPos toward targetPos
 
@@ -109,7 +118,7 @@ export default class Scene {
             .copy(this.player.player.tank.position)
             .add(new THREE.Vector3(0, 500, 600));
         this.camera.lookAt(this.player.player.tank.position);
-
+        this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));
         this.renderer.render(this.scene, this.camera);
     }
