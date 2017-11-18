@@ -71,13 +71,11 @@ export default class Tank {
         this.tank.position.y = this.y;
 
         this.tank.rotation.y = this.rotate * 0.0174533;
-        console.log(this.main);
-        this.tank.add( this.main);
+        this.tank.add(this.main);
         this.tank.add(mainTop);
         this.tank.add(gun);
         this.tank.add(leftTrack);
         this.tank.add(rightTrack);
-        console.log(this.tank);
         this.scene.add(this.tank);
     }
 }

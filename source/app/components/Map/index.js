@@ -107,6 +107,7 @@ export default class Map {
                                     wallMaterials,
                                     wallGeometries
                                 );
+                                this.collidableMeshList.push(barrier.wall);
                                 barrier.draw();
                                 break;
                             case LIGHT:
@@ -178,9 +179,7 @@ export default class Map {
                                     this.colors.rotationCube
                                 );
                                 // console.log(rotationCube.get());
-                                this.collidableMeshList.push(
-                                    rotationCube.load()
-                                );
+                                rotationCube.load();
                                 rotationCube.move();
                                 break;
                             case LAMP:

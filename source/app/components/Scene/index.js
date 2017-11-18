@@ -93,19 +93,22 @@ export default class Scene {
     }
 
     animate() {
-        if (this.flagLeft) {
-            this.player.moveLeft();
+        if(!this.player.detectCollision()) {
+            if (this.flagTop) {
+                this.player.moveTop();
+            }
         }
-        if (this.flagRight) {
-            this.player.moveRight();
-        }
-        if (this.flagTop) {
-            this.player.moveTop();
-        }
-        if (this.flagBottom) {
-            this.player.moveBottom();
-        }
-        // this.player.detectCollision();
+      if (this.flagLeft) {
+                this.player.moveLeft();
+            }
+            if (this.flagRight) {
+                this.player.moveRight();
+            }
+
+            if (this.flagBottom) {
+                this.player.moveBottom();
+            }
+     
         /*this.camera.position.set(this.player.player.tank.position.x,this.player.player.tank.position.y+200,this.player.player.tank.position.z+200);*/
         // Interpolate camPos toward targetPos
 

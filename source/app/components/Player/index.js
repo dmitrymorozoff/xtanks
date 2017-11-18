@@ -67,17 +67,18 @@ export default class Player {
     }
     detectCollision() {
         let originPoint = this.player.tank.position.clone();
+        const self = this;
         if (this.player.main.geometry) {
             for (
                 let vertexIndex = 0;
                 vertexIndex < this.player.main.geometry.vertices.length;
                 vertexIndex++
             ) {
-                let localVertex = this.player.main.geometry.vertices[
+                var localVertex = this.player.main.geometry.vertices[
                     vertexIndex
                 ].clone();
                 let globalVertex = localVertex.applyMatrix4(
-                    this.player.main.matrix
+                    this.player.tank.matrix
                 );
                 let directionVector = globalVertex.sub(
                     this.player.tank.position
@@ -87,15 +88,33 @@ export default class Player {
                     originPoint,
                     directionVector.clone().normalize()
                 );
-                let collisionResults = ray.intersectObjects(
-                    this.collidableMeshList
+                let intersects = ray.intersectObjects(
+                    this.collidableMeshList,
+                    true
                 );
                 if (
-                    collisionResults.length > 0 &&
-                    collisionResults[0].distance < directionVector.length()
-                )
-                    console.log("HIT");
+                    intersects.length > 0 &&
+                    intersects[0].distance < directionVector.length()
+                ) {
+                    self.handleObjectsCollision(intersects[0]);
+                } else {
+                    return false;
+                }
             }
         }
+    }
+    handleObjectsCollision(collisionResult) {
+        console.log(collisionResult);
+
+        // var collision = new THREE.Vector3();
+        // collision.x =
+        //     (meshA.position.x * OBJ_SIZE + meshB.position.x * OBJ_SIZE) /
+        //     (OBJ_SIZE + OBJ_SIZE);
+        // collision.y =
+        //     (meshA.position.y * OBJ_SIZE + meshB.position.y * OBJ_SIZE) /
+        //     (OBJ_SIZE + OBJ_SIZE);
+        // collision.z =
+        //     (meshA.position.z * OBJ_SIZE + meshB.position.z * OBJ_SIZE) /
+        //     (OBJ_SIZE + OBJ_SIZE);
     }
 }
