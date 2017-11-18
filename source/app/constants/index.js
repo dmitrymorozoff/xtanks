@@ -1,5 +1,6 @@
 export const CUBE_SIZE = 100;
 export const PURPLE = 0x403bf7;
+export const BACKGROUND = 0x3b1a82;
 export const RED = 0xfc0101;
 export const PINK = 0xd000f8;
 export const WALL = 1;

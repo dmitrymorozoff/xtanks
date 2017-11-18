@@ -10,18 +10,19 @@ export default class Game {
     start() {
         let animationId;
         const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x07041A, 0.0004);
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 3200;
         const camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
             1,
-            5000
+            10000
         );
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0x1F095C, 0.7));
+        scene.add(new THREE.AmbientLight(0x1f095c, 0.7));
 
         /*const controls = new OrbitControls(camera);
         controls.enableDamping = true;
@@ -34,11 +35,11 @@ export default class Game {
         shadowlight.position.set(0, 1, 0);
         scene.add(shadowlight);
 
-        const renderer = new THREE.WebGLRenderer(/*{ antialias: true }*/);
+        const renderer = new THREE.WebGLRenderer /*{ antialias: true }*/();
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x07041A, 1);
-        
+        renderer.setClearColor(0x07041a, 1);
+
         const gameScene = new Scene(scene, shadowlight, camera, renderer);
         gameScene.draw();
         gameScene.animate();

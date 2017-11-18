@@ -39,8 +39,9 @@ export default class Map {
         this.cubeSize = CUBE_SIZE;
         this.cubesLand = [];
         this.cubesBarrier = [];
+         // 75218F
         this.colors = {
-            landColors: [0x1d0346, 0x0c082c, 0x1f095c],
+            landColors: [0x2E1268, 0x0c082c, 0x1f095c],
             wallColors: [PURPLE, PINK, RED, RED],
             lampColors: [PURPLE, PINK, RED],
             pyramidColors: [PURPLE, PINK, RED],

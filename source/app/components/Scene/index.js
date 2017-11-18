@@ -5,6 +5,7 @@ import Map from "../Map/index.js";
 import Player from "../Player/index.js";
 import Supertank from "../Supertank/index.js";
 import * as THREE from "three";
+import { BACKGROUND } from "../../constants/index.js";
 
 export default class Scene {
     constructor(scene, light, camera, renderer) {
@@ -24,6 +25,53 @@ export default class Scene {
         this.origin = new THREE.Vector3(0, 0, 0);
         this.stats = new Stats();
     }
+    genesisDevice() {
+        this.geometry = new THREE.PlaneGeometry(
+            window.innerWidth * 10,
+            window.innerHeight * 12,
+            98,
+            98
+        );
+        this.material = new THREE.MeshLambertMaterial({
+            color: BACKGROUND
+        });
+        this.wireMaterial = new THREE.MeshLambertMaterial({
+            color: 0x000000,
+            wireframe: true,
+            transparent: true
+        });
+        const inception = () => {
+            for (let i = 0; i < this.geometry.vertices.length; i++) {
+                if (i % 2 === 0 || i % 5 === 0 || i % 7 === 0) {
+                    let num = Math.floor(Math.random() * (260 - 20 + 1)) + 180;
+                    this.geometry.vertices[i].z = Math.random() * num;
+                }
+            }
+            this.terrain = new THREE.Mesh(this.geometry, this.material);
+            this.wire = new THREE.Mesh(this.geometry, this.wireMaterial);
+
+            this.terrain.rotation.x = -Math.PI / 2;
+            this.terrain.position.y = -336;
+            this.wire.rotation.x = -Math.PI / 2;
+            this.wire.position.y = -335.8;
+
+            this.scene.add(this.terrain, this.wire);
+            return this;
+        };
+
+        inception();
+    }
+    generateBackground() {
+        const materialIcosahedron = new THREE.MeshLambertMaterial({
+            color: BACKGROUND,
+            side: THREE.BackSide
+        });
+        const icosahedron = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(3200, 1),
+            materialIcosahedron
+        );
+        this.scene.add(icosahedron);
+    }
     draw() {
         this.stats.domElement.style.position = "absolute";
         this.stats.domElement.style.top = "0px";
@@ -33,6 +81,8 @@ export default class Scene {
         const map = new Map(this.scene);
         map.load();
 
+        //this.generateBackground();
+        this.genesisDevice();
         this.player = new Player(
             this.scene,
             this.camera,
@@ -93,22 +143,22 @@ export default class Scene {
     }
 
     animate() {
-        if(!this.player.detectCollision()) {
+        if (!this.player.detectCollision()) {
             if (this.flagTop) {
                 this.player.moveTop();
             }
         }
-      if (this.flagLeft) {
-                this.player.moveLeft();
-            }
-            if (this.flagRight) {
-                this.player.moveRight();
-            }
+        if (this.flagLeft) {
+            this.player.moveLeft();
+        }
+        if (this.flagRight) {
+            this.player.moveRight();
+        }
 
-            if (this.flagBottom) {
-                this.player.moveBottom();
-            }
-     
+        if (this.flagBottom) {
+            this.player.moveBottom();
+        }
+
         /*this.camera.position.set(this.player.player.tank.position.x,this.player.player.tank.position.y+200,this.player.player.tank.position.z+200);*/
         // Interpolate camPos toward targetPos
 
