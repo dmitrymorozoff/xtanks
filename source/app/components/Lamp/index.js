@@ -24,11 +24,11 @@ export default class Lamp {
         });
         const trunkGeometry = new THREE.BoxGeometry(
             this.size / 15,
-            this.size * 5,
+            this.size * 3,
             this.size / 15
         );
         const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
-        trunk.position.set(this.x, this.y + this.size * 2.5, this.z);
+        trunk.position.set(this.x, this.y + this.size * 1.5, this.z);
         this.lamp.add(trunk);
 
         const light = new THREE.PointLight(this.color, 1.7, 3500, 2.0);

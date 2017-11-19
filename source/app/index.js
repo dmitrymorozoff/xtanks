@@ -10,7 +10,7 @@ export default class Game {
     start() {
         let animationId;
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x07041A, 0.0004);
+        scene.fog = new THREE.FogExp2(0x07041a, 0.0004);
         const aspect = window.innerWidth / window.innerHeight;
         const frustumSize = 3200;
         const camera = new THREE.PerspectiveCamera(

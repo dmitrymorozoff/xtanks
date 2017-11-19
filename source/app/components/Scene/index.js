@@ -88,7 +88,7 @@ export default class Scene {
             this.camera,
             this.cubeSize,
             3 * this.cubeSize,
-            1 * this.cubeSize,
+            9 * this.cubeSize,
             6 * this.cubeSize,
             0x575757,
             180,

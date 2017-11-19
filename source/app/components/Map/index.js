@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { LEVEL_1 } from "./Level/index.js";
 import Light from "../Light/index.js";
 import Wall from "../Wall/index.js";
-import Cactus from "../Cactus/index.js";
+import Elevator from "../Elevator/index.js";
 import Pyramid from "../Pyramid/index.js";
 import Lamp from "../Lamp/index.js";
 import BigTree from "../BigTree/index.js";
@@ -24,7 +24,10 @@ import {
     LAMP,
     RED_TANK,
     BLUE_TANK,
-    ROTATION_CUBE
+    ROTATION_CUBE,
+    EMPTY,
+    ELEVATOR,
+    SECOND_FLOOR_HEIGHT
 } from "../../constants/index.js";
 import Clouds from "../Clouds/index.js";
 import PlaneCube from "../PlaneCube/index.js";
@@ -39,9 +42,9 @@ export default class Map {
         this.cubeSize = CUBE_SIZE;
         this.cubesLand = [];
         this.cubesBarrier = [];
-         // 75218F
+        // 75218F
         this.colors = {
-            landColors: [0x2E1268, 0x0c082c, 0x1f095c],
+            landColors: [0x2e1268, 0x0c082c, 0x1f095c],
             wallColors: [PURPLE, PINK, RED, RED],
             lampColors: [PURPLE, PINK, RED],
             pyramidColors: [PURPLE, PINK, RED],
@@ -58,7 +61,14 @@ export default class Map {
             ]
         );
         let x = k * this.cubeSize - centerJ;
-        let y = i * this.cubeSize;
+        let y = null;
+        const SECOND_FLOOR = 3;
+        const FLOOR_HEIGHT = 8;
+        if (i === SECOND_FLOOR) {
+            y = FLOOR_HEIGHT * this.cubeSize;
+        } else {
+            y = i * this.cubeSize;
+        }
         let z = j * this.cubeSize - centerI;
         landGeometry.position.set(x, y, z);
         landGeometry.updateMatrix();
@@ -67,12 +77,15 @@ export default class Map {
     load() {
         const centerMapI = LEVEL_1[0].length / 2 * this.cubeSize;
         const centerMapJ = LEVEL_1[0][0].length / 2 * this.cubeSize;
-
+        const SECOND_FLOOR_WALL = 4;
         let mergedLandGeometry = new THREE.Geometry();
         for (let i = 0; i < LEVEL_1.length; i++) {
             for (let j = 0; j < LEVEL_1[i].length; j++) {
                 for (let k = 0; k < LEVEL_1[i][j].length; k++) {
-                    if (i === 0 && LEVEL_1[i][j][k] !== -1) {
+                    if (
+                        (i === 0 && LEVEL_1[i][j][k] !== EMPTY) ||
+                        (i === 3 && LEVEL_1[i][j][k] !== EMPTY)
+                    ) {
                         this.generateFloor(
                             mergedLandGeometry,
                             k,
@@ -91,12 +104,16 @@ export default class Map {
                                 } else {
                                     type = getRandomInt(2, 3);
                                 }
+                                let y = i * this.cubeSize;
+                                if (i === SECOND_FLOOR_WALL) {
+                                    y = SECOND_FLOOR_HEIGHT * this.cubeSize;
+                                }
                                 let barrier = new Wall(
                                     this.scene,
                                     this.cubeSize,
                                     heightWall,
                                     k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
+                                    y,
                                     j * this.cubeSize - centerMapI,
                                     this.colors.wallColors[
                                         getRandomInt(
@@ -112,10 +129,16 @@ export default class Map {
                                 barrier.draw();
                                 break;
                             case LIGHT:
+                                let y2 = i * this.cubeSize - this.cubeSize / 4;
+                                if (i === SECOND_FLOOR_WALL) {
+                                    y2 =
+                                        SECOND_FLOOR_HEIGHT * this.cubeSize -
+                                        this.cubeSize / 4;
+                                }
                                 let light = new Light(
                                     this.scene,
                                     k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize - this.cubeSize / 4,
+                                    y2,
                                     j * this.cubeSize - centerMapI,
                                     this.cubeSize,
                                     this.colors.lampColors[
@@ -143,20 +166,6 @@ export default class Map {
                                 );
                                 movingCube.load();
                                 movingCube.move();
-                                break;
-                            case 4:
-                                /*const road = new Cube(
-                                    this.scene,
-                                    this.cubeSize,
-                                    this.cubeSize / 5,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    (i - 2) * this.cubeSize + 55,
-                                    j * this.cubeSize - centerMapI,
-                                    0x000000,
-                                    "lambert"
-                                );
-                                road.draw();*/
                                 break;
                             case PYRAMID:
                                 let pyramid = new Pyramid(
@@ -222,27 +231,17 @@ export default class Map {
                                 );
                                 tankBlue.load();
                                 break;
-                            case 7:
-                                let bigTree = new BigTree(
-                                    this.scene,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize - this.cubeSize / 4,
-                                    j * this.cubeSize - centerMapI,
-                                    this.cubeSize * 1.5,
-                                    0x333333
-                                );
-                                bigTree.load();
-                                break;
-                            case 8:
-                                let cactus = new Cactus(
+                            case ELEVATOR:
+                                let elevator = new Elevator(
                                     this.scene,
                                     this.cubeSize,
                                     k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
+                                    (i - 1) * this.cubeSize - this.cubeSize / 4,
                                     j * this.cubeSize - centerMapI,
-                                    0x555555
+                                    PURPLE
                                 );
-                                cactus.draw();
+                                elevator.draw();
+                                elevator.move();
                                 break;
                             default:
                                 break;
