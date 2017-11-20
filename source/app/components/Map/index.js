@@ -42,6 +42,7 @@ export default class Map {
         this.cubeSize = CUBE_SIZE;
         this.cubesLand = [];
         this.cubesBarrier = [];
+        this.elevators = [];
         // 75218F
         this.colors = {
             landColors: [0x2e1268, 0x0c082c, 0x1f095c],
@@ -240,6 +241,7 @@ export default class Map {
                                     j * this.cubeSize - centerMapI,
                                     PURPLE
                                 );
+                                this.elevators.push(elevator);
                                 elevator.draw();
                                 elevator.move();
                                 break;

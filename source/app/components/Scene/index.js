@@ -24,6 +24,10 @@ export default class Scene {
         this.targetPos = new THREE.Vector3(0, 200, 300);
         this.origin = new THREE.Vector3(0, 0, 0);
         this.stats = new Stats();
+        this.map = null;
+        this.flagElevatorBottom = false;
+        this.flagElevatorTop = false;
+        this.flagElevatorCenter = false;
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -78,21 +82,21 @@ export default class Scene {
         this.stats.domElement.style.right = "0px";
         document.body.appendChild(this.stats.domElement);
 
-        const map = new Map(this.scene);
-        map.load();
+        this.map = new Map(this.scene);
+        this.map.load();
 
-        //this.generateBackground();
+        // this.generateBackground();
         this.genesisDevice();
         this.player = new Player(
             this.scene,
             this.camera,
             this.cubeSize,
             3 * this.cubeSize,
-            9 * this.cubeSize,
+            1 * this.cubeSize,
             6 * this.cubeSize,
             0x575757,
             180,
-            map.collidableMeshList
+            this.map.collidableMeshList
         );
         this.player.draw();
 
@@ -141,7 +145,42 @@ export default class Scene {
             // this.player.rotateGun(cursorX, cursorY);
         };
     }
-
+    checkElevator(tank, elevators) {
+        let tankPosition = tank.tank.position;
+        let insideElevator = true;
+        for (let i = 0; i < elevators.length; i++) {
+            if (
+                tankPosition.x > elevators[i].x - elevators[i].size &&
+                tankPosition.x < elevators[i].x + elevators[i].size &&
+                tankPosition.z > elevators[i].z - elevators[i].size &&
+                tankPosition.z < elevators[i].z + elevators[i].size
+            ) {
+                insideElevator = true;
+                if (elevators[i].elevator.position.y <= 0) {
+                    this.flagElevatorBottom = true;
+                    this.flagElevatorTop = false;
+                }
+                if (
+                    elevators[i].elevator.position.y > 0 &&
+                    elevators[i].elevator.position.y < 7 * this.cubeSize
+                ) {
+                    this.flagElevatorCenter = true;
+                }
+                if (elevators[i].elevator.position.y >= 7 * this.cubeSize) {
+                    this.flagElevatorBottom = false;
+                    this.flagElevatorTop = true;
+                }
+                if (
+                    (this.flagElevatorBottom && this.flagElevatorCenter) ||
+                    (this.flagElevatorTop && this.flagElevatorCenter)
+                ) {
+                    this.player.moveUp(
+                        elevators[i].elevator.position.y + tank.size
+                    );
+                }
+            }
+        }
+    }
     animate() {
         if (!this.player.detectCollision()) {
             if (this.flagTop) {
@@ -158,6 +197,7 @@ export default class Scene {
         if (this.flagBottom) {
             this.player.moveBottom();
         }
+        this.checkElevator(this.player.player, this.map.elevators);
 
         /*this.camera.position.set(this.player.player.tank.position.x,this.player.player.tank.position.y+200,this.player.player.tank.position.z+200);*/
         // Interpolate camPos toward targetPos

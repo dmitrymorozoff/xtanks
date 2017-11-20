@@ -55,6 +55,9 @@ export default class Player {
         this.player.tank.position.x += Math.sin(this.angle) * this.speed;
         this.player.tank.position.z += Math.cos(-this.angle) * this.speed;
     }
+    moveUp(newPosition) {
+        this.player.tank.position.y = newPosition;
+    }
     moveBottom() {
         this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
         this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
@@ -83,7 +86,6 @@ export default class Player {
                 let directionVector = globalVertex.sub(
                     this.player.tank.position
                 );
-
                 let ray = new THREE.Raycaster(
                     originPoint,
                     directionVector.clone().normalize()
