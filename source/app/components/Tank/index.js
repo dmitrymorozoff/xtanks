@@ -68,7 +68,7 @@ export default class Tank {
 
         this.tank.position.x = this.x;
         this.tank.position.z = this.z;
-        this.tank.position.y = this.y;
+        this.tank.position.y = this.y + this.size / 8;
 
         this.tank.rotation.y = this.rotate * 0.0174533;
         this.tank.add(this.main);

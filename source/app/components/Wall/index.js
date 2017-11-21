@@ -67,11 +67,11 @@ export default class Wall {
                     this.wall.rotation.z = 90 * 0.0174533;
                 }
                 let rand = getRandomInt(0, 100);
-                if (rand > 50) {
-                    const light = new THREE.PointLight(this.color, 1, 900);
-                    light.position.set(this.x, this.y + this.size, this.z);
-                    this.scene.add(light);
-                }
+                // if (rand > 50) {
+                //     const light = new THREE.PointLight(this.color, 1, 900);
+                //     light.position.set(this.x, this.y + this.size, this.z);
+                //     this.scene.add(light);
+                // }
                 break;
             case 3:
                 let miniCubesSide = new THREE.Geometry();
@@ -119,7 +119,6 @@ export default class Wall {
             default:
                 break;
         }
-
         this.wall.position.x = this.x;
         this.wall.position.y = this.y;
         this.wall.position.z = this.z;

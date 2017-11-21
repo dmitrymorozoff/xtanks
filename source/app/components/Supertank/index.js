@@ -34,9 +34,6 @@ export default class Tank {
                                 geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasY !== undefined ? geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasY : 0,
                                 geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasZ !== undefined ? geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasZ : 0
                             );
-                            if (this.model.map[i].map[y][x][z] == 5 || this.model.map[i].map[y][x][z] == 6) {
-                                let s = 23;
-                            }
                             objects.add(object);
                         }
                     }
@@ -53,7 +50,7 @@ export default class Tank {
     getGeometries() {
         let geometries = {};
         for (let i = 1; i <= Object.keys(this.model.styles.geometries).length; i++) {
-            if ([1, 2, 3].indexOf(this.model.styles.geometries[i].type) != -1) {
+            if ([1, 2, 3].indexOf(this.model.styles.geometries[i].type) !== -1) {
                 geometries[i] = {};
             }
             switch (this.model.styles.geometries[i].type) {
@@ -93,7 +90,7 @@ export default class Tank {
     getMaterials() {
         let materials = {};
         for (let i = 1; i <= Object.keys(this.model.styles.materials).length; i++) {
-            if ([1].indexOf(this.model.styles.materials[i].type) != -1) {
+            if ([1].indexOf(this.model.styles.materials[i].type) !== -1) {
                 materials[i] = {};
             }
             switch (this.model.styles.materials[i].type) {
@@ -107,8 +104,11 @@ export default class Tank {
         return materials;
     }
     setPosition(object, x, y, z, biasX = 0, biasY = 0, biasZ = 0) {
-        object.position.x = biasX + x * this.model.styles.geometries[1].params.width - (this.model.info.size.width * this.model.styles.geometries[1].params.width) / 2;
-        object.position.y = biasY + y * this.model.styles.geometries[1].params.height;
-        object.position.z = biasZ + z * this.model.styles.geometries[1].params.length - (this.model.info.size.length * this.model.styles.geometries[1].params.length) / 2;
+        let geometryWidth = this.model.styles.geometries[1].params.width;
+        let geometryHeight = this.model.styles.geometries[1].params.height;
+        let geometryLength = this.model.styles.geometries[1].params.length;
+        object.position.x = biasX + x * geometryWidth - (this.model.info.size.width * geometryWidth) / 2;
+        object.position.y = biasY + y * geometryHeight;
+        object.position.z = biasZ + z * geometryLength - (this.model.info.size.length * geometryLength) / 2;
     }
 }

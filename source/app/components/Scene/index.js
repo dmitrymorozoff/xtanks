@@ -5,7 +5,7 @@ import Map from "../Map/index.js";
 import Player from "../Player/index.js";
 import Supertank from "../Supertank/index.js";
 import * as THREE from "three";
-import { BACKGROUND } from "../../constants/index.js";
+import { BACKGROUND, PURPLE } from "../../constants/index.js";
 
 export default class Scene {
     constructor(scene, light, camera, renderer) {
@@ -27,7 +27,7 @@ export default class Scene {
         this.map = null;
         this.flagElevatorBottom = false;
         this.flagElevatorTop = false;
-        this.flagElevatorCenter = false;
+        this.onElevator = false;
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -39,11 +39,11 @@ export default class Scene {
         this.material = new THREE.MeshLambertMaterial({
             color: BACKGROUND
         });
-        this.wireMaterial = new THREE.MeshLambertMaterial({
-            color: 0x000000,
-            wireframe: true,
-            transparent: true
-        });
+        // this.wireMaterial = new THREE.MeshLambertMaterial({
+        //     color: 0x000000,
+        //     wireframe: true,
+        //     transparent: true
+        // });
         const inception = () => {
             for (let i = 0; i < this.geometry.vertices.length; i++) {
                 if (i % 2 === 0 || i % 5 === 0 || i % 7 === 0) {
@@ -52,14 +52,14 @@ export default class Scene {
                 }
             }
             this.terrain = new THREE.Mesh(this.geometry, this.material);
-            this.wire = new THREE.Mesh(this.geometry, this.wireMaterial);
-
             this.terrain.rotation.x = -Math.PI / 2;
             this.terrain.position.y = -336;
-            this.wire.rotation.x = -Math.PI / 2;
-            this.wire.position.y = -335.8;
 
-            this.scene.add(this.terrain, this.wire);
+            // this.wire = new THREE.Mesh(this.geometry, this.wireMaterial);
+            // this.wire.rotation.x = -Math.PI / 2;
+            // this.wire.position.y = -335.8;
+
+            this.scene.add(this.terrain /*, this.wire*/);
             return this;
         };
 
@@ -146,38 +146,50 @@ export default class Scene {
         };
     }
     checkElevator(tank, elevators) {
-        let tankPosition = tank.tank.position;
-        let insideElevator = true;
+        let tankPos = tank.tank.position;
         for (let i = 0; i < elevators.length; i++) {
             if (
-                tankPosition.x > elevators[i].x - elevators[i].size &&
-                tankPosition.x < elevators[i].x + elevators[i].size &&
-                tankPosition.z > elevators[i].z - elevators[i].size &&
-                tankPosition.z < elevators[i].z + elevators[i].size
+                tankPos.x > elevators[i].x - elevators[i].size &&
+                tankPos.x < elevators[i].x + elevators[i].size &&
+                tankPos.z > elevators[i].z - elevators[i].size &&
+                tankPos.z < elevators[i].z + elevators[i].size
             ) {
-                insideElevator = true;
-                if (elevators[i].elevator.position.y <= 0) {
+                let elevatorPosY = elevators[i].elevator.position.y;
+                if (Math.ceil(elevatorPosY) === 0) {
                     this.flagElevatorBottom = true;
                     this.flagElevatorTop = false;
                 }
-                if (
-                    elevators[i].elevator.position.y > 0 &&
-                    elevators[i].elevator.position.y < 7 * this.cubeSize
-                ) {
-                    this.flagElevatorCenter = true;
-                }
-                if (elevators[i].elevator.position.y >= 7 * this.cubeSize) {
+                if (Math.ceil(elevatorPosY) === 8 * this.cubeSize) {
                     this.flagElevatorBottom = false;
                     this.flagElevatorTop = true;
                 }
-                if (
-                    (this.flagElevatorBottom && this.flagElevatorCenter) ||
-                    (this.flagElevatorTop && this.flagElevatorCenter)
-                ) {
-                    this.player.moveUp(
-                        elevators[i].elevator.position.y + tank.size
-                    );
+                if (elevatorPosY > 0 && tankPos.y <= 100) {
+                    this.war = true;
                 }
+                if (
+                    (this.flagElevatorBottom && tankPos.y === 100) ||
+                    (this.flagElevatorTop && tankPos.y === 8 * this.cubeSize)
+                ) {
+                    this.onElevator = true;
+                }
+                if (this.onElevator) {
+                    this.player.moveUp(Math.ceil(elevatorPosY) + tank.size);
+                }
+                /*if (
+                    tankPos.y >= 100 &&
+                    this.flagElevatorBottom &&
+                    Math.floor(elevatorPosY) >= 0
+                ) {
+                    this.player.moveUp(Math.floor(elevatorPosY) + tank.size);
+                    console.log(elevatorPosY);
+                }*/
+
+                // if (
+                //     (this.flagElevatorBottom && this.flagElevatorCenter) ||
+                //     (this.flagElevatorTop && this.flagElevatorCenter)
+                // ) {
+                //
+                // }
             }
         }
     }

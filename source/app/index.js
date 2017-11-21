@@ -33,10 +33,10 @@ export default class Game {
 
         const shadowlight = new THREE.PointLight(0xffffff, 0.4);
         shadowlight.position.set(0, 1, 0);
-        scene.add(shadowlight);
+        // scene.add(shadowlight);
 
-        const renderer = new THREE.WebGLRenderer /*{ antialias: true }*/();
-        renderer.setPixelRatio(window.devicePixelRatio);
+        const renderer = new THREE.WebGLRenderer({ antialias: false });
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x07041a, 1);
 

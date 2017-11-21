@@ -5,8 +5,8 @@ import Wall from "../Wall/index.js";
 import Elevator from "../Elevator/index.js";
 import Pyramid from "../Pyramid/index.js";
 import Lamp from "../Lamp/index.js";
-import BigTree from "../BigTree/index.js";
 import Tank from "../Tank/index.js";
+import Coin from "../Bonuses/Coin/index.js";
 import RotationCube from "../RotationCube/index.js";
 import getRandomInt from "../../../utils/index.js";
 import { makeCube } from "../../../utils/index.js";
@@ -27,6 +27,8 @@ import {
     ROTATION_CUBE,
     EMPTY,
     ELEVATOR,
+    CYAN,
+    COIN,
     SECOND_FLOOR_HEIGHT
 } from "../../constants/index.js";
 import Clouds from "../Clouds/index.js";
@@ -189,15 +191,18 @@ export default class Map {
                                     j * this.cubeSize - centerMapI,
                                     this.colors.rotationCube
                                 );
-                                // console.log(rotationCube.get());
                                 rotationCube.load();
                                 rotationCube.move();
                                 break;
                             case LAMP:
+                                let height = 500;
+                                if (i === 5) {
+                                    height = 1300;
+                                }
                                 let lamp = new Lamp(
                                     this.scene,
                                     k * this.cubeSize - centerMapJ,
-                                    500,
+                                    height,
                                     j * this.cubeSize - centerMapI,
                                     this.cubeSize,
                                     this.colors.lampColors[
@@ -244,6 +249,22 @@ export default class Map {
                                 this.elevators.push(elevator);
                                 elevator.draw();
                                 elevator.move();
+                                break;
+                            case COIN:
+                                let yD = i * this.cubeSize;
+                                if (i === SECOND_FLOOR_WALL) {
+                                    yD = SECOND_FLOOR_HEIGHT * this.cubeSize;
+                                }
+                                let coin = new Coin(
+                                    this.scene,
+                                    this.cubeSize / 3.5,
+                                    k * this.cubeSize - centerMapJ,
+                                    yD,
+                                    j * this.cubeSize - centerMapI,
+                                    PINK
+                                );
+                                coin.draw();
+                                coin.move();
                                 break;
                             default:
                                 break;
