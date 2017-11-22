@@ -5,110 +5,92 @@ const DEG_TO_RAD = 0.0174533;
 
 export default class Tank {
     constructor(scene, x = 0, y = 0, z = 0, scale = 1) {
-        this.model  = model;
-        this.scene  = scene;
-        this.x      = x;
-        this.y      = y + this.model.styles.geometries[1].params.height / 2 + 100;
-        this.z      = z;
-        this.tank   = new THREE.Group();
+        this.scene      = scene;
+        this.x          = x;
+        this.y          = y + 100;
+        this.z          = z;
+        this.model      = model;
+        this.basicSize  = this.model.styles.geometries[1].size;
+        this.tank       = new THREE.Group();
     }
     draw() {
-        let geometries  = this.getGeometries(),
-            materials   = this.getMaterials(),
-            object, objects = new THREE.Group();;
-        for (let i = 0; i < this.model.map.length; i++) {
-            for (let y = 0; y < this.model.map[i].map.length; y++) {
-                for (let x = 0; x < this.model.map[i].map[y].length; x++) {
-                    for (let z = 0; z < this.model.map[i].map[y][x].length; z++) {
-                        if (this.model.map[i].map[y][x][z]) {
-                            object = new THREE.Mesh(
-                                geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].geometry,
-                                materials[this.model.objects[this.model.map[i].map[y][x][z]].material].material
-                            );
-                            this.setPosition(
-                                object,
-                                x,
-                                y + this.model.map[i].height,
-                                z,
-                                geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasX !== undefined ? geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasX : 0,
-                                geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasY !== undefined ? geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasY : 0,
-                                geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasZ !== undefined ? geometries[this.model.objects[this.model.map[i].map[y][x][z]].geometry].biasZ : 0
-                            );
-                            objects.add(object);
+        let modelMap = this.model.map, modelObjects = this.model.objects, modelGeometries = this.model.styles.geometries, modelMaterials = this.model.styles.materials, modelSize = this.model.info.size,
+            geometries = this.getGeometries(), materials = this.getMaterials(),
+            object, objects, mergedObject,
+            convertX, convertY, convertZ;
+        let mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        for (let i = 0; i < modelMap.length; i++) {
+            objects = new THREE.Group();
+            mergedObject = new THREE.Geometry();
+            for (let y = 0; y < modelMap[i].map.length; y++) {
+                for (let x = 0; x < modelMap[i].map[y].length; x++) {
+                    for (let z = 0; z < modelMap[i].map[y][x].length; z++) {
+                        if (modelMap[i].map[y][x][z]) {
+                            /*object = new THREE.Mesh(
+                                geometries[modelObjects[modelMap[i].map[y][x][z]].geometry],
+                                materials[modelObjects[modelMap[i].map[y][x][z]].material]
+                            );*/
+                            convertX = x * this.basicSize.width - (modelSize.width * this.basicSize.width) / 2 + this.basicSize.width / 2
+                                        + modelGeometries[modelObjects[modelMap[i].map[y][x][z]].geometry].bias.x;
+                            convertY = (y + modelMap[i].height) * this.basicSize.height + this.basicSize.height / 2
+                                        + modelGeometries[modelObjects[modelMap[i].map[y][x][z]].geometry].bias.y;
+                            convertZ = z * this.basicSize.length - (modelSize.length * this.basicSize.length) / 2 + this.basicSize.length / 2
+                                        + modelGeometries[modelObjects[modelMap[i].map[y][x][z]].geometry].bias.z;
+                            geometries[modelObjects[modelMap[i].map[y][x][z]].geometry].translate(convertX, convertY, convertZ);
+                            mergedObject.merge(geometries[modelObjects[modelMap[i].map[y][x][z]].geometry]);
+                            geometries[modelObjects[modelMap[i].map[y][x][z]].geometry].translate(-convertX, -convertY, -convertZ);
+                            /*object.position.set(convertX, convertY, convertZ);
+                            objects.add(object);*/
                         }
                     }
                 }
             }
-            this.tank.add(objects);
+            //this.tank.add(objects);
+            this.tank.add(new THREE.Mesh(mergedObject, mat));
         }
-        this.tank.position.x = this.x + this.model.styles.geometries[1].params.width / 2;
-        this.tank.position.y = this.y + this.model.styles.geometries[1].params.height / 2;
-        this.tank.position.z = this.z + this.model.styles.geometries[1].params.length / 2;
+        this.tank.position.set(this.x, this.y, this.z);
         this.scene.add(this.tank);
-        console.log(this.tank);
     }
     getGeometries() {
-        let geometries = {};
-        for (let i = 1; i <= Object.keys(this.model.styles.geometries).length; i++) {
-            if ([1, 2, 3].indexOf(this.model.styles.geometries[i].type) !== -1) {
-                geometries[i] = {};
-            }
-            switch (this.model.styles.geometries[i].type) {
+        let modelGeometries = this.model.styles.geometries, geometries = {};
+        for (let i = 1; i <= Object.keys(modelGeometries).length; i++) {
+            switch (modelGeometries[i].type) {
                 case 1:
-                    geometries[i].geometry = new THREE.BoxGeometry(
-                        this.model.styles.geometries[i].params.width,
-                        this.model.styles.geometries[i].params.height,
-                        this.model.styles.geometries[i].params.length
+                    geometries[i] = new THREE.BoxGeometry(
+                        modelGeometries[i].size.width,
+                        modelGeometries[i].size.height,
+                        modelGeometries[i].size.length
                     );
+                    geometries[i].rotateX(modelGeometries[i].rotate.x * DEG_TO_RAD);
+                    geometries[i].rotateY(modelGeometries[i].rotate.y * DEG_TO_RAD);
+                    geometries[i].rotateZ(modelGeometries[i].rotate.z * DEG_TO_RAD);
                     break;
                 case 2:
-                    geometries[i].geometry = new THREE.CylinderGeometry(
-                        this.model.styles.geometries[i].params.radiusBegin,
-                        this.model.styles.geometries[i].params.radiusEnd,
-                        this.model.styles.geometries[i].params.length,
-                        this.model.styles.geometries[i].params.quality
+                    geometries[i] = new THREE.CylinderGeometry(
+                        modelGeometries[i].size.radiusBegin,
+                        modelGeometries[i].size.radiusEnd,
+                        modelGeometries[i].size.length,
+                        modelGeometries[i].size.quality
                     );
-                    geometries[i].geometry.rotateZ(90 * DEG_TO_RAD);
-                    geometries[i].biasX = -(this.model.styles.geometries[i].params.length / 2 - this.model.styles.geometries[1].params.width / 2);
-                    geometries[i].biasY = this.model.styles.geometries[1].params.height / 2;
-                    geometries[i].biasZ = this.model.styles.geometries[1].params.length / 2;
-                    break;
-                case 3:
-                    geometries[i].geometry = new THREE.CylinderGeometry(
-                        this.model.styles.geometries[i].params.radiusBegin,
-                        this.model.styles.geometries[i].params.radiusEnd,
-                        this.model.styles.geometries[i].params.length,
-                        this.model.styles.geometries[i].params.quality
-                    );
-                    geometries[i].biasX = this.model.styles.geometries[1].params.width / 2;
-                    geometries[i].biasZ = this.model.styles.geometries[1].params.length / 2;
+                    geometries[i].rotateX(modelGeometries[i].rotate.x * DEG_TO_RAD);
+                    geometries[i].rotateY(modelGeometries[i].rotate.y * DEG_TO_RAD);
+                    geometries[i].rotateZ(modelGeometries[i].rotate.z * DEG_TO_RAD);
                     break;
             }
         }
         return geometries;
     }
     getMaterials() {
-        let materials = {};
-        for (let i = 1; i <= Object.keys(this.model.styles.materials).length; i++) {
-            if ([1].indexOf(this.model.styles.materials[i].type) !== -1) {
-                materials[i] = {};
-            }
-            switch (this.model.styles.materials[i].type) {
+        let modelMaterials = this.model.styles.materials, materials = {};
+        for (let i = 1; i <= Object.keys(modelMaterials).length; i++) {
+            switch (modelMaterials[i].type) {
                 case 1:
-                    materials[i].material = new THREE.MeshBasicMaterial(
-                        this.model.styles.materials[i].params
+                    materials[i] = new THREE.MeshBasicMaterial(
+                        modelMaterials[i].params
                     );
                     break;
             }
         }
         return materials;
-    }
-    setPosition(object, x, y, z, biasX = 0, biasY = 0, biasZ = 0) {
-        let geometryWidth = this.model.styles.geometries[1].params.width;
-        let geometryHeight = this.model.styles.geometries[1].params.height;
-        let geometryLength = this.model.styles.geometries[1].params.length;
-        object.position.x = biasX + x * geometryWidth - (this.model.info.size.width * geometryWidth) / 2;
-        object.position.y = biasY + y * geometryHeight;
-        object.position.z = biasZ + z * geometryLength - (this.model.info.size.length * geometryLength) / 2;
     }
 }

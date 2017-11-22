@@ -4,34 +4,75 @@ export default {
 		size: {
 			width: 20,
 			length: 20
+		},
+		params: {
+			type: 1,
+			hitPoints: 1000,
+			horsePower: 100,
+			maxSpeed: 50,
+			maxSpeedBack: 20,
+			corpsRotateSpeed: 20,
+			towerRotateSpeed: 20,
+			gunAngleTop: 10,
+			gunAngleBottom: 10
 		}
 	},
 	styles: {
 		geometries: {
 			1: {
 				type: 1,
-				params: {
+				size: {
 					width: 5,
 					height: 5,
 					length: 5
+				},
+				bias: {
+					x: 0,
+					y: 0,
+					z: 0,
+				},
+				rotate: {
+					x: 0,
+					y: 0,
+					z: 0
 				}
 			},
 			2: {
 				type: 2,
-				params: {
+				size: {
 					radiusBegin: 7.5,
 					radiusEnd: 5,
 					length: 50,
 					quality: 16
+				},
+				bias: {
+					x: -(50 / 2 - 5 / 2),
+					y: 5 / 2,
+					z: 5 / 2,
+				},
+				rotate: {
+					x: 0,
+					y: 0,
+					z: 90
 				}
 			},
 			3: {
-				type: 3,
-				params: {
+				type: 2,
+				size: {
 					radiusBegin: 15,
 					radiusEnd: 15,
 					length: 5,
 					quality: 16
+				},
+				bias: {
+					x: 5 / 2,
+					y: 0,
+					z: 5 / 2,
+				},
+				rotate: {
+					x: 0,
+					y: 0,
+					z: 0
 				}
 			}
 		},
