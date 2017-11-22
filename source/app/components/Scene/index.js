@@ -126,8 +126,8 @@ export default class Scene {
         );
         this.scene.add(this.marker);
 
-        // const tank = new Supertank(this.scene);
-        // tank.draw();
+        const tank = new Supertank(this.scene);
+        tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
