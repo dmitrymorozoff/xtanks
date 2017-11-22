@@ -28,6 +28,12 @@ export default class Scene {
         this.flagElevatorBottom = false;
         this.flagElevatorTop = false;
         this.onElevator = false;
+        this.sphereBackground = null;
+        this.mouse = new THREE.Vector2();
+        this.intersectPoint = new THREE.Vector3();
+        this.raycaster = new THREE.Raycaster();
+        this.plane = null;
+        this.marker = null;
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -67,14 +73,14 @@ export default class Scene {
     }
     generateBackground() {
         const materialIcosahedron = new THREE.MeshLambertMaterial({
-            color: BACKGROUND,
-            side: THREE.BackSide
+            color: BACKGROUND
         });
-        const icosahedron = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(3200, 1),
+        this.sphereBackground = new THREE.Mesh(
+            new THREE.SphereGeometry(3200, 128, 128),
             materialIcosahedron
         );
-        this.scene.add(icosahedron);
+        this.sphereBackground.material.side = THREE.DoubleSide;
+        this.scene.add(this.sphereBackground);
     }
     draw() {
         this.stats.domElement.style.position = "absolute";
@@ -85,7 +91,6 @@ export default class Scene {
         this.map = new Map(this.scene);
         this.map.load();
 
-        // this.generateBackground();
         this.genesisDevice();
         this.player = new Player(
             this.scene,
@@ -99,6 +104,27 @@ export default class Scene {
             this.map.collidableMeshList
         );
         this.player.draw();
+
+        // Внешняя коробка для raycaster
+        const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
+        const cameraBoxMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00ff00
+        });
+        const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
+        cameraBox.geometry.computeBoundingBox();
+        this.plane = new THREE.Box3(
+            cameraBox.geometry.boundingBox.min,
+            cameraBox.geometry.boundingBox.max
+        );
+
+        // Точка на карте которая следует за Raycaster
+        this.marker = new THREE.Mesh(
+            new THREE.SphereGeometry(10, 4, 2),
+            new THREE.MeshBasicMaterial({
+                color: "red"
+            })
+        );
+        this.scene.add(this.marker);
 
         // const tank = new Supertank(this.scene);
         // tank.draw();
@@ -140,8 +166,15 @@ export default class Scene {
             }
         });
         document.onmousemove = event => {
-            let cursorX = event.pageX;
-            let cursorY = event.pageY;
+            event.preventDefault();
+            console.log(this.player.player.main);
+            this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
+            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+            this.raycaster.ray.intersectBox(this.plane, this.intersectPoint);
+            this.player.player.gun.lookAt(this.intersectPoint);
+            this.marker.position.copy(this.intersectPoint);
+            //this.camera.lookAt(this.intersectPoint);
             // this.player.rotateGun(cursorX, cursorY);
         };
     }
@@ -175,21 +208,6 @@ export default class Scene {
                 if (this.onElevator) {
                     this.player.moveUp(Math.ceil(elevatorPosY) + tank.size);
                 }
-                /*if (
-                    tankPos.y >= 100 &&
-                    this.flagElevatorBottom &&
-                    Math.floor(elevatorPosY) >= 0
-                ) {
-                    this.player.moveUp(Math.floor(elevatorPosY) + tank.size);
-                    console.log(elevatorPosY);
-                }*/
-
-                // if (
-                //     (this.flagElevatorBottom && this.flagElevatorCenter) ||
-                //     (this.flagElevatorTop && this.flagElevatorCenter)
-                // ) {
-                //
-                // }
             }
         }
     }
@@ -217,8 +235,12 @@ export default class Scene {
         // Apply new camPos to your camera
         /*this.camPos.lerp(this.targetPos, 0.05);
         this.camera.position.copy(this.camPos);
-     
+
         this.camera.lookAt(this.targetPos);*/
+
+        // this.camera.position.x = this.camera.position.x + (50 * this.cursorX);
+        // this.camera.position.y = this.camera.position.y + (50 * this.cursorY);
+
         this.camera.position
             .copy(this.player.player.tank.position)
             .add(new THREE.Vector3(0, 500, 600));
