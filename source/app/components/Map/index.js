@@ -1,35 +1,34 @@
 import * as THREE from "three";
+import Elevator from "../Elevator/index.js";
 import { LEVEL_1 } from "./Level/index.js";
 import Light from "../Light/index.js";
 import Wall from "../Wall/index.js";
-import Elevator from "../Elevator/index.js";
 import Pyramid from "../Pyramid/index.js";
 import Lamp from "../Lamp/index.js";
 import Tank from "../Tank/index.js";
 import Coin from "../Bonuses/Coin/index.js";
 import RotationCube from "../RotationCube/index.js";
-import getRandomInt from "../../../utils/index.js";
-import { makeCube } from "../../../utils/index.js";
-import { landMaterial, landGeometry } from "./GeometryAndMaterials/land.js";
-import { wallMaterials, wallGeometries } from "./GeometryAndMaterials/wall.js";
+import { getRandomInt, makeCube } from "../../../utils/index.js";
+import { landGeometry, landMaterial } from "./GeometryAndMaterials/land.js";
+import { wallGeometries, wallMaterials } from "./GeometryAndMaterials/wall.js";
 import {
-    PURPLE,
-    RED,
-    PINK,
+    BLUE_TANK,
+    COIN,
     CUBE_SIZE,
-    WALL,
+    CYAN,
+    ELEVATOR,
+    EMPTY,
+    LAMP,
     LIGHT,
     MOVING_CUBE,
+    PINK,
+    PURPLE,
     PYRAMID,
-    LAMP,
+    RED,
     RED_TANK,
-    BLUE_TANK,
     ROTATION_CUBE,
-    EMPTY,
-    ELEVATOR,
-    CYAN,
-    COIN,
-    SECOND_FLOOR_HEIGHT
+    SECOND_FLOOR_HEIGHT,
+    WALL
 } from "../../constants/index.js";
 import Clouds from "../Clouds/index.js";
 import PlaneCube from "../PlaneCube/index.js";

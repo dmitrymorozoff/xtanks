@@ -46,7 +46,6 @@ export default class RotationCube {
             this.y - sizeBetweenParts,
             this.z
         );
- 
         this.scene.add(this.rotationCube);
     }
     move() {

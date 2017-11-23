@@ -1,0 +1,20 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+        "ecmaFeatures": {}
+    },
+    "rules": {
+        "max-len": ["error", 120],
+        "no-duplicate-imports": 2,
+        "no-duplicate-case": 2,
+        "no-trailing-spaces": 2,
+        "space-before-blocks": 2,
+        "no-ternary": 2,
+        "camelcase": 2,
+        "no-empty-function": 2,
+        "no-mixed-spaces-and-tabs": 2,
+        "spaced-comment": 2
+    },
+    "env": {}
+}

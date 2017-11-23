@@ -65,7 +65,7 @@ export default class Scene {
             // this.wire.rotation.x = -Math.PI / 2;
             // this.wire.position.y = -335.8;
 
-            this.scene.add(this.terrain /*, this.wire*/);
+            this.scene.add(this.terrain /* , this.wire*/);
             return this;
         };
 
@@ -174,7 +174,7 @@ export default class Scene {
             this.raycaster.ray.intersectBox(this.plane, this.intersectPoint);
             this.player.player.gun.lookAt(this.intersectPoint);
             this.marker.position.copy(this.intersectPoint);
-            //this.camera.lookAt(this.intersectPoint);
+            // this.camera.lookAt(this.intersectPoint);
             // this.player.rotateGun(cursorX, cursorY);
         };
     }
@@ -228,18 +228,6 @@ export default class Scene {
             this.player.moveBottom();
         }
         this.checkElevator(this.player.player, this.map.elevators);
-
-        /*this.camera.position.set(this.player.player.tank.position.x,this.player.player.tank.position.y+200,this.player.player.tank.position.z+200);*/
-        // Interpolate camPos toward targetPos
-
-        // Apply new camPos to your camera
-        /*this.camPos.lerp(this.targetPos, 0.05);
-        this.camera.position.copy(this.camPos);
-
-        this.camera.lookAt(this.targetPos);*/
-
-        // this.camera.position.x = this.camera.position.x + (50 * this.cursorX);
-        // this.camera.position.y = this.camera.position.y + (50 * this.cursorY);
 
         this.camera.position
             .copy(this.player.player.tank.position)
