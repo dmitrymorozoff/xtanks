@@ -7,7 +7,7 @@ export default class Tank {
     constructor(scene, x = 0, y = 0, z = 0, scale = 1) {
         this.scene = scene;
         this.x = x;
-        this.y = y + 100;
+        this.y = y;
         this.z = z;
         this.model = model;
         this.basicSize = this.model.styles.geometries[1].size;
@@ -27,7 +27,7 @@ export default class Tank {
             convertX,
             convertY,
             convertZ;
-        let mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        let mat = new THREE.MeshLambertMaterial({ color: 0xffffff });
         for (let i = 0; i < modelMap.length; i++) {
             objects = new THREE.Group();
             mergedObject = new THREE.Geometry();

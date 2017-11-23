@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Tank from "../Tank/index.js";
+import Supertank from "../Supertank/index.js";
 
 export default class Player {
     constructor(
@@ -27,17 +27,14 @@ export default class Player {
         this.collidableMeshList = collidableMeshList;
     }
     draw() {
-        this.player = new Tank(
+        this.player = new Supertank(
             this.scene,
-            this.size,
             this.x,
             this.y - this.size / 8,
             this.z,
-            this.color,
-            this.rotate
         );
         this.angle = this.rotate * 0.0174533;
-        this.player.load();
+        this.player.draw();
     }
     moveLeft() {
         let newAngleLeft = this.speed * 0.0174533;

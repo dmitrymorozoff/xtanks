@@ -23,13 +23,13 @@ export default class Game {
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0x1f095c, 0.7));
+        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
         // const controls = new OrbitControls(camera);
         // controls.enableDamping = true;
         // controls.dampingFactor = 0.25;
 
-        /*const axisHelper = new THREE.AxisHelper(1000);
+        /* const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);*/
 
         const shadowlight = new THREE.PointLight(0xffffff, 0.4);

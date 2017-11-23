@@ -97,7 +97,7 @@ export default class Scene {
             this.camera,
             this.cubeSize,
             3 * this.cubeSize,
-            1 * this.cubeSize,
+            this.cubeSize,
             6 * this.cubeSize,
             0x575757,
             180,
@@ -126,8 +126,8 @@ export default class Scene {
         );
         this.scene.add(this.marker);
 
-        const tank = new Supertank(this.scene);
-        tank.draw();
+        // const tank = new Supertank(this.scene);
+        // tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
@@ -212,10 +212,8 @@ export default class Scene {
         }
     }
     animate() {
-        if (!this.player.detectCollision()) {
-            if (this.flagTop) {
-                this.player.moveTop();
-            }
+        if (this.flagTop) {
+            this.player.moveTop();
         }
         if (this.flagLeft) {
             this.player.moveLeft();
