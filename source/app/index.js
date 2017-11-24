@@ -1,7 +1,11 @@
 import * as THREE from "three";
-import OrbitControls from "orbit-controls-es6";
 import Scene from "./components/Scene/index.js";
-import getRandomInt from "../utils/index.js";
+import EffectComposer, {
+    RenderPass,
+    ShaderPass
+} from "three-effectcomposer-es6";
+const fxaa = require("three-shader-fxaa");
+window.THREE = THREE;
 
 export default class Game {
     constructor(settings) {
@@ -9,11 +13,8 @@ export default class Game {
         this.controls = null;
     }
     start() {
-        let animationId;
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x07041a, 0.0004);
-        const aspect = window.innerWidth / window.innerHeight;
-        const frustumSize = 3200;
+        // scene.fog = new THREE.FogExp2(0x07041a, 0.0004);
         const camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
@@ -23,43 +24,53 @@ export default class Game {
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
-
-        // const controls = new OrbitControls(camera);
-        // controls.enableDamping = true;
-        // controls.dampingFactor = 0.25;
+        scene.add(new THREE.AmbientLight(0x404040));
 
         /* const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);*/
 
-        const shadowlight = new THREE.PointLight(0xffffff, 0.4);
-        shadowlight.position.set(0, 1, 0);
-        // scene.add(shadowlight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(0, 1, 0);
+        // scene.add(directionalLight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
-        // renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x07041a, 1);
+        renderer.setClearColor(0x010101, 1);
 
-        const gameScene = new Scene(scene, shadowlight, camera, renderer);
+        const target = new THREE.WebGLRenderTarget(
+            window.innerWidth * window.devicePixelRatio,
+            window.innerHeight * window.devicePixelRatio
+        );
+        target.format = THREE.RGBFormat;
+        target.minFilter = THREE.LinearFilter;
+        target.generateMipmaps = false;
+
+        const composer = new EffectComposer(renderer, target);
+        composer.addPass(new RenderPass(scene, camera));
+
+        const shaderPass = new ShaderPass(fxaa());
+        shaderPass.renderToScreen = true;
+        composer.addPass(shaderPass);
+
+        const gameScene = new Scene(
+            scene,
+            directionalLight,
+            camera,
+            composer,
+            shaderPass
+        );
         gameScene.draw();
         gameScene.animate();
 
         document.body.appendChild(renderer.domElement);
         function resize() {
-            /* const aspect = window.innerWidth / window.innerHeight;
-            camera.left =
-                -frustumSize * aspect / 1.7;
-            camera.right =
-                frustumSize * aspect / 1.7;
-            camera.top = frustumSize / 1.7;
-            camera.bottom = -frustumSize / 1.7;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);*/
-
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            // target.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+            shaderPass.updateProjectionMatrix();
         }
         addEventListener("resize", resize);
     }

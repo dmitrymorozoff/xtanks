@@ -14,17 +14,14 @@ export default class Light {
         const capMaterial = new THREE.MeshBasicMaterial({
             color: this.color
         });
-
         const capGeometry = new THREE.BoxGeometry(
             this.size / 1.5,
             this.size / 1.5,
             this.size / 1.5
         );
-
         const trunkMaterial = new THREE.MeshPhongMaterial({
             color: 0x222222
         });
-
         const trunkGeometry = new THREE.BoxGeometry(
             this.size / 4,
             this.size / 1.5,
@@ -36,11 +33,10 @@ export default class Light {
         trunk.position.z = this.z;
         this.light.add(trunk);
 
-        const light = new THREE.PointLight(this.color, 1.8, 2100);
-        light.add(new THREE.Mesh(capGeometry, capMaterial))
+        const light = new THREE.PointLight(this.color, 1.8, 1200);
+        light.add(new THREE.Mesh(capGeometry, capMaterial));
         light.position.set(this.x, this.y + this.size / 1.5, this.z);
         this.scene.add(light);
-
         this.scene.add(this.light);
     }
 }

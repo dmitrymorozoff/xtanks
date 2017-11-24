@@ -4,8 +4,6 @@ export const BACKGROUND = 0x3b1a82;
 export const RED = 0xfc0101;
 export const PINK = 0xd000f8;
 export const CYAN = 0x23d3ff;
-export const WALL = 1;
-export const LIGHT = 2;
 export const MOVING_CUBE = 3;
 export const ELEVATOR = 7;
 export const SECOND_FLOOR_HEIGHT = 9;
@@ -17,3 +15,8 @@ export const BLUE_TANK = 10;
 export const COIN = 11;
 export const ROTATION_CUBE = 6;
 export const DEG_TO_RAD = 0.0174533;
+
+// MAP
+export const FLOOR = 1;
+export const WALL = 2;
+export const LIGHT = 3;

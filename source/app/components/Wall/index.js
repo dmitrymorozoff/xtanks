@@ -5,7 +5,6 @@ export default class Wall {
     constructor(
         scene,
         size,
-        height = 1,
         x = 0,
         y = 0,
         z = 0,
@@ -18,7 +17,6 @@ export default class Wall {
         this.scene = scene;
         this.size = size;
         this.color = color;
-        this.height = height;
         this.type = type;
         this.materials = materials;
         this.geometries = geometries;
@@ -29,7 +27,6 @@ export default class Wall {
         this.wall = new THREE.Group();
     }
     draw() {
-        let part = null;
         switch (this.type) {
             case 1:
                 part = new THREE.Mesh(
@@ -66,12 +63,6 @@ export default class Wall {
                 if (getRandomInt(0, 2) === 1) {
                     this.wall.rotation.z = 90 * 0.0174533;
                 }
-                let rand = getRandomInt(0, 100);
-                // if (rand > 50) {
-                //     const light = new THREE.PointLight(this.color, 1, 900);
-                //     light.position.set(this.x, this.y + this.size, this.z);
-                //     this.scene.add(light);
-                // }
                 break;
             case 3:
                 let miniCubesSide = new THREE.Geometry();

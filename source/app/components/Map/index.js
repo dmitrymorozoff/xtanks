@@ -46,8 +46,8 @@ export default class Map {
         this.elevators = [];
         // 75218F
         this.colors = {
-            landColors: [0x2e1268, 0x0c082c, 0x1f095c],
-            wallColors: [PURPLE, PINK, RED, RED],
+            landColors: [0x0c082c, 0x0c082c, 0x1f095c],
+            wallColors: [PURPLE, PINK, PURPLE, RED],
             lampColors: [PURPLE, PINK, RED],
             pyramidColors: [PURPLE, PINK, RED],
             rotationCube: [RED, PINK, PURPLE],
@@ -152,119 +152,119 @@ export default class Map {
                                 );
                                 light.load();
                                 break;
-                            case MOVING_CUBE:
-                                let movingCube = new MovingCube(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize + 10,
-                                    j * this.cubeSize - centerMapI,
-                                    this.colors.landColors[
-                                        getRandomInt(
-                                            0,
-                                            this.colors.landColors.length
-                                        )
-                                    ]
-                                );
-                                movingCube.load();
-                                movingCube.move();
-                                break;
-                            case PYRAMID:
-                                let pyramid = new Pyramid(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
-                                    j * this.cubeSize - centerMapI,
-                                    this.colors.pyramidColors
-                                );
-                                pyramid.load();
-                                pyramid.move();
-                                break;
-                            case ROTATION_CUBE:
-                                const rotationCube = new RotationCube(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
-                                    j * this.cubeSize - centerMapI,
-                                    this.colors.rotationCube
-                                );
-                                rotationCube.load();
-                                rotationCube.move();
-                                break;
-                            case LAMP:
-                                let height = 500;
-                                if (i === 5) {
-                                    height = 1300;
-                                }
-                                let lamp = new Lamp(
-                                    this.scene,
-                                    k * this.cubeSize - centerMapJ,
-                                    height,
-                                    j * this.cubeSize - centerMapI,
-                                    this.cubeSize,
-                                    this.colors.lampColors[
-                                        getRandomInt(
-                                            0,
-                                            this.colors.lampColors.length
-                                        )
-                                    ]
-                                );
-                                lamp.load();
-                                break;
-                            case RED_TANK:
-                                let tankRed = new Tank(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
-                                    j * this.cubeSize - centerMapI,
-                                    0x575757
-                                );
-                                tankRed.load();
-                                break;
-                            case BLUE_TANK:
-                                let tankBlue = new Tank(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    i * this.cubeSize,
-                                    j * this.cubeSize - centerMapI,
-                                    0x575757,
-                                    -180
-                                );
-                                tankBlue.load();
-                                break;
-                            case ELEVATOR:
-                                let elevator = new Elevator(
-                                    this.scene,
-                                    this.cubeSize,
-                                    k * this.cubeSize - centerMapJ,
-                                    (i - 1) * this.cubeSize - this.cubeSize / 4,
-                                    j * this.cubeSize - centerMapI,
-                                    PURPLE
-                                );
-                                this.elevators.push(elevator);
-                                elevator.draw();
-                                elevator.move();
-                                break;
-                            case COIN:
-                                let yD = i * this.cubeSize;
-                                if (i === SECOND_FLOOR_WALL) {
-                                    yD = SECOND_FLOOR_HEIGHT * this.cubeSize;
-                                }
-                                let coin = new Coin(
-                                    this.scene,
-                                    this.cubeSize / 3.5,
-                                    k * this.cubeSize - centerMapJ,
-                                    yD,
-                                    j * this.cubeSize - centerMapI,
-                                    PINK
-                                );
-                                coin.draw();
-                                coin.move();
-                                break;
+                            // case MOVING_CUBE:
+                            //     let movingCube = new MovingCube(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         i * this.cubeSize + 10,
+                            //         j * this.cubeSize - centerMapI,
+                            //         this.colors.landColors[
+                            //             getRandomInt(
+                            //                 0,
+                            //                 this.colors.landColors.length
+                            //             )
+                            //         ]
+                            //     );
+                            //     movingCube.load();
+                            //     movingCube.move();
+                            //     break;
+                            // case PYRAMID:
+                            //     let pyramid = new Pyramid(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         i * this.cubeSize,
+                            //         j * this.cubeSize - centerMapI,
+                            //         this.colors.pyramidColors
+                            //     );
+                            //     pyramid.load();
+                            //     pyramid.move();
+                            //     break;
+                            // case ROTATION_CUBE:
+                            //     const rotationCube = new RotationCube(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         i * this.cubeSize,
+                            //         j * this.cubeSize - centerMapI,
+                            //         this.colors.rotationCube
+                            //     );
+                            //     rotationCube.load();
+                            //     rotationCube.move();
+                            //     break;
+                            // case LAMP:
+                            //     let height = 500;
+                            //     if (i === 5) {
+                            //         height = 1300;
+                            //     }
+                            //     let lamp = new Lamp(
+                            //         this.scene,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         height,
+                            //         j * this.cubeSize - centerMapI,
+                            //         this.cubeSize,
+                            //         this.colors.lampColors[
+                            //             getRandomInt(
+                            //                 0,
+                            //                 this.colors.lampColors.length
+                            //             )
+                            //         ]
+                            //     );
+                            //     lamp.load();
+                            //     break;
+                            // case RED_TANK:
+                            //     let tankRed = new Tank(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         i * this.cubeSize,
+                            //         j * this.cubeSize - centerMapI,
+                            //         0x575757
+                            //     );
+                            //     tankRed.load();
+                            //     break;
+                            // case BLUE_TANK:
+                            //     let tankBlue = new Tank(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         i * this.cubeSize,
+                            //         j * this.cubeSize - centerMapI,
+                            //         0x575757,
+                            //         -180
+                            //     );
+                            //     tankBlue.load();
+                            //     break;
+                            // case ELEVATOR:
+                            //     let elevator = new Elevator(
+                            //         this.scene,
+                            //         this.cubeSize,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         (i - 1) * this.cubeSize - this.cubeSize / 4,
+                            //         j * this.cubeSize - centerMapI,
+                            //         PURPLE
+                            //     );
+                            //     this.elevators.push(elevator);
+                            //     elevator.draw();
+                            //     elevator.move();
+                            //     break;
+                            // case COIN:
+                            //     let yD = i * this.cubeSize;
+                            //     if (i === SECOND_FLOOR_WALL) {
+                            //         yD = SECOND_FLOOR_HEIGHT * this.cubeSize;
+                            //     }
+                            //     let coin = new Coin(
+                            //         this.scene,
+                            //         this.cubeSize / 3.5,
+                            //         k * this.cubeSize - centerMapJ,
+                            //         yD,
+                            //         j * this.cubeSize - centerMapI,
+                            //         PINK
+                            //     );
+                            //     coin.draw();
+                            //     coin.move();
+                            //     break;
                             default:
                                 break;
                         }

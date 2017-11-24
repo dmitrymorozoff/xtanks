@@ -1,18 +1,15 @@
-import { TweenMax } from "gsap";
 import Stats from "stats.js";
-import Tank from "../Tank/index.js";
-import Map from "../Map/index.js";
+import NewMap from "../NewMap/index.js";
 import Player from "../Player/index.js";
-import Supertank from "../Supertank/index.js";
 import * as THREE from "three";
-import { BACKGROUND, PURPLE } from "../../constants/index.js";
+import { BACKGROUND } from "../../constants/index.js";
 
 export default class Scene {
-    constructor(scene, light, camera, renderer) {
+    constructor(scene, light, camera, composer, shaderPass) {
         this.scene = scene;
         this.light = light;
         this.camera = camera;
-        this.renderer = renderer;
+        this.composer = composer;
         this.animationId = 0;
         this.cubeSize = 100;
         this.player = null;
@@ -24,7 +21,7 @@ export default class Scene {
         this.targetPos = new THREE.Vector3(0, 200, 300);
         this.origin = new THREE.Vector3(0, 0, 0);
         this.stats = new Stats();
-        this.map = null;
+        this.newMap = null;
         this.flagElevatorBottom = false;
         this.flagElevatorTop = false;
         this.onElevator = false;
@@ -32,6 +29,7 @@ export default class Scene {
         this.mouse = new THREE.Vector2();
         this.intersectPoint = new THREE.Vector3();
         this.raycaster = new THREE.Raycaster();
+        this.shaderPass = shaderPass;
         this.plane = null;
         this.marker = null;
     }
@@ -45,11 +43,6 @@ export default class Scene {
         this.material = new THREE.MeshLambertMaterial({
             color: BACKGROUND
         });
-        // this.wireMaterial = new THREE.MeshLambertMaterial({
-        //     color: 0x000000,
-        //     wireframe: true,
-        //     transparent: true
-        // });
         const inception = () => {
             for (let i = 0; i < this.geometry.vertices.length; i++) {
                 if (i % 2 === 0 || i % 5 === 0 || i % 7 === 0) {
@@ -60,11 +53,6 @@ export default class Scene {
             this.terrain = new THREE.Mesh(this.geometry, this.material);
             this.terrain.rotation.x = -Math.PI / 2;
             this.terrain.position.y = -336;
-
-            // this.wire = new THREE.Mesh(this.geometry, this.wireMaterial);
-            // this.wire.rotation.x = -Math.PI / 2;
-            // this.wire.position.y = -335.8;
-
             this.scene.add(this.terrain /* , this.wire*/);
             return this;
         };
@@ -72,15 +60,17 @@ export default class Scene {
         inception();
     }
     generateBackground() {
-        const materialIcosahedron = new THREE.MeshLambertMaterial({
-            color: BACKGROUND
+        const iosahedronGeometry = new THREE.IcosahedronGeometry(3000, 1);
+        const icosahedronMaterial = new THREE.MeshPhongMaterial({
+            color: 0x222222,
+            shading: THREE.FlatShading,
+            side: THREE.BackSide
         });
-        this.sphereBackground = new THREE.Mesh(
-            new THREE.SphereGeometry(3200, 128, 128),
-            materialIcosahedron
+        const icosahedron = new THREE.Mesh(
+            iosahedronGeometry,
+            icosahedronMaterial
         );
-        this.sphereBackground.material.side = THREE.DoubleSide;
-        this.scene.add(this.sphereBackground);
+        this.scene.add(icosahedron);
     }
     draw() {
         this.stats.domElement.style.position = "absolute";
@@ -88,10 +78,11 @@ export default class Scene {
         this.stats.domElement.style.right = "0px";
         document.body.appendChild(this.stats.domElement);
 
-        this.map = new Map(this.scene);
-        this.map.load();
+        this.newMap = new NewMap(this.scene);
+        this.newMap.load();
 
-        this.genesisDevice();
+        // this.generateBackground();
+        // this.genesisDevice();
         this.player = new Player(
             this.scene,
             this.camera,
@@ -101,7 +92,7 @@ export default class Scene {
             6 * this.cubeSize,
             0x575757,
             180,
-            this.map.collidableMeshList
+            this.newMap.collidableMeshList
         );
         this.player.draw();
 
@@ -125,9 +116,6 @@ export default class Scene {
             })
         );
         this.scene.add(this.marker);
-
-        // const tank = new Supertank(this.scene);
-        // tank.draw();
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
@@ -167,13 +155,13 @@ export default class Scene {
         });
         document.onmousemove = event => {
             event.preventDefault();
-            console.log(this.player.player.main);
-            this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
-            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            this.raycaster.setFromCamera(this.mouse, this.camera);
-            this.raycaster.ray.intersectBox(this.plane, this.intersectPoint);
-            this.player.player.gun.lookAt(this.intersectPoint);
-            this.marker.position.copy(this.intersectPoint);
+            // console.log(this.player.player.main);
+            // this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
+            // this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            // this.raycaster.setFromCamera(this.mouse, this.camera);
+            // this.raycaster.ray.intersectBox(this.plane, this.intersectPoint);
+            // this.player.player.gun.lookAt(this.intersectPoint);
+            // this.marker.position.copy(this.intersectPoint);
             // this.camera.lookAt(this.intersectPoint);
             // this.player.rotateGun(cursorX, cursorY);
         };
@@ -221,18 +209,20 @@ export default class Scene {
         if (this.flagRight) {
             this.player.moveRight();
         }
-
         if (this.flagBottom) {
             this.player.moveBottom();
         }
-        this.checkElevator(this.player.player, this.map.elevators);
-
+        this.checkElevator(this.player.player, this.newMap.elevators);
         this.camera.position
             .copy(this.player.player.tank.position)
             .add(new THREE.Vector3(0, 500, 600));
         this.camera.lookAt(this.player.player.tank.position);
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));
-        this.renderer.render(this.scene, this.camera);
+        this.composer.render();
+        this.shaderPass.uniforms.resolution.value.set(
+            window.innerWidth,
+            window.innerHeight
+        );
     }
 }
