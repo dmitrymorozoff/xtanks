@@ -31,7 +31,7 @@ export default class Lamp {
         trunk.position.set(this.x, this.y + this.size * 1.5, this.z);
         this.lamp.add(trunk);
 
-        const light = new THREE.PointLight(this.color, 1.9, 3500, 2.0);
+        const light = new THREE.PointLight(this.color, 5.7, 1800, 2.0);
         light.add(new THREE.Mesh(capGeometry, capMaterial));
         light.position.set(this.x, this.y, this.z);
         this.scene.add(light);

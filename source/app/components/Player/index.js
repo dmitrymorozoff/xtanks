@@ -22,7 +22,7 @@ export default class Player {
         this.color = color;
         this.player = null;
         this.rotate = rotate;
-        this.speed = 12;
+        this.speed = 17;
         this.angle = 0;
         this.collidableMeshList = collidableMeshList;
     }

@@ -1,9 +1,18 @@
 import * as THREE from "three";
 import { LEVEL_1 } from "./Level/index.js";
 import Light from "../Light/index.js";
+import Lamp from "../Lamp/index.js";
+import RotationCube from "../RotationCube/index.js";
 import getRandomInt, { makeCube } from "../../../utils/index.js";
 import { floorMaterial } from "./GeometryAndMaterials/floor.js";
-import { FLOOR, WALL, LIGHT, CUBE_SIZE } from "../../constants/index.js";
+import {
+    FLOOR,
+    WALL,
+    LIGHT,
+    LAMP,
+    CUBE_SIZE,
+    ROTATION_CUBE
+} from "../../constants/index.js";
 
 export default class NewMap {
     constructor(scene, x = 0, y = 0, z = 0) {
@@ -16,9 +25,9 @@ export default class NewMap {
         this.cubesBarrier = [];
         this.elevators = [];
         this.colors = {
-            floorColors: [0x111111, 0x111111, 0x222222],
-            wallColors: [0x111111],
-            lampColors: [0xffffff],
+            floorColors: [0x060606, 0x121214, 0x080808],
+            wallColors: [0x060606, 0x161616, 0x161616, 0x590000],
+            lampColors: [0xff0000],
             // pyramidColors: [PURPLE, PINK, RED],
             // rotationCube: [RED, PINK, PURPLE],
             floorBottomColors: [0x222222, 0x111111, 0x222222]
@@ -73,32 +82,6 @@ export default class NewMap {
                                     )
                                 ]
                             );
-                            // let type = 0;
-                            // if (heightWall > 1) {
-                            //     type = 1;
-                            // } else {
-                            //     type = getRandomInt(2, 3);
-                            // }
-                            // let y = i * this.cubeSize;
-                            // let barrier = new Wall(
-                            //     this.scene,
-                            //     this.cubeSize,
-                            //     heightWall,
-                            //     k * this.cubeSize - centerMapJ,
-                            //     i * this.cubeSize,
-                            //     j * this.cubeSize - centerMapI,
-                            //     this.colors.wallColors[
-                            //         getRandomInt(
-                            //             0,
-                            //             this.colors.wallColors.length
-                            //         )
-                            //     ],
-                            //     type,
-                            //     wallMaterials,
-                            //     wallGeometries
-                            // );
-                            // this.collidableMeshList.push(barrier.wall);
-                            // barrier.draw();
                             break;
                         case LIGHT:
                             let light = new Light(
@@ -116,13 +99,40 @@ export default class NewMap {
                             );
                             light.load();
                             break;
+                        case LAMP:
+                            let lamp = new Lamp(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            lamp.load();
+                            break;
+                        case ROTATION_CUBE:
+                            let rotationCube = new RotationCube(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                [0x670000,0x810000,0x350000]
+                            );
+                            rotationCube.load();
+                            rotationCube.move();
+                            break;
                         default:
                             break;
                     }
                 }
             }
         }
-        console.log(mergedFloorGeometry);
         const floor = new THREE.Mesh(mergedFloorGeometry, floorMaterial);
         this.scene.add(floor);
     }

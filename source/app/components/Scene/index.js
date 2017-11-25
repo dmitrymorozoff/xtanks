@@ -1,5 +1,6 @@
 import Stats from "stats.js";
 import NewMap from "../NewMap/index.js";
+import Particles from "../Particles/index.js";
 import Player from "../Player/index.js";
 import * as THREE from "three";
 import { BACKGROUND } from "../../constants/index.js";
@@ -41,7 +42,8 @@ export default class Scene {
             98
         );
         this.material = new THREE.MeshLambertMaterial({
-            color: BACKGROUND
+            color: BACKGROUND,
+            shading: THREE.FlatShading
         });
         const inception = () => {
             for (let i = 0; i < this.geometry.vertices.length; i++) {
@@ -82,7 +84,7 @@ export default class Scene {
         this.newMap.load();
 
         // this.generateBackground();
-        // this.genesisDevice();
+        this.genesisDevice();
         this.player = new Player(
             this.scene,
             this.camera,
@@ -90,32 +92,34 @@ export default class Scene {
             3 * this.cubeSize,
             this.cubeSize,
             6 * this.cubeSize,
-            0x575757,
+            0x000000,
             180,
             this.newMap.collidableMeshList
         );
         this.player.draw();
+        const particles = new Particles(this.scene, 2500,500, 2500, 0xff0000, 500);
+        particles.draw();
 
         // Внешняя коробка для raycaster
-        const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
-        const cameraBoxMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff00
-        });
-        const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
-        cameraBox.geometry.computeBoundingBox();
-        this.plane = new THREE.Box3(
-            cameraBox.geometry.boundingBox.min,
-            cameraBox.geometry.boundingBox.max
-        );
+        // const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
+        // const cameraBoxMaterial = new THREE.MeshBasicMaterial({
+        //     color: 0x00ff00
+        // });
+        // const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
+        // cameraBox.geometry.computeBoundingBox();
+        // this.plane = new THREE.Box3(
+        //     cameraBox.geometry.boundingBox.min,
+        //     cameraBox.geometry.boundingBox.max
+        // );
 
-        // Точка на карте которая следует за Raycaster
-        this.marker = new THREE.Mesh(
-            new THREE.SphereGeometry(10, 4, 2),
-            new THREE.MeshBasicMaterial({
-                color: "red"
-            })
-        );
-        this.scene.add(this.marker);
+        // // Точка на карте которая следует за Raycaster
+        // this.marker = new THREE.Mesh(
+        //     new THREE.SphereGeometry(10, 4, 2),
+        //     new THREE.MeshBasicMaterial({
+        //         color: "red"
+        //     })
+        // );
+        // this.scene.add(this.marker);
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {

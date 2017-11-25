@@ -27,7 +27,7 @@ export default class Tank {
             convertX,
             convertY,
             convertZ;
-        let mat = new THREE.MeshLambertMaterial({ color: 0x666666 });
+        let mat = new THREE.MeshLambertMaterial({ color: 0xC20114 });
         for (let i = 0; i < modelMap.length; i++) {
             objects = new THREE.Group();
             mergedObject = new THREE.Geometry();

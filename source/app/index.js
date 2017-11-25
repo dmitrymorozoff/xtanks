@@ -14,7 +14,7 @@ export default class Game {
     }
     start() {
         const scene = new THREE.Scene();
-        // scene.fog = new THREE.FogExp2(0x07041a, 0.0004);
+        scene.fog = new THREE.FogExp2(0x010101, 0.0002);
         const camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
@@ -29,7 +29,7 @@ export default class Game {
         /* const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);*/
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(0, 1, 0);
         // scene.add(directionalLight);
 
@@ -70,7 +70,6 @@ export default class Game {
             renderer.setSize(window.innerWidth, window.innerHeight);
             // target.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
-            shaderPass.updateProjectionMatrix();
         }
         addEventListener("resize", resize);
     }
