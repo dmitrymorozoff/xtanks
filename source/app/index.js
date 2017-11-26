@@ -24,7 +24,7 @@ export default class Game {
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0x404040));
+        scene.add(new THREE.AmbientLight(0x333333));
 
         /* const axisHelper = new THREE.AxisHelper(1000);
         scene.add(axisHelper);*/
@@ -34,7 +34,7 @@ export default class Game {
         // scene.add(directionalLight);
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x010101, 1);
 

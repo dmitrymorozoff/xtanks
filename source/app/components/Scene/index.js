@@ -83,8 +83,8 @@ export default class Scene {
         this.newMap = new NewMap(this.scene);
         this.newMap.load();
 
-        // this.generateBackground();
-        this.genesisDevice();
+        this.generateBackground();
+        // this.genesisDevice();
         this.player = new Player(
             this.scene,
             this.camera,
@@ -92,12 +92,19 @@ export default class Scene {
             3 * this.cubeSize,
             this.cubeSize,
             6 * this.cubeSize,
-            0x000000,
+            0x4B0082,
             180,
             this.newMap.collidableMeshList
         );
         this.player.draw();
-        const particles = new Particles(this.scene, 2500,500, 2500, 0xff0000, 500);
+        const particles = new Particles(
+            this.scene,
+            2500,
+            500,
+            2500,
+            0xff0000,
+            400
+        );
         particles.draw();
 
         // Внешняя коробка для raycaster
@@ -219,7 +226,7 @@ export default class Scene {
         this.checkElevator(this.player.player, this.newMap.elevators);
         this.camera.position
             .copy(this.player.player.tank.position)
-            .add(new THREE.Vector3(0, 500, 600));
+            .add(new THREE.Vector3(0, 800, 750));
         this.camera.lookAt(this.player.player.tank.position);
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));

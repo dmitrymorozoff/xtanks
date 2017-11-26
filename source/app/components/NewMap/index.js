@@ -3,6 +3,9 @@ import { LEVEL_1 } from "./Level/index.js";
 import Light from "../Light/index.js";
 import Lamp from "../Lamp/index.js";
 import RotationCube from "../RotationCube/index.js";
+import EdgesCube from "../EdgesCube/index.js";
+import Sphere from "../Sphere/index.js";
+import MovingCube from "../MovingCube/index.js";
 import getRandomInt, { makeCube } from "../../../utils/index.js";
 import { floorMaterial } from "./GeometryAndMaterials/floor.js";
 import {
@@ -11,7 +14,10 @@ import {
     LIGHT,
     LAMP,
     CUBE_SIZE,
-    ROTATION_CUBE
+    ROTATION_CUBE,
+    EDGES_CUBE,
+    SPHERE,
+    MOVING_CUBE
 } from "../../constants/index.js";
 
 export default class NewMap {
@@ -26,7 +32,7 @@ export default class NewMap {
         this.elevators = [];
         this.colors = {
             floorColors: [0x060606, 0x121214, 0x080808],
-            wallColors: [0x060606, 0x161616, 0x161616, 0x590000],
+            wallColors: [0x060606,0xED66EE, 0x161616, 0x161616, 0x590000],
             lampColors: [0xff0000],
             // pyramidColors: [PURPLE, PINK, RED],
             // rotationCube: [RED, PINK, PURPLE],
@@ -122,12 +128,56 @@ export default class NewMap {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                [0x670000,0x810000,0x350000]
+                                [0x670000, 0x810000, 0x350000]
                             );
                             rotationCube.load();
                             rotationCube.move();
                             break;
-                        default:
+                        case EDGES_CUBE:
+                            let edgesCube = new EdgesCube(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                [0x670000, 0x810000, 0x350000]
+                            );
+                            edgesCube.load();
+                            break;
+                        case SPHERE:
+                        let sphere = new Sphere(
+                            this.scene,
+                            this.cubeSize,
+                            k * this.cubeSize - centerMapJ,
+                            i * this.cubeSize,
+                            j * this.cubeSize - centerMapI,
+                            this.colors.lampColors[
+                                getRandomInt(
+                                    0,
+                                    this.colors.lampColors.length
+                                )
+                            ]
+                        );
+                        sphere.load();
+                        break;
+                        case MOVING_CUBE:
+                        let movingCube = new MovingCube(
+                            this.scene,
+                            this.cubeSize,
+                            k * this.cubeSize - centerMapJ,
+                            i * this.cubeSize,
+                            j * this.cubeSize - centerMapI,
+                            this.colors.lampColors[
+                                getRandomInt(
+                                    0,
+                                    this.colors.lampColors.length
+                                )
+                            ]
+                        );
+                        movingCube.load();
+                        movingCube.move();
+                        break;
+                    default:
                             break;
                     }
                 }

@@ -42,7 +42,7 @@ export default class Tank {
         );
 
         let materialGun = new THREE.MeshLambertMaterial({
-            color: 0x444444
+            color: 0x4B0082
         });
 
         this.gun = new THREE.Mesh(geometryGun, materialGun);

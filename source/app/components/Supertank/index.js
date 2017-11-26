@@ -27,7 +27,11 @@ export default class Tank {
             convertX,
             convertY,
             convertZ;
-        let mat = new THREE.MeshLambertMaterial({ color: 0xC20114 });
+        let mat = new THREE.MeshPhongMaterial({
+            color: 0xC31DC9,
+            specular: 0.2,
+            shininess: 0.5
+        });
         for (let i = 0; i < modelMap.length; i++) {
             objects = new THREE.Group();
             mergedObject = new THREE.Geometry();
@@ -84,6 +88,7 @@ export default class Tank {
             // this.tank.add(objects);
             this.tank.add(new THREE.Mesh(mergedObject, mat));
         }
+        this.tank.rotation.y = -90 * DEG_TO_RAD;
         this.tank.position.set(this.x, this.y, this.z);
         this.scene.add(this.tank);
     }
