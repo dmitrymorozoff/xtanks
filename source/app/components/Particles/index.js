@@ -19,7 +19,7 @@ export default class Particles {
         let x, y, z;
         for (let i = 0; i < this.particleCount; i++) {
             x = getRandomInt(-this.width, this.width);
-            y = getRandomInt(-this.height/5, this.height);
+            y = getRandomInt(-this.height / 5, this.height);
             z = getRandomInt(-this.depth, this.depth);
             particleGeometry.vertices.push(new THREE.Vector3(x, y, z));
         }

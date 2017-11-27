@@ -31,7 +31,7 @@ export default class Player {
             this.scene,
             this.x,
             this.y - this.size / 8,
-            this.z,
+            this.z
         );
         this.angle = this.rotate * 0.0174533;
         this.player.draw();
@@ -61,20 +61,19 @@ export default class Player {
     }
     rotateGun(x, y) {
         let angle = Math.atan2(y - this.y, x - this.x);
-        console.log(angle);
         let newAngle = angle * this.speed - this.angle;
         this.player.tank.rotation.y = newAngle;
     }
     detectCollision() {
         let originPoint = this.player.tank.position.clone();
         const self = this;
-        if (this.player.main.geometry) {
+        if (this.player.corps.geometry) {
             for (
                 let vertexIndex = 0;
-                vertexIndex < this.player.main.geometry.vertices.length;
+                vertexIndex < this.player.corps.geometry.vertices.length;
                 vertexIndex++
             ) {
-                var localVertex = this.player.main.geometry.vertices[
+                var localVertex = this.player.corps.geometry.vertices[
                     vertexIndex
                 ].clone();
                 let globalVertex = localVertex.applyMatrix4(
@@ -102,18 +101,8 @@ export default class Player {
             }
         }
     }
-    handleObjectsCollision(collisionResult) {
-        console.log(collisionResult);
-
-        // var collision = new THREE.Vector3();
-        // collision.x =
-        //     (meshA.position.x * OBJ_SIZE + meshB.position.x * OBJ_SIZE) /
-        //     (OBJ_SIZE + OBJ_SIZE);
-        // collision.y =
-        //     (meshA.position.y * OBJ_SIZE + meshB.position.y * OBJ_SIZE) /
-        //     (OBJ_SIZE + OBJ_SIZE);
-        // collision.z =
-        //     (meshA.position.z * OBJ_SIZE + meshB.position.z * OBJ_SIZE) /
-        //     (OBJ_SIZE + OBJ_SIZE);
+    handleObjectsCollision(intersects) {
+        console.log("hit");
+        console.log(intersects);
     }
 }

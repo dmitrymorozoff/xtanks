@@ -12,6 +12,7 @@ export default class Tank {
         this.model = model;
         this.basicSize = this.model.styles.geometries[1].size;
         this.tank = new THREE.Group();
+        this.corps = null;
     }
     draw() {
         let modelMap = this.model.map,
@@ -28,7 +29,7 @@ export default class Tank {
             convertY,
             convertZ;
         let mat = new THREE.MeshPhongMaterial({
-            color: 0xC31DC9,
+            color: 0xc31dc9,
             specular: 0.2,
             shininess: 0.5
         });
@@ -86,7 +87,12 @@ export default class Tank {
                 }
             }
             // this.tank.add(objects);
-            this.tank.add(new THREE.Mesh(mergedObject, mat));
+            if (modelMap[i].name === "gun") {
+                this.corps = new THREE.Mesh(mergedObject, mat);
+                this.tank.add(this.corps);
+            } else {
+                this.tank.add(new THREE.Mesh(mergedObject, mat));
+            }
         }
         this.tank.rotation.y = -90 * DEG_TO_RAD;
         this.tank.position.set(this.x, this.y, this.z);

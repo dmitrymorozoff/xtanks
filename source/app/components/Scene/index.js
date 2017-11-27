@@ -1,28 +1,31 @@
 import Stats from "stats.js";
-import NewMap from "../NewMap/index.js";
+import Map from "../Map/index.js";
 import Particles from "../Particles/index.js";
 import Player from "../Player/index.js";
+import SmokeParticles from "../SmokeParticles/index.js";
+import getRandomInt from "../../../utils/index.js";
 import * as THREE from "three";
 import { BACKGROUND } from "../../constants/index.js";
 
 export default class Scene {
-    constructor(scene, light, camera, composer, shaderPass) {
+    constructor(scene, camera, composer, shaderPass) {
         this.scene = scene;
-        this.light = light;
         this.camera = camera;
         this.composer = composer;
         this.animationId = 0;
         this.cubeSize = 100;
         this.player = null;
-        this.flagLeft = false;
-        this.flagRight = false;
-        this.flagTop = false;
-        this.flagBottom = false;
+        this.flagsMovePlayer = {
+            left: false,
+            right: false,
+            top: false,
+            bottom: false
+        };
         this.camPos = new THREE.Vector3(0, 0, 0);
         this.targetPos = new THREE.Vector3(0, 200, 300);
         this.origin = new THREE.Vector3(0, 0, 0);
         this.stats = new Stats();
-        this.newMap = null;
+        this.map = null;
         this.flagElevatorBottom = false;
         this.flagElevatorTop = false;
         this.onElevator = false;
@@ -55,13 +58,13 @@ export default class Scene {
             this.terrain = new THREE.Mesh(this.geometry, this.material);
             this.terrain.rotation.x = -Math.PI / 2;
             this.terrain.position.y = -336;
-            this.scene.add(this.terrain /* , this.wire*/);
+            this.scene.add(this.terrain);
             return this;
         };
 
         inception();
     }
-    generateBackground() {
+    drawBackground() {
         const iosahedronGeometry = new THREE.IcosahedronGeometry(3000, 1);
         const icosahedronMaterial = new THREE.MeshPhongMaterial({
             color: 0x222222,
@@ -74,17 +77,40 @@ export default class Scene {
         );
         this.scene.add(icosahedron);
     }
+    drawSmoke() {
+        const coordsSmoke = [
+            { x: 10, y: 1, z: 4 },
+            { x: 8, y: 1, z: -16 },
+            { x: -14, y: 1, z: -9 },
+            { x: 0, y: 1, z: -7 },
+            { x: -12, y: 1, z: 6 }
+        ];
+        for (let i = 0; i < coordsSmoke.length; i++) {
+            let smoke = new SmokeParticles(
+                this.scene,
+                coordsSmoke[i].x * this.cubeSize + Math.random() * 250 - 16,
+                coordsSmoke[i].y * this.cubeSize,
+                coordsSmoke[i].z * this.cubeSize + Math.random() * 250 - 16,
+                getRandomInt(100, 500),
+                "textures/smoke.png",
+                1600,
+                0x720000
+            );
+            smoke.draw();
+        }
+    }
     draw() {
         this.stats.domElement.style.position = "absolute";
         this.stats.domElement.style.top = "0px";
         this.stats.domElement.style.right = "0px";
         document.body.appendChild(this.stats.domElement);
 
-        this.newMap = new NewMap(this.scene);
-        this.newMap.load();
+        this.map = new Map(this.scene);
+        this.map.load();
 
-        this.generateBackground();
-        // this.genesisDevice();
+        this.drawBackground();
+        this.drawSmoke();
+
         this.player = new Player(
             this.scene,
             this.camera,
@@ -92,11 +118,12 @@ export default class Scene {
             3 * this.cubeSize,
             this.cubeSize,
             6 * this.cubeSize,
-            0x4B0082,
+            0x4b0082,
             180,
-            this.newMap.collidableMeshList
+            this.map.collidableMeshList
         );
         this.player.draw();
+
         const particles = new Particles(
             this.scene,
             2500,
@@ -107,40 +134,36 @@ export default class Scene {
         );
         particles.draw();
 
-        // Внешняя коробка для raycaster
-        // const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
-        // const cameraBoxMaterial = new THREE.MeshBasicMaterial({
-        //     color: 0x00ff00
-        // });
-        // const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
-        // cameraBox.geometry.computeBoundingBox();
-        // this.plane = new THREE.Box3(
-        //     cameraBox.geometry.boundingBox.min,
-        //     cameraBox.geometry.boundingBox.max
-        // );
+        const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
+        const cameraBoxMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00ff00
+        });
 
-        // // Точка на карте которая следует за Raycaster
-        // this.marker = new THREE.Mesh(
-        //     new THREE.SphereGeometry(10, 4, 2),
-        //     new THREE.MeshBasicMaterial({
-        //         color: "red"
-        //     })
-        // );
-        // this.scene.add(this.marker);
+        const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
+        cameraBox.geometry.computeBoundingBox();
+        this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+        // Точка на карте которая следует за Raycaster
+        this.marker = new THREE.Mesh(
+            new THREE.SphereGeometry(10, 4, 2),
+            new THREE.MeshBasicMaterial({
+                color: "red"
+            })
+        );
+        this.scene.add(this.marker);
 
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
                 case 65:
-                    this.flagLeft = true;
+                    this.flagsMovePlayer.left = true;
                     break;
                 case 68:
-                    this.flagRight = true;
+                    this.flagsMovePlayer.right = true;
                     break;
                 case 87:
-                    this.flagTop = true;
+                    this.flagsMovePlayer.top = true;
                     break;
                 case 83:
-                    this.flagBottom = true;
+                    this.flagsMovePlayer.bottom = true;
                     break;
                 default:
                     break;
@@ -149,16 +172,16 @@ export default class Scene {
         window.addEventListener("keyup", event => {
             switch (event.keyCode) {
                 case 65:
-                    this.flagLeft = false;
+                    this.flagsMovePlayer.left = false;
                     break;
                 case 68:
-                    this.flagRight = false;
+                    this.flagsMovePlayer.right = false;
                     break;
                 case 87:
-                    this.flagTop = false;
+                    this.flagsMovePlayer.top = false;
                     break;
                 case 83:
-                    this.flagBottom = false;
+                    this.flagsMovePlayer.bottom = false;
                     break;
                 default:
                     break;
@@ -166,15 +189,13 @@ export default class Scene {
         });
         document.onmousemove = event => {
             event.preventDefault();
-            // console.log(this.player.player.main);
-            // this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
-            // this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            // this.raycaster.setFromCamera(this.mouse, this.camera);
-            // this.raycaster.ray.intersectBox(this.plane, this.intersectPoint);
-            // this.player.player.gun.lookAt(this.intersectPoint);
-            // this.marker.position.copy(this.intersectPoint);
-            // this.camera.lookAt(this.intersectPoint);
-            // this.player.rotateGun(cursorX, cursorY);
+            console.log(this.player.player.main);
+            this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
+            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+            this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
+            this.player.player.corps.lookAt(this.intersectPoint);
+            this.marker.position.copy(this.intersectPoint);
         };
     }
     checkElevator(tank, elevators) {
@@ -196,7 +217,6 @@ export default class Scene {
                     this.flagElevatorTop = true;
                 }
                 if (elevatorPosY > 0 && tankPos.y <= 100) {
-                    this.war = true;
                 }
                 if (
                     (this.flagElevatorBottom && tankPos.y === 100) ||
@@ -211,19 +231,20 @@ export default class Scene {
         }
     }
     animate() {
-        if (this.flagTop) {
+        if (this.flagsMovePlayer.top) {
             this.player.moveTop();
         }
-        if (this.flagLeft) {
+        if (this.flagsMovePlayer.left) {
             this.player.moveLeft();
         }
-        if (this.flagRight) {
+        if (this.flagsMovePlayer.right) {
             this.player.moveRight();
         }
-        if (this.flagBottom) {
+        if (this.flagsMovePlayer.bottom) {
             this.player.moveBottom();
         }
-        this.checkElevator(this.player.player, this.newMap.elevators);
+        // this.player.detectCollision();
+        this.checkElevator(this.player.player, this.map.elevators);
         this.camera.position
             .copy(this.player.player.tank.position)
             .add(new THREE.Vector3(0, 800, 750));

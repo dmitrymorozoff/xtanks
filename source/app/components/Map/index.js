@@ -1,38 +1,24 @@
 import * as THREE from "three";
 import { LEVEL_1 } from "./Level/index.js";
 import Light from "../Light/index.js";
-import Wall from "../Wall/index.js";
-import Elevator from "../Elevator/index.js";
-import Pyramid from "../Pyramid/index.js";
 import Lamp from "../Lamp/index.js";
-import Tank from "../Tank/index.js";
-import Coin from "../Bonuses/Coin/index.js";
 import RotationCube from "../RotationCube/index.js";
+import EdgesCube from "../EdgesCube/index.js";
+import Sphere from "../Sphere/index.js";
+import MovingCube from "../MovingCube/index.js";
 import getRandomInt, { makeCube } from "../../../utils/index.js";
-import { landMaterial, landGeometry } from "./GeometryAndMaterials/land.js";
-import { wallMaterials, wallGeometries } from "./GeometryAndMaterials/wall.js";
+import { floorMaterial } from "./GeometryAndMaterials/floor.js";
 import {
-    PURPLE,
-    RED,
-    PINK,
-    CUBE_SIZE,
+    FLOOR,
     WALL,
     LIGHT,
-    MOVING_CUBE,
-    PYRAMID,
     LAMP,
-    RED_TANK,
-    BLUE_TANK,
+    CUBE_SIZE,
     ROTATION_CUBE,
-    EMPTY,
-    ELEVATOR,
-    CYAN,
-    COIN,
-    SECOND_FLOOR_HEIGHT
+    EDGES_CUBE,
+    SPHERE,
+    MOVING_CUBE
 } from "../../constants/index.js";
-import Clouds from "../Clouds/index.js";
-import PlaneCube from "../PlaneCube/index.js";
-import MovingCube from "../MovingCube/index.js";
 
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0) {
@@ -41,238 +27,165 @@ export default class Map {
         this.y = y;
         this.z = z;
         this.cubeSize = CUBE_SIZE;
-        this.cubesLand = [];
+        this.cubesfloor = [];
         this.cubesBarrier = [];
         this.elevators = [];
-        // 75218F
         this.colors = {
-            landColors: [0x0c082c, 0x0c082c, 0x1f095c],
-            wallColors: [PURPLE, PINK, PURPLE, RED],
-            lampColors: [PURPLE, PINK, RED],
-            pyramidColors: [PURPLE, PINK, RED],
-            rotationCube: [RED, PINK, PURPLE],
-            landBottomColors: [0x111111, 0x0c082c, 0x1f095c]
+            floorColors: [0x060606, 0x121214, 0x080808],
+            wallColors: [0x060606, 0xed66ee, 0x161616, 0x161616, 0x590000],
+            lampColors: [0xff0000],
+            floorBottomColors: [0x222222, 0x111111, 0x222222]
         };
         this.collidableMeshList = [];
     }
-    generateFloor(geometry, k, i, j, centerI, centerJ) {
-        let landGeometry = makeCube(
-            this.cubeSize,
-            this.colors.landColors[
-                getRandomInt(0, this.colors.landColors.length)
-            ]
-        );
+    generateMergedObject(geometry, k, i, j, centerI, centerJ, color) {
+        let cubeGeometry = makeCube(this.cubeSize, color);
         let x = k * this.cubeSize - centerJ;
-        let y = null;
-        const SECOND_FLOOR = 3;
-        const FLOOR_HEIGHT = 8;
-        if (i === SECOND_FLOOR) {
-            y = FLOOR_HEIGHT * this.cubeSize;
-        } else {
-            y = i * this.cubeSize;
-        }
+        let y = i * this.cubeSize;
         let z = j * this.cubeSize - centerI;
-        landGeometry.position.set(x, y, z);
-        landGeometry.updateMatrix();
-        geometry.merge(landGeometry.geometry, landGeometry.matrix);
+        cubeGeometry.position.set(x, y, z);
+        cubeGeometry.updateMatrix();
+        geometry.merge(cubeGeometry.geometry, cubeGeometry.matrix);
     }
     load() {
         const centerMapI = LEVEL_1[0].length / 2 * this.cubeSize;
         const centerMapJ = LEVEL_1[0][0].length / 2 * this.cubeSize;
-        const SECOND_FLOOR_WALL = 4;
-        let mergedLandGeometry = new THREE.Geometry();
+        let mergedFloorGeometry = new THREE.Geometry();
+        let mergedWallGeometry = new THREE.Geometry();
         for (let i = 0; i < LEVEL_1.length; i++) {
             for (let j = 0; j < LEVEL_1[i].length; j++) {
                 for (let k = 0; k < LEVEL_1[i][j].length; k++) {
-                    if (
-                        (i === 0 && LEVEL_1[i][j][k] !== EMPTY) ||
-                        (i === 3 && LEVEL_1[i][j][k] !== EMPTY)
-                    ) {
-                        this.generateFloor(
-                            mergedLandGeometry,
-                            k,
-                            i,
-                            j,
-                            centerMapI,
-                            centerMapJ
-                        );
-                    } else {
-                        switch (LEVEL_1[i][j][k]) {
-                            case WALL:
-                                let heightWall = getRandomInt(1, 3);
-                                let type = 0;
-                                if (heightWall > 1) {
-                                    type = 1;
-                                } else {
-                                    type = getRandomInt(2, 3);
-                                }
-                                let y = i * this.cubeSize;
-                                if (i === SECOND_FLOOR_WALL) {
-                                    y = SECOND_FLOOR_HEIGHT * this.cubeSize;
-                                }
-                                let barrier = new Wall(
-                                    this.scene,
-                                    this.cubeSize,
-                                    heightWall,
-                                    k * this.cubeSize - centerMapJ,
-                                    y,
-                                    j * this.cubeSize - centerMapI,
-                                    this.colors.wallColors[
-                                        getRandomInt(
-                                            0,
-                                            this.colors.wallColors.length
-                                        )
-                                    ],
-                                    type,
-                                    wallMaterials,
-                                    wallGeometries
-                                );
-                                this.collidableMeshList.push(barrier.wall);
-                                barrier.draw();
-                                break;
-                            case LIGHT:
-                                let y2 = i * this.cubeSize - this.cubeSize / 4;
-                                if (i === SECOND_FLOOR_WALL) {
-                                    y2 =
-                                        SECOND_FLOOR_HEIGHT * this.cubeSize -
-                                        this.cubeSize / 4;
-                                }
-                                let light = new Light(
-                                    this.scene,
-                                    k * this.cubeSize - centerMapJ,
-                                    y2,
-                                    j * this.cubeSize - centerMapI,
-                                    this.cubeSize,
-                                    this.colors.lampColors[
-                                        getRandomInt(
-                                            0,
-                                            this.colors.lampColors.length
-                                        )
-                                    ]
-                                );
-                                light.load();
-                                break;
-                            // case MOVING_CUBE:
-                            //     let movingCube = new MovingCube(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         i * this.cubeSize + 10,
-                            //         j * this.cubeSize - centerMapI,
-                            //         this.colors.landColors[
-                            //             getRandomInt(
-                            //                 0,
-                            //                 this.colors.landColors.length
-                            //             )
-                            //         ]
-                            //     );
-                            //     movingCube.load();
-                            //     movingCube.move();
-                            //     break;
-                            // case PYRAMID:
-                            //     let pyramid = new Pyramid(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         i * this.cubeSize,
-                            //         j * this.cubeSize - centerMapI,
-                            //         this.colors.pyramidColors
-                            //     );
-                            //     pyramid.load();
-                            //     pyramid.move();
-                            //     break;
-                            // case ROTATION_CUBE:
-                            //     const rotationCube = new RotationCube(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         i * this.cubeSize,
-                            //         j * this.cubeSize - centerMapI,
-                            //         this.colors.rotationCube
-                            //     );
-                            //     rotationCube.load();
-                            //     rotationCube.move();
-                            //     break;
-                            // case LAMP:
-                            //     let height = 500;
-                            //     if (i === 5) {
-                            //         height = 1300;
-                            //     }
-                            //     let lamp = new Lamp(
-                            //         this.scene,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         height,
-                            //         j * this.cubeSize - centerMapI,
-                            //         this.cubeSize,
-                            //         this.colors.lampColors[
-                            //             getRandomInt(
-                            //                 0,
-                            //                 this.colors.lampColors.length
-                            //             )
-                            //         ]
-                            //     );
-                            //     lamp.load();
-                            //     break;
-                            // case RED_TANK:
-                            //     let tankRed = new Tank(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         i * this.cubeSize,
-                            //         j * this.cubeSize - centerMapI,
-                            //         0x575757
-                            //     );
-                            //     tankRed.load();
-                            //     break;
-                            // case BLUE_TANK:
-                            //     let tankBlue = new Tank(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         i * this.cubeSize,
-                            //         j * this.cubeSize - centerMapI,
-                            //         0x575757,
-                            //         -180
-                            //     );
-                            //     tankBlue.load();
-                            //     break;
-                            // case ELEVATOR:
-                            //     let elevator = new Elevator(
-                            //         this.scene,
-                            //         this.cubeSize,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         (i - 1) * this.cubeSize - this.cubeSize / 4,
-                            //         j * this.cubeSize - centerMapI,
-                            //         PURPLE
-                            //     );
-                            //     this.elevators.push(elevator);
-                            //     elevator.draw();
-                            //     elevator.move();
-                            //     break;
-                            // case COIN:
-                            //     let yD = i * this.cubeSize;
-                            //     if (i === SECOND_FLOOR_WALL) {
-                            //         yD = SECOND_FLOOR_HEIGHT * this.cubeSize;
-                            //     }
-                            //     let coin = new Coin(
-                            //         this.scene,
-                            //         this.cubeSize / 3.5,
-                            //         k * this.cubeSize - centerMapJ,
-                            //         yD,
-                            //         j * this.cubeSize - centerMapI,
-                            //         PINK
-                            //     );
-                            //     coin.draw();
-                            //     coin.move();
-                            //     break;
-                            default:
-                                break;
-                        }
+                    switch (LEVEL_1[i][j][k]) {
+                        case FLOOR:
+                            this.generateMergedObject(
+                                mergedFloorGeometry,
+                                k,
+                                i,
+                                j,
+                                centerMapI,
+                                centerMapJ,
+                                this.colors.floorColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.floorColors.length
+                                    )
+                                ]
+                            );
+                            break;
+                        case WALL:
+                            this.generateMergedObject(
+                                mergedWallGeometry,
+                                k,
+                                i,
+                                j,
+                                centerMapI,
+                                centerMapJ,
+                                this.colors.wallColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.wallColors.length
+                                    )
+                                ]
+                            );
+                            break;
+                        case LIGHT:
+                            let light = new Light(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            light.load();
+                            break;
+                        case LAMP:
+                            let lamp = new Lamp(
+                                this.scene,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.cubeSize,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            lamp.load();
+                            break;
+                        case ROTATION_CUBE:
+                            let rotationCube = new RotationCube(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                [0x670000, 0x810000, 0x350000]
+                            );
+                            rotationCube.load();
+                            rotationCube.move();
+                            break;
+                        case EDGES_CUBE:
+                            let edgesCube = new EdgesCube(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                [0x670000, 0x810000, 0x350000]
+                            );
+                            edgesCube.load();
+                            break;
+                        case SPHERE:
+                            let sphere = new Sphere(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            sphere.load();
+                            break;
+                        case MOVING_CUBE:
+                            let movingCube = new MovingCube(
+                                this.scene,
+                                this.cubeSize,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            movingCube.load();
+                            movingCube.move();
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
         }
-        const land = new THREE.Mesh(mergedLandGeometry, landMaterial);
-        this.scene.add(land);
+        const floor = new THREE.Mesh(mergedFloorGeometry, floorMaterial);
+        const wall = new THREE.Mesh(mergedWallGeometry, floorMaterial);
+        this.collidableMeshList.push(wall);
+        this.scene.add(floor);
+        this.scene.add(wall);
     }
 }
