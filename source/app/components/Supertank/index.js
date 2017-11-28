@@ -1,157 +1,145 @@
 import * as THREE from "three";
-import model from "./Supertank.js";
+import model from "./t90.js";
 
-const DEG_TO_RAD = 0.0174533;
+const DEG_TO_RAD    = 0.0174533;
 
 export default class Tank {
-    constructor(scene, x = 0, y = 0, z = 0, scale = 1) {
-        this.scene = scene;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.model = model;
-        this.basicSize = this.model.styles.geometries[1].size;
-        this.tank = new THREE.Group();
-        this.corps = null;
+    constructor(scene = null, x = 0, y = 0, z = 0, rotate = 0, scale = 1) {
+        this.scene      = scene;
+        this.x          = x;
+        this.y          = y + 100;
+        this.z          = z;
+        this.rotate     = rotate;
+        this.scale      = scale;
+        this.model      = model;
+        this.basic_size = this.model.styles.geometries[1].size;
+        this.tank       = new THREE.Group();
     }
     draw() {
-        let modelMap = this.model.map,
-            modelObjects = this.model.objects,
-            modelGeometries = this.model.styles.geometries,
-            modelMaterials = this.model.styles.materials,
-            modelSize = this.model.info.size,
-            geometries = this.getGeometries(),
-            materials = this.getMaterials(),
-            object,
-            objects,
-            mergedObject,
-            convertX,
-            convertY,
-            convertZ;
-        let mat = new THREE.MeshPhongMaterial({
-            color: 0xc31dc9,
-            specular: 0.2,
-            shininess: 0.5
-        });
-        for (let i = 0; i < modelMap.length; i++) {
-            objects = new THREE.Group();
-            mergedObject = new THREE.Geometry();
-            for (let y = 0; y < modelMap[i].map.length; y++) {
-                for (let x = 0; x < modelMap[i].map[y].length; x++) {
-                    for (let z = 0; z < modelMap[i].map[y][x].length; z++) {
-                        if (modelMap[i].map[y][x][z]) {
-                            /* object = new THREE.Mesh(
-                                geometries[modelObjects[modelMap[i].map[y][x][z]].geometry],
-                                materials[modelObjects[modelMap[i].map[y][x][z]].material]
-                            );*/
-                            convertX =
-                                x * this.basicSize.width -
-                                modelSize.width * this.basicSize.width / 2 +
-                                this.basicSize.width / 2 +
-                                modelGeometries[
-                                    modelObjects[modelMap[i].map[y][x][z]]
-                                        .geometry
-                                ].bias.x;
-                            convertY =
-                                (y + modelMap[i].height) *
-                                    this.basicSize.height +
-                                this.basicSize.height / 2 +
-                                modelGeometries[
-                                    modelObjects[modelMap[i].map[y][x][z]]
-                                        .geometry
-                                ].bias.y;
-                            convertZ =
-                                z * this.basicSize.length -
-                                modelSize.length * this.basicSize.length / 2 +
-                                this.basicSize.length / 2 +
-                                modelGeometries[
-                                    modelObjects[modelMap[i].map[y][x][z]]
-                                        .geometry
-                                ].bias.z;
-                            geometries[
-                                modelObjects[modelMap[i].map[y][x][z]].geometry
-                            ].translate(convertX, convertY, convertZ);
-                            mergedObject.merge(
-                                geometries[
-                                    modelObjects[modelMap[i].map[y][x][z]]
-                                        .geometry
-                                ]
-                            );
-                            geometries[
-                                modelObjects[modelMap[i].map[y][x][z]].geometry
-                            ].translate(-convertX, -convertY, -convertZ);
-                            /* object.position.set(convertX, convertY, convertZ);
-                            objects.add(object);*/
+        this.scene.add(this.tank);
+    }
+    initModel() {
+        let model_size      = this.model.info.size,
+            model_map       = this.model.maps,
+            model_geometries= this.model.styles.geometries,
+            model_objects   = this.model.objects,
+            geometries      = this.getGeometries(),
+            materials       = this.getMaterials(),
+            colors          = this.getColors(),
+            merged_object,
+            convert_x,
+            convert_y,
+            convert_z,
+            geometry_id,
+            material_id,
+            color_id,
+            map_value;
+
+        for (let i = 0; i < model_map.length; i++) {
+            merged_object   = new THREE.Geometry();
+            material_id     = model_map[i].material_id;
+
+            for (let y = 0; y < model_map[i].map.length; y++) {
+                for (let x = 0; x < model_map[i].map[y].length; x++) {
+                    for (let z = 0; z < model_map[i].map[y][x].length; z++) {
+                        map_value = model_map[i].map[y][x][z];
+
+                        if (map_value) {
+
+                            convert_x   = x * this.basic_size.width
+                                            - (model_size.width * this.basic_size.width) / 2
+                                            + this.basic_size.width / 2
+                                            + model_objects[map_value].bias.x;
+                            convert_y   = (y + model_map[i].height) * this.basic_size.height
+                                            + this.basic_size.height / 2
+                                            + model_objects[map_value].bias.y;
+                            convert_z   = z * this.basic_size.length
+                                            - (model_size.length * this.basic_size.length) / 2
+                                            + this.basic_size.length / 2
+                                            + model_objects[map_value].bias.z;
+
+                            geometry_id     = model_objects[map_value].geometry_id;
+                            color_id        = model_objects[map_value].color_id;
+
+                            geometries[geometry_id].rotateX(model_objects[map_value].rotate.x * DEG_TO_RAD);
+                            geometries[geometry_id].rotateY(model_objects[map_value].rotate.y * DEG_TO_RAD);
+                            geometries[geometry_id].rotateZ(model_objects[map_value].rotate.z * DEG_TO_RAD);
+                            geometries[geometry_id].translate(convert_x, convert_y, convert_z);
+                            for (let k = 0; k < geometries[geometry_id].faces.length; k++) {
+                                geometries[geometry_id].faces[k].color.set(colors[color_id]);
+                            }
+
+                            merged_object.merge(geometries[geometry_id]);
+
+                            geometries[geometry_id].translate(-convert_x, -convert_y, -convert_z);
+                            geometries[geometry_id].rotateZ(-model_objects[map_value].rotate.z * DEG_TO_RAD);
+                            geometries[geometry_id].rotateY(-model_objects[map_value].rotate.y * DEG_TO_RAD);
+                            geometries[geometry_id].rotateX(-model_objects[map_value].rotate.x * DEG_TO_RAD);
                         }
                     }
                 }
             }
-            // this.tank.add(objects);
-            if (modelMap[i].name === "gun") {
-                this.corps = new THREE.Mesh(mergedObject, mat);
-                this.tank.add(this.corps);
-            } else {
-                this.tank.add(new THREE.Mesh(mergedObject, mat));
-            }
+
+            this.tank.add(new THREE.Mesh(merged_object, materials[material_id]));
         }
-        this.tank.rotation.y = -90 * DEG_TO_RAD;
+
         this.tank.position.set(this.x, this.y, this.z);
-        this.scene.add(this.tank);
+        this.tank.rotateY(this.rotate * DEG_TO_RAD);
     }
     getGeometries() {
-        let geometries = {},
-            modelGeometries = this.model.styles.geometries;
-        for (let i = 1; i <= Object.keys(modelGeometries).length; i++) {
-            switch (modelGeometries[i].type) {
+        let model_geometries = this.model.styles.geometries,
+            geometries = {};
+
+        for (let i = 1; i <= Object.keys(model_geometries).length; i++) {
+            switch (model_geometries[i].type) {
+
                 case 1:
                     geometries[i] = new THREE.BoxGeometry(
-                        modelGeometries[i].size.width,
-                        modelGeometries[i].size.height,
-                        modelGeometries[i].size.length
-                    );
-                    geometries[i].rotateX(
-                        modelGeometries[i].rotate.x * DEG_TO_RAD
-                    );
-                    geometries[i].rotateY(
-                        modelGeometries[i].rotate.y * DEG_TO_RAD
-                    );
-                    geometries[i].rotateZ(
-                        modelGeometries[i].rotate.z * DEG_TO_RAD
+                        model_geometries[i].size.width,
+                        model_geometries[i].size.height,
+                        model_geometries[i].size.length
                     );
                     break;
+
                 case 2:
                     geometries[i] = new THREE.CylinderGeometry(
-                        modelGeometries[i].size.radiusBegin,
-                        modelGeometries[i].size.radiusEnd,
-                        modelGeometries[i].size.length,
-                        modelGeometries[i].size.quality
-                    );
-                    geometries[i].rotateX(
-                        modelGeometries[i].rotate.x * DEG_TO_RAD
-                    );
-                    geometries[i].rotateY(
-                        modelGeometries[i].rotate.y * DEG_TO_RAD
-                    );
-                    geometries[i].rotateZ(
-                        modelGeometries[i].rotate.z * DEG_TO_RAD
+                        model_geometries[i].size.radius_begin,
+                        model_geometries[i].size.radius_end,
+                        model_geometries[i].size.length,
+                        model_geometries[i].size.quality
                     );
                     break;
             }
         }
+
         return geometries;
     }
     getMaterials() {
-        let materials = {},
-            modelMaterials = this.model.styles.materials;
-        for (let i = 1; i <= Object.keys(modelMaterials).length; i++) {
-            switch (modelMaterials[i].type) {
+        let model_materials = this.model.styles.materials,
+            materials = {};
+
+        for (let i = 1; i <= Object.keys(model_materials).length; i++) {
+            switch (model_materials[i].type) {
+
                 case 1:
-                    materials[i] = new THREE.MeshBasicMaterial(
-                        modelMaterials[i].params
+                    model_materials[i].params['vertexColors'] = THREE.VertexColors;
+                    materials[i] = new THREE.MeshLambertMaterial(
+                        model_materials[i].params
                     );
                     break;
             }
         }
+
         return materials;
+    }
+    getColors() {
+        let model_colors = this.model.styles.colors,
+            colors = {};
+
+        for (let i = 1; i <= Object.keys(model_colors).length; i++) {
+            colors[i] = model_colors[i];
+        }
+
+        return colors;
     }
 }

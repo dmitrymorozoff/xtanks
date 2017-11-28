@@ -6,6 +6,7 @@ import SmokeParticles from "../SmokeParticles/index.js";
 import getRandomInt from "../../../utils/index.js";
 import * as THREE from "three";
 import { BACKGROUND } from "../../constants/index.js";
+import Supertank from "../Supertank/index.js";
 
 export default class Scene {
     constructor(scene, camera, composer, shaderPass) {
@@ -138,6 +139,8 @@ export default class Scene {
         const cameraBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0x00ff00
         });
+
+        const tank1 = new Supertank(this.scene); tank1.initModel(); tank1.draw();
 
         const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
         cameraBox.geometry.computeBoundingBox();
