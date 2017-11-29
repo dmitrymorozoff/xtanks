@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import getRandomInt from "../../../utils/index.js";
+import getRandomInt from "../../../../utils/index.js";
 import { DEG_TO_RAD } from "../../constants/index.js";
 
 export default class Pyramid {

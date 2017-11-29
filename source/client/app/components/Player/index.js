@@ -27,13 +27,14 @@ export default class Player {
         this.collidableMeshList = collidableMeshList;
     }
     draw() {
+        this.angle = this.rotate * 0.0174533;
         this.player = new Supertank(
             this.scene,
             this.x,
             this.y - this.size / 8,
             this.z
         );
-        this.angle = this.rotate * 0.0174533;
+        this.player.initModel();
         this.player.draw();
     }
     moveLeft() {

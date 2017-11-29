@@ -4,6 +4,7 @@ import EffectComposer, {
     RenderPass,
     ShaderPass
 } from "three-effectcomposer-es6";
+import Client from "./client/index.js";
 const fxaa = require("three-shader-fxaa");
 window.THREE = THREE;
 
@@ -13,6 +14,8 @@ export default class Game {
         this.controls = null;
     }
     start() {
+        const client = new Client();
+        client.sendMessage();
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010101, 0.0002);
         const camera = new THREE.PerspectiveCamera(
@@ -46,12 +49,7 @@ export default class Game {
         shaderPass.renderToScreen = true;
         composer.addPass(shaderPass);
 
-        const gameScene = new Scene(
-            scene,
-            camera,
-            composer,
-            shaderPass
-        );
+        const gameScene = new Scene(scene, camera, composer, shaderPass);
         gameScene.draw();
         gameScene.animate();
 

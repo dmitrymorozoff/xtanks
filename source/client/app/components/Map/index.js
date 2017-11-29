@@ -6,7 +6,7 @@ import RotationCube from "../RotationCube/index.js";
 import EdgesCube from "../EdgesCube/index.js";
 import Sphere from "../Sphere/index.js";
 import MovingCube from "../MovingCube/index.js";
-import getRandomInt, { makeCube } from "../../../utils/index.js";
+import getRandomInt, { makeCube } from "../../../../utils/index.js";
 import { floorMaterial } from "./GeometryAndMaterials/floor.js";
 import {
     FLOOR,

@@ -3,10 +3,9 @@ import Map from "../Map/index.js";
 import Particles from "../Particles/index.js";
 import Player from "../Player/index.js";
 import SmokeParticles from "../SmokeParticles/index.js";
-import getRandomInt from "../../../utils/index.js";
+import getRandomInt from "../../../../utils/index";
 import * as THREE from "three";
-import { BACKGROUND } from "../../constants/index.js";
-import Supertank from "../Supertank/index.js";
+import { BACKGROUND } from "../../constants/index";
 
 export default class Scene {
     constructor(scene, camera, composer, shaderPass) {
@@ -66,7 +65,7 @@ export default class Scene {
         inception();
     }
     drawBackground() {
-        const iosahedronGeometry = new THREE.IcosahedronGeometry(3000, 1);
+        const iosahedronGeometry = new THREE.IcosahedronGeometry(3400, 1);
         const icosahedronMaterial = new THREE.MeshPhongMaterial({
             color: 0x222222,
             shading: THREE.FlatShading,
@@ -110,7 +109,7 @@ export default class Scene {
         this.map.load();
 
         this.drawBackground();
-        this.drawSmoke();
+        // this.drawSmoke();
 
         this.player = new Player(
             this.scene,
@@ -139,8 +138,6 @@ export default class Scene {
         const cameraBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0x00ff00
         });
-
-        const tank1 = new Supertank(this.scene); tank1.initModel(); tank1.draw();
 
         const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
         cameraBox.geometry.computeBoundingBox();

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import getRandomInt from "../../../utils/index";
+import getRandomInt from "../../../../utils/index";
 
 export default class SmokeParticles {
     constructor(scene, x = 0, y = 0, z = 0, count, textureUrl, size, color) {

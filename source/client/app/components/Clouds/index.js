@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { TweenMax } from "gsap";
-import getRandomInt from "../../../utils/index.js";
+import getRandomInt from "../../../../utils/index.js";
 
 export default class Clouds {
     constructor(scene, x = 0, y = 0, z = 0) {

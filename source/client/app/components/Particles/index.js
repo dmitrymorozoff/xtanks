@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import getRandomInt from "../../../utils/index.js";
+import getRandomInt from "../../../../utils/index.js";
 
 export default class Particles {
     constructor(scene, width, height, depth, color, particleCount) {

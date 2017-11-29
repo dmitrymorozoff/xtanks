@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import getRandomInt from "../../../utils/index.js";
 import { TweenMax } from "gsap";
 import { DEG_TO_RAD } from "../../constants/index.js";
 
