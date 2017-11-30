@@ -1,5 +1,7 @@
 import Game from "./app/index.js";
-
+if (module && module.hot) {
+    module.hot.accept();
+}
 const gameSettings = {
     camera: {
         x: -1000,

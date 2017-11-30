@@ -1,30 +1,36 @@
-import * as express from "express";
-import * as WebSocketServer from "ws";
-let app = express();
+var socket = require("socket.io");
+var express = require("express");
+import getRandomInt from "../utils/index";
+const config = {
+    port: 3000
+};
+var app = express();
+let server = app.listen(config.port);
+app.use(express.static("dist/client"));
+console.log(`Server running on port ${config.port}`);
 
-app.set("port", process.env.PORT || 3000);
-app.use(express.static(__dirname + "/../client"));
-app.listen(3000, function() {
-    console.log("listen...");
-});
+let io = socket(server);
+let players = {};
 
-let clients = {};
-const webSocketServer = new WebSocketServer.Server({
-    port: 8080
-});
-
-webSocketServer.on("connection", function(ws) {
-    let id = Math.random();
-    clients[id] = ws;
-    console.log("Новое соединение " + id);
-    ws.on("message", function(message) {
-        console.log("Получено сообщение " + message);
-        for (var key in clients) {
-            clients[key].send(message);
-        }
+io.sockets.on("connection", function(socket) {
+    let id = socket.id.toString().substr(0, 5);
+    players[id] = {};
+    players[id].x = getRandomInt(0, 10);
+    players[id].y = 1;
+    players[id].z = getRandomInt(0, 10);
+    socket.json.send({ event: "connected", players, myId: id });
+    socket.broadcast.json.send({ event: "playerJoined", players, myId: id });
+    socket.on("message", function(msg) {
+        console.log(msg);
+        socket.json.send({
+            event: "messageFromServer",
+            name: id,
+            text: msg
+        });
     });
-    ws.on("close", function() {
-        console.log("Соединение закрыто " + id);
-        delete clients[id];
+    // При отключении клиента - уведомляем остальных
+    socket.on("disconnect", function() {
+        io.sockets.json.send({ event: "playerSplit", name: id });
+        delete players[id];
     });
 });

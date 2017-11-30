@@ -7,7 +7,7 @@ export default class Tank {
     constructor(scene = null, x = 0, y = 0, z = 0, rotate = -90, scale = 1) {
         this.scene = scene;
         this.x = x;
-        this.y = y + 100;
+        this.y = y;
         this.z = z;
         this.rotate = rotate;
         this.scale = scale;

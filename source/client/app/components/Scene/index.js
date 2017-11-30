@@ -4,6 +4,8 @@ import Particles from "../Particles/index.js";
 import Player from "../Player/index.js";
 import SmokeParticles from "../SmokeParticles/index.js";
 import getRandomInt from "../../../../utils/index";
+import IOClient from "../../IOClient/index";
+import Supertank from "../Supertank/index";
 import * as THREE from "three";
 import { BACKGROUND } from "../../constants/index";
 
@@ -36,6 +38,7 @@ export default class Scene {
         this.shaderPass = shaderPass;
         this.plane = null;
         this.marker = null;
+        this.client = null;
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -61,7 +64,6 @@ export default class Scene {
             this.scene.add(this.terrain);
             return this;
         };
-
         inception();
     }
     drawBackground() {
@@ -99,6 +101,36 @@ export default class Scene {
             smoke.draw();
         }
     }
+    drawPlayer(player) {
+        this.player = new Player(
+            this.scene,
+            this.camera,
+            this.cubeSize,
+            player.x * this.cubeSize,
+            player.y * this.cubeSize,
+            player.z * this.cubeSize,
+            0x4b0082,
+            180,
+            this.map.collidableMeshList
+        );
+        this.player.draw();
+    }
+    drawAllPlayers(players) {
+        for (let id in players) {
+            if (id !== players.myId) {
+                console.log(id,players.myId )
+                console.log(players[id]);
+                let player = new Supertank(
+                    this.scene,
+                    players[id].x * this.cubeSize,
+                    players[id].y * this.cubeSize,
+                    players[id].z * this.cubeSize
+                );
+                player.initModel();
+                player.draw();
+            }
+        }
+    }
     draw() {
         this.stats.domElement.style.position = "absolute";
         this.stats.domElement.style.top = "0px";
@@ -110,19 +142,6 @@ export default class Scene {
 
         this.drawBackground();
         // this.drawSmoke();
-
-        this.player = new Player(
-            this.scene,
-            this.camera,
-            this.cubeSize,
-            3 * this.cubeSize,
-            this.cubeSize,
-            6 * this.cubeSize,
-            0x4b0082,
-            180,
-            this.map.collidableMeshList
-        );
-        this.player.draw();
 
         const particles = new Particles(
             this.scene,
@@ -189,14 +208,32 @@ export default class Scene {
         });
         document.onmousemove = event => {
             event.preventDefault();
-            console.log(this.player.player.main);
-            this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
-            this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            this.raycaster.setFromCamera(this.mouse, this.camera);
-            this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
-            this.player.player.corps.lookAt(this.intersectPoint);
-            this.marker.position.copy(this.intersectPoint);
+            // this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
+            // this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            // this.raycaster.setFromCamera(this.mouse, this.camera);
+            // this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
+            // this.player.player.corps.lookAt(this.intersectPoint);
+            // this.marker.position.copy(this.intersectPoint);
         };
+        this.client = new IOClient();
+        this.client.socket.on("connect", () => {
+            this.client.socket.on("message", data => {
+                let myId  = null;
+                switch (data.event) {
+                    case "connected":
+                        myId = data.myId;
+                        this.drawPlayer(data.players[myId]);
+                        break;
+                    case "playerJoined":
+                        console.log(data);
+                        myId = data.myId;
+                        this.drawAllPlayers(data.players);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
     }
     checkElevator(tank, elevators) {
         let tankPos = tank.tank.position;
@@ -244,11 +281,13 @@ export default class Scene {
             this.player.moveBottom();
         }
         // this.player.detectCollision();
-        this.checkElevator(this.player.player, this.map.elevators);
-        this.camera.position
-            .copy(this.player.player.tank.position)
-            .add(new THREE.Vector3(0, 800, 750));
-        this.camera.lookAt(this.player.player.tank.position);
+        if (this.player !== null) {
+            this.checkElevator(this.player.player, this.map.elevators);
+            this.camera.position
+                .copy(this.player.player.tank.position)
+                .add(new THREE.Vector3(0, 800, 750));
+            this.camera.lookAt(this.player.player.tank.position);
+        }
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));
         this.composer.render();

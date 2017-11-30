@@ -1,44 +1,53 @@
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
-
-console.log(path.resolve(__dirname, "../dist/js"), "tesy");
 
 let config = {
     entry: ["./source/client/app.js"],
     output: {
-        path: path.resolve(__dirname, "../dist/js"),
+        path: path.resolve(__dirname, "../dist/client"),
         publicPath: "",
-        filename: "js/bundle.js"
+        filename: "bundle.js",
+        crossOriginLoading: "anonymous"
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: "babel-loader",
-                    options: {
-                        presets: [["env"]]
-                    }
-                }
+                test: [/\.js?$/],
+                loader: "babel-loader"
             }
         ]
     },
+    resolve: {
+        extensions: [".js", ".css", ".scss", ".sass", ".less"],
+        modules: [path.resolve("./source/client"), "node_modules"]
+    },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()],
+        new HtmlWebpackPlugin({
+            template: "./source/client/index-template.html",
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                collapseBooleanAttributes: true,
+                removeAttributeQuotes: true,
+                removeRedundantAttributes: true,
+                removeEmptyAttributes: true,
+                removeScriptTypeAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                removeOptionalTags: true
+            },
+            hash: true
+        })
+    ],
     devServer: {
-        port: 8080,
+        port: 3000,
         host: "localhost",
         hot: true,
         open: true,
         inline: true,
         openPage: "",
-        historyApiFallback: true,
-        contentBase: path.resolve(__dirname, "../dist"),
-    },
-    // watch: true,
-    devtool: "source-map"
+        historyApiFallback: true
+    }
 };
 
 module.exports = config;
