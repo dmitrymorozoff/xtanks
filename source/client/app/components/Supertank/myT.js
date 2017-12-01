@@ -49,8 +49,8 @@ export default {
             5: {
                 type: 2,
                 size: {
-                    radius_begin: 15,
-                    radius_end: 15,
+                    radiusBegin: 15,
+                    radiusEnd: 15,
                     length: 5,
                     quality: 16
                 }
@@ -59,8 +59,8 @@ export default {
             6: {
                 type: 2,
                 size: {
-                    radius_begin: 5,
-                    radius_end: 5,
+                    radiusBegin: 5,
+                    radiusEnd: 5,
                     length: 55,
                     quality: 16
                 }
@@ -69,8 +69,8 @@ export default {
             7: {
                 type: 2,
                 size: {
-                    radius_begin: 7.5,
-                    radius_end: 7.5,
+                    radiusBegin: 7.5,
+                    radiusEnd: 7.5,
                     length: 5 / 2,
                     quality: 32
                 }
@@ -78,8 +78,8 @@ export default {
             8: {
                 type: 2,
                 size: {
-                    radius_begin: 8,
-                    radius_end: 8,
+                    radiusBegin: 8,
+                    radiusEnd: 8,
                     length: 15,
                     quality: 16
                 }
@@ -128,8 +128,8 @@ export default {
 
         // мейн квадрат
         1: {
-            geometry_id: 1,
-            color_id: 1,
+            geometryId: 1,
+            colorId: 1,
             bias: {
                 x: 0,
                 y: 0,
@@ -144,8 +144,8 @@ export default {
 
         // скос передний нижний
         2: {
-            geometry_id: 2,
-            color_id: 2,
+            geometryId: 2,
+            colorId: 2,
             bias: {
                 x: 5 / 2,
                 y: 5 / 2,
@@ -160,8 +160,8 @@ export default {
 
         // скос задний нижний
         3: {
-            geometry_id: 2,
-            color_id: 2,
+            geometryId: 2,
+            colorId: 2,
             bias: {
                 x: -(5 / 2),
                 y: 5 / 2,
@@ -176,8 +176,8 @@ export default {
 
         // скос верхний передний
         4: {
-            geometry_id: 2,
-            color_id: 2,
+            geometryId: 2,
+            colorId: 2,
             bias: {
                 x: 5 / 2,
                 y: -(5 / 2),
@@ -192,8 +192,8 @@ export default {
 
         // скос верхний задний
         5: {
-            geometry_id: 2,
-            color_id: 2,
+            geometryId: 2,
+            colorId: 2,
             bias: {
                 x: -(5 / 2),
                 y: -(5 / 2),
@@ -208,8 +208,8 @@ export default {
 
         // скос левый нижний
         6: {
-            geometry_id: 3,
-            color_id: 2,
+            geometryId: 3,
+            colorId: 2,
             bias: {
                 x: 0,
                 y: 5 / 2,
@@ -224,8 +224,8 @@ export default {
 
         // скос правый нижний
         7: {
-            geometry_id: 3,
-            color_id: 2,
+            geometryId: 3,
+            colorId: 2,
             bias: {
                 x: 0,
                 y: 5 / 2,
@@ -240,8 +240,8 @@ export default {
 
         // скос правый верхний
         8: {
-            geometry_id: 3,
-            color_id: 2,
+            geometryId: 3,
+            colorId: 2,
             bias: {
                 x: 0,
                 y: -(5 / 2),
@@ -256,8 +256,8 @@ export default {
 
         // скос левый верхний
         9: {
-            geometry_id: 3,
-            color_id: 2,
+            geometryId: 3,
+            colorId: 2,
             bias: {
                 x: 0,
                 y: -(5 / 2),
@@ -272,8 +272,8 @@ export default {
 
         // скос левый передний
         10: {
-            geometry_id: 4,
-            color_id: 2,
+            geometryId: 4,
+            colorId: 2,
             bias: {
                 x: 5 / 2,
                 y: 0,
@@ -288,8 +288,8 @@ export default {
 
         // скос левый задний
         11: {
-            geometry_id: 4,
-            color_id: 2,
+            geometryId: 4,
+            colorId: 2,
             bias: {
                 x: -(5 / 2),
                 y: 0,
@@ -304,8 +304,8 @@ export default {
 
         // скос правый передний
         12: {
-            geometry_id: 4,
-            color_id: 2,
+            geometryId: 4,
+            colorId: 2,
             bias: {
                 x: 5 / 2,
                 y: 0,
@@ -320,8 +320,8 @@ export default {
 
         // скос правый задний
         13: {
-            geometry_id: 4,
-            color_id: 2,
+            geometryId: 4,
+            colorId: 2,
             bias: {
                 x: -(5 / 2),
                 y: 0,
@@ -336,8 +336,8 @@ export default {
 
         // вращалка башни
         14: {
-            geometry_id: 5,
-            color_id: 2,
+            geometryId: 5,
+            colorId: 2,
             bias: {
                 x: 5 / 2,
                 y: 0,
@@ -352,8 +352,8 @@ export default {
 
         // пушка
         15: {
-            geometry_id: 6,
-            color_id: 1,
+            geometryId: 6,
+            colorId: 1,
             bias: {
                 x: -(55 / 2 - 5 / 2),
                 y: 5 / 2,
@@ -368,8 +368,8 @@ export default {
 
         // командирский люк
         16: {
-            geometry_id: 7,
-            color_id: 2,
+            geometryId: 7,
+            colorId: 2,
             bias: {
                 x: 0,
                 y: -((5 / 2) / 2),
@@ -384,8 +384,8 @@ export default {
 
         // глушитель
         17: {
-            geometry_id: 8,
-            color_id: 4,
+            geometryId: 8,
+            colorId: 4,
             bias: {
                 x: -20,
                 y: 5 / 2,
@@ -398,8 +398,8 @@ export default {
             }
         },
         18: {
-            geometry_id: 1,
-            color_id: 5,
+            geometryId: 1,
+            colorId: 5,
             bias: {
                 x: 0,
                 y: 0,
@@ -412,8 +412,8 @@ export default {
             }
         },
         19: {
-            geometry_id: 1,
-            color_id: 4,
+            geometryId: 1,
+            colorId: 4,
             bias: {
                 x: 0,
                 y: 0,
@@ -426,8 +426,8 @@ export default {
             }
         },
         22: {
-            geometry_id: 9,
-            color_id: 6,
+            geometryId: 9,
+            colorId: 6,
             bias: {
                 x: 0,
                 y: 0,
@@ -444,7 +444,7 @@ export default {
         {
             name: "corps",
             height: 0,
-            material_id: 1,
+            materialId: 1,
             map: [
 
                 [
@@ -585,7 +585,7 @@ export default {
         {
             name: "track",
             height: 0,
-            material_id: 2,
+            materialId: 2,
             map: [
 
                 [
@@ -659,7 +659,7 @@ export default {
         {
             name: "corps_desc",
             height: 7,
-            material_id: 2,
+            materialId: 2,
             map: [
 
                 [
@@ -689,7 +689,7 @@ export default {
         {
             name: "tower",
             height: 7,
-            material_id: 1,
+            materialId: 1,
             map: [
 
                 [
@@ -851,7 +851,7 @@ export default {
         {
             name: "gun",
             height: 9,
-            material_id: 1,
+            materialId: 1,
             map: [
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -880,7 +880,7 @@ export default {
         {
             name: "circle",
             height: 0,
-            material_id: 3,
+            materialId: 3,
             map: [
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
