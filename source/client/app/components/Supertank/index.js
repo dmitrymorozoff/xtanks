@@ -4,16 +4,32 @@ import model from "./myT.js";
 const DEG_TO_RAD = 0.0174533;
 
 export default class Tank {
-    constructor(scene = null, x = 0, y = 0, z = 0, rotate = -90, scale = 1) {
+    constructor(
+        scene = null,
+        params = {
+            id: 1,
+            name: "",
+            type: "",
+            isMe: "",
+            x: 0,
+            y: 0,
+            z: 0,
+            health: 100,
+        }
+    ) {
         this.scene = scene;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.rotate = rotate;
-        this.scale = scale;
+        this.x = params.x;
+        this.y = params.y;
+        this.z = params.z;
+        this.name = params.name;
+        this.type = params.type;
+        this.isMe = params.isMe;
+        this.health = params.health;
+        this.rotate = -90;
         this.model = model;
         this.basicSize = this.model.styles.geometries[1].size;
         this.tank = new THREE.Group();
+        this.id = params.id;
     }
     draw() {
         this.scene.add(this.tank);
@@ -33,7 +49,6 @@ export default class Tank {
         let materialId;
         let colorId;
         let mapValue;
-
         for (let i = 0; i < modelMap.length; i++) {
             mergedObject = new THREE.Geometry();
             materialId = modelMap[i].materialId;
@@ -85,9 +100,7 @@ export default class Tank {
                                     colors[colorId]
                                 );
                             }
-
                             mergedObject.merge(geometries[geometryId]);
-
                             geometries[geometryId].translate(
                                 -convertX,
                                 -convertY,

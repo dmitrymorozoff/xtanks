@@ -4,36 +4,56 @@ import Supertank from "../Supertank/index.js";
 export default class Player {
     constructor(
         scene,
-        camera,
-        size,
-        x,
-        y,
-        z,
-        color,
-        rotate,
-        collidableMeshList
+        params = {
+            camera: null,
+            size: 100,
+            x: 1,
+            y: 1,
+            z: 1,
+            color: null,
+            collidableMeshList: [],
+            id: 1,
+            name: "",
+            type: "",
+            isMe: "",
+            health: 100
+        }
     ) {
         this.scene = scene;
-        this.size = size;
-        this.camera = camera;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.color = color;
+        this.size = params.size;
+        this.camera = params.camera;
+        this.x = params.x;
+        this.y = params.y;
+        this.z = params.z;
+        this.color = params.color;
+        this.name = params.name;
+        this.id = params.id;
+        this.type = params.type;
+        this.isMe = params.isMe;
+        this.health = params.health;
         this.player = null;
-        this.rotate = rotate;
         this.speed = 20;
         this.angle = 0;
-        this.collidableMeshList = collidableMeshList;
+        this.rotate = 180;
+        this.collidableMeshList = params.collidableMeshList;
     }
     draw() {
         this.angle = this.rotate * 0.0174533;
         this.player = new Supertank(
             this.scene,
-            this.x,
-            this.y - this.size / 8,
-            this.z
+            {
+                id: this.id,
+                name: this.name,
+                type: this.type,
+                isMe: this.isMe,
+                x: this.x,
+                y: this.y - this.size / 8,
+                z: this.z,
+                health: this.health,
+                rotate: this.rotate
+            }
         );
+        console.log(this.camera);
         this.player.initModel();
         this.player.draw();
     }

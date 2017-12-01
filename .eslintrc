@@ -7,7 +7,7 @@
         }
     },
     "rules": {
-        "max-len": ["error", 200],
+        "max-len": ["error", 80],
         "no-duplicate-imports": 2,
         "no-duplicate-case": 2,
         "no-trailing-spaces": 2,

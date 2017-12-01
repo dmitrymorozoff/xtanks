@@ -39,6 +39,7 @@ export default class Scene {
         this.plane = null;
         this.marker = null;
         this.client = null;
+        this.tanks = [];
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -101,34 +102,39 @@ export default class Scene {
             smoke.draw();
         }
     }
-    drawPlayer(player) {
-        this.player = new Player(
-            this.scene,
-            this.camera,
-            this.cubeSize,
-            player.x * this.cubeSize,
-            player.y * this.cubeSize,
-            player.z * this.cubeSize,
-            0x4b0082,
-            180,
-            this.map.collidableMeshList
-        );
-        this.player.draw();
-    }
-    drawAllPlayers(players) {
-        for (let id in players) {
-            if (id !== players.myId) {
-                console.log(id,players.myId )
-                console.log(players[id]);
-                let player = new Supertank(
-                    this.scene,
-                    players[id].x * this.cubeSize,
-                    players[id].y * this.cubeSize,
-                    players[id].z * this.cubeSize
-                );
-                player.initModel();
-                player.draw();
-            }
+    addTank(id, name, type, isMe, x, y, z, health) {
+        console.log(z, "z");
+        if (isMe) {
+            this.player = new Player(this.scene, {
+                camera: this.camera,
+                size: this.cubeSize,
+                x: x * this.cubeSize,
+                y: y * this.cubeSize,
+                z: z * this.cubeSize,
+                color: 0x4b0082,
+                collidableMeshList: this.map.collidableMeshList,
+                id,
+                name,
+                type,
+                isMe,
+                health
+            });
+            this.player.draw();
+            console.log(this.player);
+        } else {
+            let tank = new Supertank(this.scene, {
+                id,
+                name,
+                type,
+                isMe,
+                x: x * this.cubeSize,
+                y: y * this.cubeSize,
+                z: z * this.cubeSize,
+                health
+            });
+            tank.initModel();
+            tank.draw();
+            this.tanks.push(tank);
         }
     }
     draw() {
@@ -217,22 +223,19 @@ export default class Scene {
         };
         this.client = new IOClient();
         this.client.socket.on("connect", () => {
-            this.client.socket.on("message", data => {
-                let myId  = null;
-                switch (data.event) {
-                    case "connected":
-                        myId = data.myId;
-                        this.drawPlayer(data.players[myId]);
-                        break;
-                    case "playerJoined":
-                        console.log(data);
-                        myId = data.myId;
-                        this.drawAllPlayers(data.players);
-                        break;
-                    default:
-                        break;
-                }
-            });
+            this.client.socket.emit("joinGame", { name: "newTank", type: 1 });
+        });
+        this.client.socket.on("addTank", tank => {
+            console.log(tank);
+            this.addTank(
+                tank.id,
+                tank.name,
+                tank.type,
+                tank.isMe,
+                tank.x,
+                tank.y,
+                tank.z
+            );
         });
     }
     checkElevator(tank, elevators) {
@@ -268,25 +271,27 @@ export default class Scene {
         }
     }
     animate() {
-        if (this.flagsMovePlayer.top) {
-            this.player.moveTop();
-        }
-        if (this.flagsMovePlayer.left) {
-            this.player.moveLeft();
-        }
-        if (this.flagsMovePlayer.right) {
-            this.player.moveRight();
-        }
-        if (this.flagsMovePlayer.bottom) {
-            this.player.moveBottom();
-        }
-        // this.player.detectCollision();
         if (this.player !== null) {
-            this.checkElevator(this.player.player, this.map.elevators);
-            this.camera.position
-                .copy(this.player.player.tank.position)
-                .add(new THREE.Vector3(0, 800, 750));
-            this.camera.lookAt(this.player.player.tank.position);
+            if (this.flagsMovePlayer.top) {
+                this.player.moveTop();
+            }
+            if (this.flagsMovePlayer.left) {
+                this.player.moveLeft();
+            }
+            if (this.flagsMovePlayer.right) {
+                this.player.moveRight();
+            }
+            if (this.flagsMovePlayer.bottom) {
+                this.player.moveBottom();
+            }
+            // this.player.detectCollision();
+            if (this.player !== null) {
+                // this.checkElevator(this.player.player, this.map.elevators);
+                this.camera.position
+                    .copy(this.player.player.tank.position)
+                    .add(new THREE.Vector3(0, 800, 750));
+                this.camera.lookAt(this.player.player.tank.position);
+            }
         }
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));

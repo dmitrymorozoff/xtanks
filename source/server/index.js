@@ -1,9 +1,32 @@
 import getRandomInt from "../utils/index";
 import config from "./config";
+import GameServer from "./components/GameServer.js";
 let socket = require("socket.io");
 let express = require("express");
-let path = require('path');
+let path = require("path");
 let http = require("http");
+
+export function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return (
+        s4() +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        "-" +
+        s4() +
+        s4() +
+        s4()
+    );
+}
 
 let app = express();
 let server = http.Server(app);
@@ -19,26 +42,44 @@ server.listen(config.port, () => {
     console.log(`Сервер запущен на порте ${config.port}`);
 });
 
-let players = {};
+const game = new GameServer();
 
-io.sockets.on("connection", function(socket) {
-    let id = socket.id.toString().substr(0, 5);
-    players[id] = {};
-    players[id].x = getRandomInt(0, 10);
-    players[id].y = 1;
-    players[id].z = getRandomInt(0, 10);
-    socket.json.send({ event: "connected", players, myId: id });
-    socket.broadcast.json.send({ event: "playerJoined", players, myId: id });
-    socket.on("message", function(msg) {
-        console.log(msg);
-        socket.json.send({
-            event: "messageFromServer",
-            name: id,
-            text: msg
+io.sockets.on("connection", function(client) {
+    console.log("Игрок подключился");
+    client.on("joinGame", tank => {
+        console.log(tank.name + " зашел в игру");
+        let initX = getRandomInt(1, 10);
+        let initY = 1;
+        let initZ = getRandomInt(1, 11);
+        console.log(guid);
+        let tankId = guid();
+        client.emit("addTank", {
+            id: tankId,
+            type: tank.type,
+            isMe: true,
+            x: initX,
+            y: initY,
+            z: initZ,
+            health: config.TANK_INIT_HP
+        });
+        client.broadcast.emit("addTank", {
+            id: tankId,
+            type: tank.type,
+            isMe: false,
+            x: initX,
+            y: initY,
+            z: initZ,
+            health: config.TANK_INIT_HP
+        });
+        game.addTank({
+            id: tankId,
+            type: tank.type,
+            health: config.TANK_INIT_HP
         });
     });
-    socket.on("disconnect", function() {
-        io.sockets.json.send({ event: "playerSplit", name: id });
-        delete players[id];
+    client.on("leaveGame", tankId => {
+        console.log(tankId + " покинул игру");
+        game.removeTank(tankId);
+        client.broadcast.emit("removeTank", tankId);
     });
 });
