@@ -37,7 +37,6 @@ export default class Tank {
         for (let i = 0; i < modelMap.length; i++) {
             mergedObject = new THREE.Geometry();
             materialId = modelMap[i].materialId;
-
             for (let y = 0; y < modelMap[i].map.length; y++) {
                 for (let x = 0; x < modelMap[i].map[y].length; x++) {
                     for (let z = 0; z < modelMap[i].map[y][x].length; z++) {
@@ -107,10 +106,8 @@ export default class Tank {
                     }
                 }
             }
-
             this.tank.add(new THREE.Mesh(mergedObject, materials[materialId]));
         }
-
         this.tank.position.set(this.x, this.y, this.z);
         this.tank.rotateY(this.rotate * DEG_TO_RAD);
     }
@@ -127,7 +124,6 @@ export default class Tank {
                         modelGeometries[i].size.length
                     );
                     break;
-
                 case 2:
                     geometries[i] = new THREE.CylinderGeometry(
                         modelGeometries[i].size.radiusBegin,

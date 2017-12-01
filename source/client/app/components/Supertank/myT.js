@@ -9,7 +9,6 @@ export default {
     },
     styles: {
         geometries: {
-
             1: {
                 type: 1,
                 size: {
@@ -18,7 +17,6 @@ export default {
                     length: 5
                 }
             },
-
             2: {
                 type: 1,
                 size: {
@@ -27,7 +25,6 @@ export default {
                     length: 5
                 }
             },
-
             3: {
                 type: 1,
                 size: {
@@ -36,7 +33,6 @@ export default {
                     length: 5 * Math.sqrt(2)
                 }
             },
-
             4: {
                 type: 1,
                 size: {
@@ -45,7 +41,6 @@ export default {
                     length: 5 * Math.sqrt(2)
                 }
             },
-
             5: {
                 type: 2,
                 size: {
@@ -125,7 +120,6 @@ export default {
         }
     },
     objects: {
-
         // мейн квадрат
         1: {
             geometryId: 1,
@@ -141,7 +135,6 @@ export default {
                 z: 0
             }
         },
-
         // скос передний нижний
         2: {
             geometryId: 2,
@@ -157,7 +150,6 @@ export default {
                 z: 45
             }
         },
-
         // скос задний нижний
         3: {
             geometryId: 2,
@@ -173,7 +165,6 @@ export default {
                 z: 45
             }
         },
-
         // скос верхний передний
         4: {
             geometryId: 2,
@@ -189,7 +180,6 @@ export default {
                 z: 45
             }
         },
-
         // скос верхний задний
         5: {
             geometryId: 2,
@@ -205,7 +195,6 @@ export default {
                 z: 45
             }
         },
-
         // скос левый нижний
         6: {
             geometryId: 3,
@@ -221,7 +210,6 @@ export default {
                 z: 0
             }
         },
-
         // скос правый нижний
         7: {
             geometryId: 3,
@@ -237,7 +225,6 @@ export default {
                 z: 0
             }
         },
-
         // скос правый верхний
         8: {
             geometryId: 3,
@@ -253,7 +240,6 @@ export default {
                 z: 0
             }
         },
-
         // скос левый верхний
         9: {
             geometryId: 3,
@@ -269,7 +255,6 @@ export default {
                 z: 0
             }
         },
-
         // скос левый передний
         10: {
             geometryId: 4,
@@ -285,7 +270,6 @@ export default {
                 z: 0
             }
         },
-
         // скос левый задний
         11: {
             geometryId: 4,
@@ -301,7 +285,6 @@ export default {
                 z: 0
             }
         },
-
         // скос правый передний
         12: {
             geometryId: 4,
@@ -317,7 +300,6 @@ export default {
                 z: 0
             }
         },
-
         // скос правый задний
         13: {
             geometryId: 4,
@@ -333,7 +315,6 @@ export default {
                 z: 0
             }
         },
-
         // вращалка башни
         14: {
             geometryId: 5,
@@ -349,7 +330,6 @@ export default {
                 z: 0
             }
         },
-
         // пушка
         15: {
             geometryId: 6,
@@ -365,7 +345,6 @@ export default {
                 z: 90
             }
         },
-
         // командирский люк
         16: {
             geometryId: 7,
@@ -381,7 +360,6 @@ export default {
                 z: 0
             }
         },
-
         // глушитель
         17: {
             geometryId: 8,
@@ -586,8 +564,7 @@ export default {
             name: "track",
             height: 0,
             materialId: 2,
-            map: [
-
+            map:[
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [18, 18, 18, 18, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 18, 18, 18, 18],
@@ -660,8 +637,7 @@ export default {
             name: "corps_desc",
             height: 7,
             materialId: 2,
-            map: [
-
+            map:[
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -690,8 +666,7 @@ export default {
             name: "tower",
             height: 7,
             materialId: 1,
-            map: [
-
+            map:[
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
