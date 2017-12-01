@@ -30,7 +30,7 @@ export default class Game {
         // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x010101, 1);
-        console.log("TDDDDDsddasdawST");
+
         const target = new THREE.WebGLRenderTarget(
             window.innerWidth * window.devicePixelRatio,
             window.innerHeight * window.devicePixelRatio

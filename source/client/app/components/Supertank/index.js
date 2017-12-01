@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import model from "./t90.js";
+import model from "./myT.js";
 
 const DEG_TO_RAD = 0.0174533;
 
@@ -139,6 +139,12 @@ export default class Tank {
                         model_geometries[i].size.quality
                     );
                     break;
+                case 3:
+                    geometries[i] = new THREE.CircleGeometry(
+                        model_geometries[i].size.radius,
+                        model_geometries[i].size.segments
+                    );
+                    break;
             }
         }
 
@@ -161,6 +167,14 @@ export default class Tank {
                         THREE.VertexColors;
                     materials[i] = new THREE.MeshBasicMaterial(
                         model_materials[i].params
+                    );
+                    break;
+                case 3:
+                    const circleTexture = THREE.ImageUtils.loadTexture("assets/circle.png");
+                    model_materials[i].params["vertexColors"] =
+                        THREE.VertexColors;
+                    materials[i] = new THREE.MeshBasicMaterial(
+                        {...model_materials[i].params,  map: circleTexture}
                     );
                     break;
             }

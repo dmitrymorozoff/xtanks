@@ -1,15 +1,24 @@
-var socket = require("socket.io");
-var express = require("express");
 import getRandomInt from "../utils/index";
-const config = {
-    port: 3000
-};
-var app = express();
-let server = app.listen(config.port);
-app.use(express.static("dist/client"));
-console.log(`Server running on port ${config.port}`);
+import config from "./config";
+let socket = require("socket.io");
+let express = require("express");
+let path = require('path');
+let http = require("http");
 
+let app = express();
+let server = http.Server(app);
 let io = socket(server);
+app.set("port", config.port);
+app.use(express.static("dist/client"));
+
+app.get("/", (request, response) => {
+    response.sendFile(path.join(__dirname, "client/index.html"));
+});
+
+server.listen(config.port, () => {
+    console.log(`Сервер запущен на порте ${config.port}`);
+});
+
 let players = {};
 
 io.sockets.on("connection", function(socket) {
@@ -28,7 +37,6 @@ io.sockets.on("connection", function(socket) {
             text: msg
         });
     });
-    // При отключении клиента - уведомляем остальных
     socket.on("disconnect", function() {
         io.sockets.json.send({ event: "playerSplit", name: id });
         delete players[id];

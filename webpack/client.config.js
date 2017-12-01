@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
 let config = {
@@ -37,7 +38,11 @@ let config = {
                 removeOptionalTags: true
             },
             hash: true
-        })
+        }),
+        new CopyWebpackPlugin([{
+            from: "source/client/assets",
+            to: "assets",
+        }], {})
     ],
     devServer: {
         port: 3000,

@@ -21,9 +21,11 @@
         "express": "3.12.0",
         "gsap": "^1.20.3",
         "html-webpack-plugin": "^2.30.1",
+        "http": "0.0.0",
         "nodemon": "^1.12.1",
         "normalize-css": "^2.3.1",
         "orbit-controls-es6": "^1.0.10",
+        "path": "^0.12.7",
         "physijs": "^0.0.4",
         "rimraf": "^2.6.2",
         "socket.io": "^2.0.4",
@@ -40,7 +42,7 @@
         "babel-preset-env": "^1.4.0",
         "browser-sync": "^2.18.8",
         "browser-sync-webpack-plugin": "^1.1.4",
-        "webpack": "^3.8.1",
+        "webpack": "^3.9.1",
         "webpack-dev-server": "^2.9.4"
     }
 }
