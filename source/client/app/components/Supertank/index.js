@@ -32,6 +32,7 @@ export default class Tank {
         this.id = params.id;
     }
     draw() {
+        this.tank.name = this.id;
         this.scene.add(this.tank);
     }
     initModel() {

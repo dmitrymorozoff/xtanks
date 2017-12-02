@@ -32,7 +32,7 @@ export default class Player {
         this.isMe = params.isMe;
         this.health = params.health;
         this.player = null;
-        this.speed = 20;
+        this.speed = 18;
         this.angle = 0;
         this.rotate = 180;
         this.collidableMeshList = params.collidableMeshList;

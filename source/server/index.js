@@ -47,8 +47,7 @@ const game = new GameServer();
 io.sockets.on("connection", function(client) {
     console.log("Игрок подключился");
     client.on("disconnect", () => {
-        console.log("Клиент покинул игру")
-       
+        console.log("Клиент покинул игру");
     });
     client.on("joinGame", tank => {
         console.log(tank.name + " зашел в игру");

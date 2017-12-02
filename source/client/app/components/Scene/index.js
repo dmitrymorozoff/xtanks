@@ -167,8 +167,7 @@ export default class Scene {
             });
             if (
                 !isFound &&
-                (self.player === null ||
-                    tankFromServer.id !== self.player.id)
+                (self.player === null || tankFromServer.id !== self.player.id)
             ) {
                 self.addTank(
                     tankFromServer.id,
@@ -181,6 +180,12 @@ export default class Scene {
                 );
             }
         });
+    }
+    removeTank(tankId) {
+        this.tanks = this.tanks.filter(tank => {
+            return tank.id !== tankId;
+        });
+        this.scene.remove(this.scene.getObjectByName(tankId));
     }
     draw() {
         this.stats.domElement.style.position = "absolute";
@@ -220,7 +225,7 @@ export default class Scene {
             })
         );
         this.scene.add(this.marker);
-
+        console.log(this.tanks);
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
                 case 65:
@@ -266,13 +271,12 @@ export default class Scene {
             // this.player.player.corps.lookAt(this.intersectPoint);
             // this.marker.position.copy(this.intersectPoint);
         };
+        window.onbeforeunload = e => {
+            this.client.socket.emit("leaveGame", this.player.id);
+        };
         this.client = new IOClient();
-        this.client.socket.on("connect", () => {
+        this.client.socket.on("connect", socket => {
             this.client.socket.emit("joinGame", { name: "newTank", type: 1 });
-            this.client.socket.on("disconnect", () => {
-                console.log("disconnect " + this.player.id);
-                this.client.socket.emit("leaveGame", this.player.id);
-            });
         });
         this.client.socket.on("addTank", tank => {
             this.addTank(
@@ -288,7 +292,9 @@ export default class Scene {
         this.client.socket.on("updateGame", gameServerData => {
             this.updateGame(gameServerData);
         });
-       
+        this.client.socket.on("removeTank", tankId => {
+            this.removeTank(tankId);
+        });
     }
     checkElevator(tank, elevators) {
         let tankPos = tank.tank.position;
