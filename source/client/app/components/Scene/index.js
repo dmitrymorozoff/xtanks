@@ -103,7 +103,6 @@ export default class Scene {
         }
     }
     addTank(id, name, type, isMe, x, y, z, health) {
-        console.log(z, "z");
         if (isMe) {
             this.player = new Player(this.scene, {
                 camera: this.camera,
@@ -136,6 +135,52 @@ export default class Scene {
             tank.draw();
             this.tanks.push(tank);
         }
+    }
+    updateTanksPosition() {
+        let gameData = {
+            tank: {
+                id: this.player.id,
+                x: this.player.x,
+                y: this.player.y,
+                z: this.player.z,
+                angle: this.player.angle
+            }
+        };
+        this.client.socket.emit("updateGame", gameData);
+    }
+    updateGame(dataFromServer) {
+        let self = this;
+        dataFromServer.tanks.forEach(tankFromServer => {
+            let isFound = false;
+            self.tanks.forEach(clientTank => {
+                if (clientTank.id === tankFromServer.id) {
+                    clientTank.x = tankFromServer.x;
+                    clientTank.y = tankFromServer.y;
+                    clientTank.z = tankFromServer.z;
+                    clientTank.angle = tankFromServer.angle;
+                    clientTank.tank.rotation.y = tankFromServer.angle;
+                    clientTank.tank.position.x = tankFromServer.x;
+                    clientTank.tank.position.y = tankFromServer.y;
+                    clientTank.tank.position.z = tankFromServer.z;
+                    isFound = true;
+                }
+            });
+            if (
+                !isFound &&
+                (self.player === null ||
+                    tankFromServer.id !== self.player.id)
+            ) {
+                self.addTank(
+                    tankFromServer.id,
+                    tankFromServer.name,
+                    tankFromServer.type,
+                    tankFromServer.isMe,
+                    tankFromServer.x,
+                    tankFromServer.y,
+                    tankFromServer.z
+                );
+            }
+        });
     }
     draw() {
         this.stats.domElement.style.position = "absolute";
@@ -224,9 +269,12 @@ export default class Scene {
         this.client = new IOClient();
         this.client.socket.on("connect", () => {
             this.client.socket.emit("joinGame", { name: "newTank", type: 1 });
+            this.client.socket.on("disconnect", () => {
+                console.log("disconnect " + this.player.id);
+                this.client.socket.emit("leaveGame", this.player.id);
+            });
         });
         this.client.socket.on("addTank", tank => {
-            console.log(tank);
             this.addTank(
                 tank.id,
                 tank.name,
@@ -237,6 +285,10 @@ export default class Scene {
                 tank.z
             );
         });
+        this.client.socket.on("updateGame", gameServerData => {
+            this.updateGame(gameServerData);
+        });
+       
     }
     checkElevator(tank, elevators) {
         let tankPos = tank.tank.position;
@@ -292,6 +344,7 @@ export default class Scene {
                     .add(new THREE.Vector3(0, 800, 750));
                 this.camera.lookAt(this.player.player.tank.position);
             }
+            this.updateTanksPosition();
         }
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));

@@ -72,6 +72,8 @@ export default class Player {
     moveTop() {
         this.player.tank.position.x += Math.sin(this.angle) * this.speed;
         this.player.tank.position.z += Math.cos(-this.angle) * this.speed;
+        this.x = this.player.tank.position.x;
+        this.z = this.player.tank.position.z;
     }
     moveUp(newPosition) {
         this.player.tank.position.y = newPosition;
@@ -79,6 +81,8 @@ export default class Player {
     moveBottom() {
         this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
         this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
+        this.x = this.player.tank.position.x;
+        this.z = this.player.tank.position.z;
     }
     rotateGun(x, y) {
         let angle = Math.atan2(y - this.y, x - this.x);

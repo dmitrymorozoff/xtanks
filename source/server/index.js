@@ -46,6 +46,10 @@ const game = new GameServer();
 
 io.sockets.on("connection", function(client) {
     console.log("Игрок подключился");
+    client.on("disconnect", () => {
+        console.log("Клиент покинул игру")
+       
+    });
     client.on("joinGame", tank => {
         console.log(tank.name + " зашел в игру");
         let initX = getRandomInt(1, 10);
@@ -82,4 +86,13 @@ io.sockets.on("connection", function(client) {
         game.removeTank(tankId);
         client.broadcast.emit("removeTank", tankId);
     });
+    client.on("updateGame", data => {
+        if (data.tank !== undefined) {
+            game.updateTanksPosition(data.tank);
+        }
+        client.emit("updateGame", game.getData());
+        client.broadcast.emit("updateGame", game.getData());
+    });
 });
+
+
