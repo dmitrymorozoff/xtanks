@@ -165,14 +165,14 @@ export default class Tank {
                 case 1:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
-                    materials[i] = new THREE.MeshStandardMaterial(
+                    materials[i] = new THREE.MeshLambertMaterial(
                         modelMaterials[i].params
                     );
                     break;
                 case 2:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
-                    materials[i] = new THREE.MeshBasicMaterial(
+                    materials[i] = new THREE.MeshLambertMaterial(
                         modelMaterials[i].params
                     );
                     break;

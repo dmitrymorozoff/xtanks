@@ -95,7 +95,7 @@ export default class Scene {
                 coordsSmoke[i].y * this.cubeSize,
                 coordsSmoke[i].z * this.cubeSize + Math.random() * 250 - 16,
                 getRandomInt(100, 500),
-                "textures/smoke.png",
+                "./assets/smoke.png",
                 1600,
                 0x720000
             );
@@ -196,7 +196,7 @@ export default class Scene {
         this.map = new Map(this.scene);
         this.map.load();
 
-        this.drawBackground();
+        // this.drawBackground();
         // this.drawSmoke();
 
         const particles = new Particles(
@@ -224,7 +224,7 @@ export default class Scene {
                 color: "red"
             })
         );
-        this.scene.add(this.marker);
+        // this.scene.add(this.marker);
         console.log(this.tanks);
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
@@ -347,7 +347,7 @@ export default class Scene {
                 // this.checkElevator(this.player.player, this.map.elevators);
                 this.camera.position
                     .copy(this.player.player.tank.position)
-                    .add(new THREE.Vector3(0, 800, 750));
+                    .add(new THREE.Vector3(0, 700, 600));
                 this.camera.lookAt(this.player.player.tank.position);
             }
             this.updateTanksPosition();

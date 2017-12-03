@@ -27,7 +27,7 @@ export default class Game {
         scene.add(new THREE.AmbientLight(0x333333));
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
-        // renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x010101, 1);
 
@@ -55,7 +55,7 @@ export default class Game {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // target.setSize(window.innerWidth, window.innerHeight);
+            target.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
         }
         addEventListener("resize", resize);

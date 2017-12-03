@@ -32,7 +32,7 @@ export default class Player {
         this.isMe = params.isMe;
         this.health = params.health;
         this.player = null;
-        this.speed = 18;
+        this.speed = 20;
         this.angle = 0;
         this.rotate = 180;
         this.collidableMeshList = params.collidableMeshList;
@@ -56,6 +56,9 @@ export default class Player {
         console.log(this.camera);
         this.player.initModel();
         this.player.draw();
+    }
+    setSpeed(delta){
+        this.speed = 1000 * delta;
     }
     moveLeft() {
         let newAngleLeft = this.speed * 0.0174533;

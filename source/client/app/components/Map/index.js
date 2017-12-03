@@ -43,15 +43,16 @@ export default class Map {
         let x = k * this.cubeSize - centerJ;
         let y = i * this.cubeSize;
         let z = j * this.cubeSize - centerI;
-        cubeGeometry.position.set(x, y, z);
-        cubeGeometry.updateMatrix();
-        geometry.merge(cubeGeometry.geometry, cubeGeometry.matrix);
+        cubeGeometry.translate(x, y, z);
+        geometry.merge(cubeGeometry, cubeGeometry.matrix);
+        cubeGeometry.translate(-x, -y, -z);
     }
     load() {
         const centerMapI = LEVEL_1[0].length / 2 * this.cubeSize;
         const centerMapJ = LEVEL_1[0][0].length / 2 * this.cubeSize;
         let mergedFloorGeometry = new THREE.Geometry();
         let mergedWallGeometry = new THREE.Geometry();
+        console.log("draw");
         for (let i = 0; i < LEVEL_1.length; i++) {
             for (let j = 0; j < LEVEL_1[i].length; j++) {
                 for (let k = 0; k < LEVEL_1[i][j].length; k++) {
@@ -102,7 +103,7 @@ export default class Map {
                                     )
                                 ]
                             );
-                            light.load();
+                            // light.load();
                             break;
                         case LAMP:
                             let lamp = new Lamp(
@@ -118,7 +119,7 @@ export default class Map {
                                     )
                                 ]
                             );
-                            lamp.load();
+                            // lamp.load();
                             break;
                         case ROTATION_CUBE:
                             let rotationCube = new RotationCube(
@@ -182,6 +183,12 @@ export default class Map {
                 }
             }
         }
+        mergedFloorGeometry.faces.sort(function (a, b) {
+            return a.materialIndex - b.materialIndex;
+        }); 
+        mergedWallGeometry.faces.sort(function (a, b) {
+            return a.materialIndex - b.materialIndex;
+        }); 
         const floor = new THREE.Mesh(mergedFloorGeometry, floorMaterial);
         const wall = new THREE.Mesh(mergedWallGeometry, floorMaterial);
         this.collidableMeshList.push(wall);

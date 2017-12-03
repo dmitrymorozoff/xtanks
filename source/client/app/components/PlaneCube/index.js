@@ -10,7 +10,6 @@ export default class PlaneCube {
         y = 0,
         z = 0,
         color,
-        material
     ) {
         this.scene = scene;
         this.width = width;
@@ -18,13 +17,12 @@ export default class PlaneCube {
         this.depth = depth;
         this.color = color;
         this.cube = null;
-        this.material = material;
         this.x = x;
         this.y = y;
         this.z = z;
         this.cube = null;
     }
-    draw() {
+    load() {
         const light = new THREE.Color(0xffffff);
         const shadow = new THREE.Color(0x505050);
         const matrix = new THREE.Matrix4();
@@ -100,6 +98,6 @@ export default class PlaneCube {
         cube.position.x = this.x;
         cube.position.y = this.y;
         cube.position.z = this.z;
-        this.scene.add(cube);
+        return cube;
     }
 }

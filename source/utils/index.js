@@ -11,5 +11,5 @@ export function makeCube(size, color) {
         face.color.setHex(color);
     }
     const cube = new THREE.Mesh(geometry);
-    return cube;
+    return geometry;
 }
