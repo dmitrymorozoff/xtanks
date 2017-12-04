@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { DARKNESS_GRAY } from "../../constants/index";
 
 export default class Light {
     constructor(scene, x = 0, y = 0, z = 0, size, color) {
@@ -19,8 +20,8 @@ export default class Light {
             this.size / 1.5,
             this.size / 1.5
         );
-        const trunkMaterial = new THREE.MeshPhongMaterial({
-            color: 0x222222
+        const trunkMaterial = new THREE.MeshLambertMaterial({
+            color: DARKNESS_GRAY
         });
         const trunkGeometry = new THREE.BoxGeometry(
             this.size / 4,
@@ -33,7 +34,7 @@ export default class Light {
         trunk.position.z = this.z;
         this.light.add(trunk);
 
-        const light = new THREE.PointLight(this.color, 2.5, 1800);
+        const light = new THREE.PointLight(this.color, 5, 1250);
         light.add(new THREE.Mesh(capGeometry, capMaterial));
         light.position.set(this.x, this.y + this.size / 1.5, this.z);
         this.scene.add(light);

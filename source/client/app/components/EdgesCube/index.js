@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { DARKNESS_GRAY } from "../../constants/index";
 
 export default class EdgesCube {
     constructor(scene, size, x = 0, y = 0, z = 0, color) {
@@ -16,18 +17,17 @@ export default class EdgesCube {
             this.size,
             this.size
         );
-        const material = new THREE.MeshBasicMaterial({
-            color: 0x000000,
+        const material = new THREE.MeshLambertMaterial({
+            color: DARKNESS_GRAY,
             shading: THREE.FlatShading
         });
         this.cube = new THREE.Mesh(cubeGeometry, material);
         this.cube.position.x = this.x;
         this.cube.position.y = this.y;
         this.cube.position.z = this.z;
-        console.log(this.cube.geometry);
-        const geo = new THREE.EdgesGeometry(this.cube.geometry); // or WireframeGeometry
+        const geo = new THREE.EdgesGeometry(this.cube.geometry);
         const mat = new THREE.LineBasicMaterial({
-            color: 0xff0000,
+            color: this.color,
             linewidth: 3
         });
         const wireframe = new THREE.LineSegments(geo, mat);

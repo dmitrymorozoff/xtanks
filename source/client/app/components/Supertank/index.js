@@ -14,7 +14,7 @@ export default class Tank {
             x: 0,
             y: 0,
             z: 0,
-            health: 100,
+            health: 100
         }
     ) {
         this.scene = scene;
@@ -29,10 +29,10 @@ export default class Tank {
         this.model = model;
         this.basicSize = this.model.styles.geometries[1].size;
         this.tank = new THREE.Group();
+        this.tower = null;
         this.id = params.id;
     }
     draw() {
-        this.tank.name = this.id;
         this.scene.add(this.tank);
     }
     initModel() {
@@ -120,7 +120,17 @@ export default class Tank {
                     }
                 }
             }
-            this.tank.add(new THREE.Mesh(mergedObject, materials[materialId]));
+            if (modelMap[i].name === "tower") {
+                this.tower = new THREE.Mesh(
+                    mergedObject,
+                    materials[materialId]
+                );
+                this.tank.add(this.tower);
+            } else {
+                this.tank.add(
+                    new THREE.Mesh(mergedObject, materials[materialId])
+                );
+            }
         }
         this.tank.position.set(this.x, this.y, this.z);
         this.tank.rotateY(this.rotate * DEG_TO_RAD);
@@ -165,14 +175,14 @@ export default class Tank {
                 case 1:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
-                    materials[i] = new THREE.MeshLambertMaterial(
+                    materials[i] = new THREE.MeshStandardMaterial(
                         modelMaterials[i].params
                     );
                     break;
                 case 2:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
-                    materials[i] = new THREE.MeshLambertMaterial(
+                    materials[i] = new THREE.MeshBasicMaterial(
                         modelMaterials[i].params
                     );
                     break;

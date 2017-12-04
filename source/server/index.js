@@ -93,5 +93,3 @@ io.sockets.on("connection", function(client) {
         client.broadcast.emit("updateGame", game.getData());
     });
 });
-
-

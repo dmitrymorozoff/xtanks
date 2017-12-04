@@ -7,7 +7,7 @@ import getRandomInt from "../../../../utils/index";
 import IOClient from "../../IOClient/index";
 import Supertank from "../Supertank/index";
 import * as THREE from "three";
-import { BACKGROUND } from "../../constants/index";
+import { BACKGROUND, RED, DEG_TO_RAD } from "../../constants/index";
 
 export default class Scene {
     constructor(scene, camera, composer, shaderPass) {
@@ -68,7 +68,7 @@ export default class Scene {
         inception();
     }
     drawBackground() {
-        const iosahedronGeometry = new THREE.IcosahedronGeometry(3400, 1);
+        const iosahedronGeometry = new THREE.IcosahedronGeometry(3700, 1);
         const icosahedronMaterial = new THREE.MeshPhongMaterial({
             color: 0x222222,
             shading: THREE.FlatShading,
@@ -94,9 +94,9 @@ export default class Scene {
                 coordsSmoke[i].x * this.cubeSize + Math.random() * 250 - 16,
                 coordsSmoke[i].y * this.cubeSize,
                 coordsSmoke[i].z * this.cubeSize + Math.random() * 250 - 16,
-                getRandomInt(100, 500),
+                getRandomInt(50, 500),
                 "./assets/smoke.png",
-                1600,
+                800,
                 0x720000
             );
             smoke.draw();
@@ -119,7 +119,6 @@ export default class Scene {
                 health
             });
             this.player.draw();
-            console.log(this.player);
         } else {
             let tank = new Supertank(this.scene, {
                 id,
@@ -196,19 +195,16 @@ export default class Scene {
         this.map = new Map(this.scene);
         this.map.load();
 
-        // this.drawBackground();
+        // this.genesisDevice();
         // this.drawSmoke();
 
-        const particles = new Particles(
-            this.scene,
-            2500,
-            500,
-            2500,
-            0xff0000,
-            400
-        );
+        const particles = new Particles(this.scene, 2500, 500, 2500, RED, 400);
         particles.draw();
-
+        this.camera.lookAt({
+            x: 0,
+            y: 0,
+            z: 0
+        });
         const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
         const cameraBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0x00ff00
@@ -263,19 +259,24 @@ export default class Scene {
             }
         });
         document.onmousemove = event => {
-            event.preventDefault();
             // this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
             // this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             // this.raycaster.setFromCamera(this.mouse, this.camera);
             // this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
-            // this.player.player.corps.lookAt(this.intersectPoint);
+            // console.log(this.intersectPoint);
+            // let int = new THREE.Vector3(
+            //     this.intersectPoint.x,
+            //     0,
+            //     this.intersectPoint.z
+            // );
+            // this.player.player.tower.lookAt(int);
             // this.marker.position.copy(this.intersectPoint);
         };
-        window.onbeforeunload = e => {
+        window.onbeforeunload = () => {
             this.client.socket.emit("leaveGame", this.player.id);
         };
         this.client = new IOClient();
-        this.client.socket.on("connect", socket => {
+        this.client.socket.on("connect", () => {
             this.client.socket.emit("joinGame", { name: "newTank", type: 1 });
         });
         this.client.socket.on("addTank", tank => {
@@ -347,7 +348,7 @@ export default class Scene {
                 // this.checkElevator(this.player.player, this.map.elevators);
                 this.camera.position
                     .copy(this.player.player.tank.position)
-                    .add(new THREE.Vector3(0, 700, 600));
+                    .add(new THREE.Vector3(0, 850, 700));
                 this.camera.lookAt(this.player.player.tank.position);
             }
             this.updateTanksPosition();

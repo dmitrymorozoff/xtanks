@@ -11,8 +11,8 @@ export default class Coin {
         this.color = color;
         this.coin = null;
     }
-    draw() {
-        const coinMaterial = new THREE.MeshStandardMaterial({
+    load() {
+        const coinMaterial = new THREE.MeshBasicMaterial({
             color: this.color
         });
         const coinGeometry = new THREE.CylinderGeometry(

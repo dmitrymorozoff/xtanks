@@ -1,16 +1,7 @@
 import * as THREE from "three";
 
 export default class PlaneCube {
-    constructor(
-        scene,
-        width,
-        height,
-        depth,
-        x = 0,
-        y = 0,
-        z = 0,
-        color,
-    ) {
+    constructor(scene, width, height, depth, x = 0, y = 0, z = 0, color) {
         this.scene = scene;
         this.width = width;
         this.height = height;

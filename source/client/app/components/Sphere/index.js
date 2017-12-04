@@ -15,7 +15,7 @@ export default class Sphere {
         const sphereMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff
         });
-        const sphereLight = new THREE.PointLight(this.color, 10, 3500, 2.0);
+        const sphereLight = new THREE.PointLight(this.color, 10, 1500, 2.0);
         sphereLight.add(new THREE.Mesh(sphereGeometry, sphereMaterial));
         sphereLight.position.set(this.x, this.y, this.z);
         this.scene.add(sphereLight);

@@ -4,6 +4,7 @@ import Light from "../Light/index.js";
 import Lamp from "../Lamp/index.js";
 import RotationCube from "../RotationCube/index.js";
 import EdgesCube from "../EdgesCube/index.js";
+import Coin from "../Bonuses/Coin/index.js";
 import Sphere from "../Sphere/index.js";
 import MovingCube from "../MovingCube/index.js";
 import getRandomInt, { makeCube } from "../../../../utils/index.js";
@@ -11,13 +12,22 @@ import { floorMaterial } from "./GeometryAndMaterials/floor.js";
 import {
     FLOOR,
     WALL,
-    LIGHT,
-    LAMP,
+    RED_LIGHT,
+    BLUE_LIGHT,
+    RED_LAMP,
+    BLUE_LAMP,
+    COIN,
     CUBE_SIZE,
     ROTATION_CUBE,
-    EDGES_CUBE,
+    EDGES_RED_CUBE,
+    EDGES_BLUE_CUBE,
     SPHERE,
-    MOVING_CUBE
+    MOVING_CUBE,
+    RED,
+    BLUE,
+    DARK_GRAY,
+    DARKNESS_GRAY,
+    LIGHT_GRAY
 } from "../../constants/index.js";
 
 export default class Map {
@@ -31,10 +41,19 @@ export default class Map {
         this.cubesBarrier = [];
         this.elevators = [];
         this.colors = {
-            floorColors: [0x060606, 0x121214, 0x080808],
-            wallColors: [0x060606, 0xed66ee, 0x161616, 0x161616, 0x590000],
-            lampColors: [0xff0000],
-            floorBottomColors: [0x222222, 0x111111, 0x222222]
+            floorColors: [LIGHT_GRAY, DARK_GRAY, DARK_GRAY, DARKNESS_GRAY],
+            wallColors: [
+                DARK_GRAY,
+                DARK_GRAY,
+                LIGHT_GRAY,
+                LIGHT_GRAY,
+                DARK_GRAY,
+                DARK_GRAY,
+                DARKNESS_GRAY,
+                DARKNESS_GRAY
+            ],
+            lampColors: [RED, BLUE],
+            floorBottomColors: [DARK_GRAY, LIGHT_GRAY, DARK_GRAY]
         };
         this.collidableMeshList = [];
     }
@@ -48,14 +67,19 @@ export default class Map {
         cubeGeometry.translate(-x, -y, -z);
     }
     load() {
+        let lightColor = null;
+        let lampColor = null;
+        let edgesColor = null;
         const centerMapI = LEVEL_1[0].length / 2 * this.cubeSize;
         const centerMapJ = LEVEL_1[0][0].length / 2 * this.cubeSize;
         let mergedFloorGeometry = new THREE.Geometry();
         let mergedWallGeometry = new THREE.Geometry();
-        console.log("draw");
         for (let i = 0; i < LEVEL_1.length; i++) {
             for (let j = 0; j < LEVEL_1[i].length; j++) {
                 for (let k = 0; k < LEVEL_1[i][j].length; k++) {
+                    lightColor = null;
+                    lampColor = null;
+                    edgesColor = null;
                     switch (LEVEL_1[i][j][k]) {
                         case FLOOR:
                             this.generateMergedObject(
@@ -89,37 +113,33 @@ export default class Map {
                                 ]
                             );
                             break;
-                        case LIGHT:
+                        case RED_LIGHT:
+                            lightColor = RED;
+                        case BLUE_LIGHT:
+                            lightColor = lightColor === null ? BLUE : RED;
                             let light = new Light(
                                 this.scene,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                this.colors.lampColors[
-                                    getRandomInt(
-                                        0,
-                                        this.colors.lampColors.length
-                                    )
-                                ]
+                                lightColor
                             );
-                            // light.load();
+                            light.load();
                             break;
-                        case LAMP:
+                        case RED_LAMP:
+                            lampColor = RED;
+                        case BLUE_LAMP:
+                            lampColor = lampColor === null ? BLUE : RED;
                             let lamp = new Lamp(
                                 this.scene,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                this.colors.lampColors[
-                                    getRandomInt(
-                                        0,
-                                        this.colors.lampColors.length
-                                    )
-                                ]
+                                lampColor
                             );
-                            // lamp.load();
+                            lamp.load();
                             break;
                         case ROTATION_CUBE:
                             let rotationCube = new RotationCube(
@@ -128,19 +148,22 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                [0x670000, 0x810000, 0x350000]
+                                [BLUE, BLUE, BLUE]
                             );
                             rotationCube.load();
                             rotationCube.move();
                             break;
-                        case EDGES_CUBE:
+                        case EDGES_RED_CUBE:
+                            edgesColor = RED;
+                        case EDGES_BLUE_CUBE:
+                            edgesColor = edgesColor === null ? BLUE : RED;
                             let edgesCube = new EdgesCube(
                                 this.scene,
                                 this.cubeSize,
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                [0x670000, 0x810000, 0x350000]
+                                edgesColor
                             );
                             edgesCube.load();
                             break;
@@ -151,12 +174,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                this.colors.lampColors[
-                                    getRandomInt(
-                                        0,
-                                        this.colors.lampColors.length
-                                    )
-                                ]
+                                this.colors.lampColors[1]
                             );
                             sphere.load();
                             break;
@@ -177,18 +195,35 @@ export default class Map {
                             movingCube.load();
                             movingCube.move();
                             break;
+                        case COIN:
+                            let coin = new Coin(
+                                this.scene,
+                                this.cubeSize / 3,
+                                k * this.cubeSize - centerMapJ,
+                                i * this.cubeSize,
+                                j * this.cubeSize - centerMapI,
+                                this.colors.lampColors[
+                                    getRandomInt(
+                                        0,
+                                        this.colors.lampColors.length
+                                    )
+                                ]
+                            );
+                            coin.load();
+                            coin.move();
+                            break;
                         default:
                             break;
                     }
                 }
             }
         }
-        mergedFloorGeometry.faces.sort(function (a, b) {
+        mergedFloorGeometry.faces.sort(function(a, b) {
             return a.materialIndex - b.materialIndex;
-        }); 
-        mergedWallGeometry.faces.sort(function (a, b) {
+        });
+        mergedWallGeometry.faces.sort(function(a, b) {
             return a.materialIndex - b.materialIndex;
-        }); 
+        });
         const floor = new THREE.Mesh(mergedFloorGeometry, floorMaterial);
         const wall = new THREE.Mesh(mergedWallGeometry, floorMaterial);
         this.collidableMeshList.push(wall);
