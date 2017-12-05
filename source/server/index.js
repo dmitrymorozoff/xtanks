@@ -1,7 +1,7 @@
 import getRandomInt from "../utils/index";
 import config from "./config";
 import GameServer from "./components/GameServer.js";
-import { DEG_TO_RAD } from "../client/app/constants/index";
+import { DEG_TO_RAD, CUBE_SIZE } from "../client/app/constants/index";
 let socket = require("socket.io");
 let express = require("express");
 let path = require("path");
@@ -59,9 +59,9 @@ io.sockets.on("connection", function(client) {
             id: tankId,
             type: tank.type,
             isMe: false,
-            x: initX,
-            y: initY,
-            z: initZ,
+            x: initX * CUBE_SIZE,
+            y: initY * CUBE_SIZE,
+            z: initZ * CUBE_SIZE,
             health: config.TANK_INIT_HP,
             angle: initAngle * DEG_TO_RAD,
             towerAngle: initTowerAngle,

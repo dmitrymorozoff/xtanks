@@ -133,10 +133,11 @@ export default class Scene {
             this.player.draw();
             this.tanks.push(this.player.player);
         } else {
-            let tank = new Supertank(this.scene, tankData);
+            let tank = new Supertank(this.scene, { ...tankData });
             tank.initModel();
             tank.draw();
             this.tanks.push(tank);
+            console.log(tank.tank.position);
         }
         if (this.player !== null) {
             this.client.socket.emit("updateWindowInfo", {
@@ -151,6 +152,7 @@ export default class Scene {
         dataFromServer.tanks.forEach(tankFromServer => {
             let isFound = false;
             self.tanks.forEach(clientTank => {
+                console.log(tankFromServer.x, tankFromServer.z);
                 if (clientTank.id === tankFromServer.id) {
                     clientTank.x = tankFromServer.x;
                     clientTank.z = tankFromServer.z;
@@ -158,6 +160,7 @@ export default class Scene {
                     clientTank.tower.rotation.y = tankFromServer.towerAngle;
                     clientTank.corps.rotation.y = tankFromServer.angle;
                     clientTank.tank.position.x = tankFromServer.x;
+                    clientTank.tank.position.y = tankFromServer.y;
                     clientTank.tank.position.z = tankFromServer.z;
                     isFound = true;
                 }

@@ -134,7 +134,7 @@ export default class Tank {
             }
         }
         this.tank.add(this.corps);
-        this.tank.name = this.id;
+        this.tank.name = this.id; // чтобы найди танк при удалении с карты
         this.tank.position.set(this.x, this.y, this.z);
         this.tank.rotation.y = this.rotate * DEG_TO_RAD;
     }
