@@ -12,11 +12,40 @@
 			padding: 0;
 			overflow: hidden;
 		}
+
+		body {
+			font-size: 16px;
+			position: relative;
+		}
+
+		#aim {
+			border: 1px solid white;
+			width: 2rem;
+			height: 2rem;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+		}
+
+		#aim::after {
+			content: '';
+			width: 0.375rem;
+			position: absolute;
+			height: 0.375rem;
+			display: block;
+			border-radius: 50%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: white;
+		}
 	</style>
 </head>
 
 <body>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<div id="aim"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 </body>
 
 </html>

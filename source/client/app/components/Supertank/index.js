@@ -25,10 +25,11 @@ export default class Tank {
         this.type = params.type;
         this.isMe = params.isMe;
         this.health = params.health;
-        this.rotate = -90;
+        this.rotate = -180;
         this.model = model;
         this.basicSize = this.model.styles.geometries[1].size;
         this.tank = new THREE.Group();
+        this.corps = new THREE.Group();
         this.tower = null;
         this.id = params.id;
     }
@@ -57,7 +58,6 @@ export default class Tank {
                 for (let x = 0; x < modelMap[i].map[y].length; x++) {
                     for (let z = 0; z < modelMap[i].map[y][x].length; z++) {
                         mapValue = modelMap[i].map[y][x][z];
-
                         if (mapValue) {
                             convertX =
                                 x * this.basicSize.width -
@@ -127,13 +127,15 @@ export default class Tank {
                 );
                 this.tank.add(this.tower);
             } else {
-                this.tank.add(
+                this.corps.add(
                     new THREE.Mesh(mergedObject, materials[materialId])
                 );
+                this.corps.rotation.y = -this.rotate / 2 * DEG_TO_RAD;
             }
         }
+        this.tank.add(this.corps);
         this.tank.position.set(this.x, this.y, this.z);
-        this.tank.rotateY(this.rotate * DEG_TO_RAD);
+        this.tank.rotation.y = this.rotate * DEG_TO_RAD;
     }
     getGeometries() {
         let modelGeometries = this.model.styles.geometries,
@@ -208,5 +210,8 @@ export default class Tank {
             colors[i] = modelColors[i];
         }
         return colors;
+    }
+    rotateTower(deg) {
+        this.tower.rotation.y = deg * DEG_TO_RAD;
     }
 }

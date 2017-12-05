@@ -66,12 +66,18 @@ export default class Map {
         geometry.merge(cubeGeometry, cubeGeometry.matrix);
         cubeGeometry.translate(-x, -y, -z);
     }
+    getCenterMap() {
+        return {
+            x: LEVEL_1[0].length / 2 * this.cubeSize,
+            y: LEVEL_1[0][0].length / 2 * this.cubeSize
+        };
+    }
     load() {
         let lightColor = null;
         let lampColor = null;
         let edgesColor = null;
-        const centerMapI = LEVEL_1[0].length / 2 * this.cubeSize;
-        const centerMapJ = LEVEL_1[0][0].length / 2 * this.cubeSize;
+        const centerMapI = this.getCenterMap().x;
+        const centerMapJ = this.getCenterMap().y;
         let mergedFloorGeometry = new THREE.Geometry();
         let mergedWallGeometry = new THREE.Geometry();
         for (let i = 0; i < LEVEL_1.length; i++) {

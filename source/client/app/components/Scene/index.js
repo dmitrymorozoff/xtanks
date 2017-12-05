@@ -40,6 +40,11 @@ export default class Scene {
         this.marker = null;
         this.client = null;
         this.tanks = [];
+        this.aim = document.getElementById("aim");
+    }
+    setAimPosition(mouse) {
+        this.aim.style.left = `${mouse.x}px`;
+        this.aim.style.top = `${mouse.y}px`;
     }
     genesisDevice() {
         this.geometry = new THREE.PlaneGeometry(
@@ -213,15 +218,7 @@ export default class Scene {
         const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
         cameraBox.geometry.computeBoundingBox();
         this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-        // Точка на карте которая следует за Raycaster
-        this.marker = new THREE.Mesh(
-            new THREE.SphereGeometry(10, 4, 2),
-            new THREE.MeshBasicMaterial({
-                color: "red"
-            })
-        );
-        // this.scene.add(this.marker);
-        console.log(this.tanks);
+
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
                 case 65:
@@ -259,18 +256,14 @@ export default class Scene {
             }
         });
         document.onmousemove = event => {
-            // this.mouse.x = event.clientX / window.innerWidth * 2 - 1;
-            // this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            // this.raycaster.setFromCamera(this.mouse, this.camera);
-            // this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
-            // console.log(this.intersectPoint);
-            // let int = new THREE.Vector3(
-            //     this.intersectPoint.x,
-            //     0,
-            //     this.intersectPoint.z
-            // );
-            // this.player.player.tower.lookAt(int);
-            // this.marker.position.copy(this.intersectPoint);
+            this.mouse.x = event.clientX;
+            this.mouse.y = event.clientY;
+            this.setAimPosition(this.mouse);
+            let angle =
+                Math.atan2(this.mouse.y - 450, this.mouse.x - 700) *
+                180 /
+                Math.PI;
+            this.player.player.rotateTower(-angle);
         };
         window.onbeforeunload = () => {
             this.client.socket.emit("leaveGame", this.player.id);

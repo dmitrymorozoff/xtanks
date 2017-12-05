@@ -39,36 +39,38 @@ export default class Player {
     }
     draw() {
         this.angle = this.rotate * 0.0174533;
-        this.player = new Supertank(
-            this.scene,
-            {
-                id: this.id,
-                name: this.name,
-                type: this.type,
-                isMe: this.isMe,
-                x: this.x,
-                y: this.y - this.size / 8,
-                z: this.z,
-                health: this.health,
-                rotate: this.rotate
-            }
-        );
+        this.player = new Supertank(this.scene, {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            isMe: this.isMe,
+            x: this.x,
+            y: this.y - this.size / 8,
+            z: this.z,
+            health: this.health,
+            rotate: this.rotate
+        });
         console.log(this.camera);
         this.player.initModel();
         this.player.draw();
     }
-    setSpeed(delta){
+    setSpeed(delta) {
         this.speed = 1000 * delta;
+    }
+    getPosition() {
+        let position = new THREE.Vector3();
+        position.set(this.x, this.y, this.z);
+        return position;
     }
     moveLeft() {
         let newAngleLeft = this.speed * 0.0174533;
-        this.player.tank.rotation.y += newAngleLeft;
+        this.player.corps.rotation.y += newAngleLeft;
         this.camera.rotation.y += newAngleLeft;
         this.angle += newAngleLeft;
     }
     moveRight() {
         let newAngleRight = this.speed * 0.0174533;
-        this.player.tank.rotation.y -= newAngleRight;
+        this.player.corps.rotation.y -= newAngleRight;
         this.camera.rotation.y -= newAngleRight;
         this.angle -= newAngleRight;
     }

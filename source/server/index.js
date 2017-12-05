@@ -35,7 +35,7 @@ app.set("port", config.port);
 app.use(express.static("dist/client"));
 
 app.get("/", (request, response) => {
-    response.sendFile(path.join(__dirname, "client/index.html"));
+    response.sendFile(path.join(__dirname, "dist/client/index.html"));
 });
 
 server.listen(config.port, () => {
@@ -46,15 +46,11 @@ const game = new GameServer();
 
 io.sockets.on("connection", function(client) {
     console.log("Игрок подключился");
-    client.on("disconnect", () => {
-        console.log("Клиент покинул игру");
-    });
     client.on("joinGame", tank => {
         console.log(tank.name + " зашел в игру");
         let initX = getRandomInt(1, 10);
         let initY = 1;
         let initZ = getRandomInt(1, 11);
-        console.log(guid);
         let tankId = guid();
         client.emit("addTank", {
             id: tankId,
