@@ -130,7 +130,7 @@ export default class Tank {
                 this.corps.add(
                     new THREE.Mesh(mergedObject, materials[materialId])
                 );
-                this.corps.rotation.y = -this.rotate / 2 * DEG_TO_RAD;
+                this.corps.rotation.y = -this.rotate / 4 * DEG_TO_RAD;
             }
         }
         this.tank.add(this.corps);
@@ -210,8 +210,5 @@ export default class Tank {
             colors[i] = modelColors[i];
         }
         return colors;
-    }
-    rotateTower(deg) {
-        this.tower.rotation.y = deg * DEG_TO_RAD;
     }
 }

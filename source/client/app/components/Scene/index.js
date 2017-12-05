@@ -17,11 +17,15 @@ export default class Scene {
         this.animationId = 0;
         this.cubeSize = 100;
         this.player = null;
-        this.flagsMovePlayer = {
+        this.movementPlayer = {
             left: false,
             right: false,
             top: false,
-            bottom: false
+            bottom: false,
+            mouse: {
+                x: 0,
+                y: 0
+            }
         };
         this.camPos = new THREE.Vector3(0, 0, 0);
         this.targetPos = new THREE.Vector3(0, 200, 300);
@@ -32,7 +36,7 @@ export default class Scene {
         this.flagElevatorTop = false;
         this.onElevator = false;
         this.sphereBackground = null;
-        this.mouse = new THREE.Vector2();
+        this.mouse = {};
         this.intersectPoint = new THREE.Vector3();
         this.raycaster = new THREE.Raycaster();
         this.shaderPass = shaderPass;
@@ -124,6 +128,7 @@ export default class Scene {
                 health
             });
             this.player.draw();
+            this.tanks.push(this.player.player);
         } else {
             let tank = new Supertank(this.scene, {
                 id,
@@ -139,32 +144,26 @@ export default class Scene {
             tank.draw();
             this.tanks.push(tank);
         }
+        this.client.socket.emit("updateWindowInfo", {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            id: this.player.id
+        });
     }
-    updateTanksPosition() {
-        let gameData = {
-            tank: {
-                id: this.player.id,
-                x: this.player.x,
-                y: this.player.y,
-                z: this.player.z,
-                angle: this.player.angle
-            }
-        };
-        this.client.socket.emit("updateGame", gameData);
-    }
-    updateGame(dataFromServer) {
+    updateMovement(dataFromServer) {
         let self = this;
         dataFromServer.tanks.forEach(tankFromServer => {
             let isFound = false;
             self.tanks.forEach(clientTank => {
+                console.log(tankFromServer);
                 if (clientTank.id === tankFromServer.id) {
                     clientTank.x = tankFromServer.x;
-                    clientTank.y = tankFromServer.y;
                     clientTank.z = tankFromServer.z;
                     clientTank.angle = tankFromServer.angle;
-                    clientTank.tank.rotation.y = tankFromServer.angle;
+                    console.log(tankFromServer.towerAngle);
+                    clientTank.tower.rotation.y = tankFromServer.towerAngle;
+                    clientTank.corps.rotation.y = tankFromServer.angle;
                     clientTank.tank.position.x = tankFromServer.x;
-                    clientTank.tank.position.y = tankFromServer.y;
                     clientTank.tank.position.z = tankFromServer.z;
                     isFound = true;
                 }
@@ -184,6 +183,10 @@ export default class Scene {
                 );
             }
         });
+    }
+    movementToServer(data) {
+        this.movementPlayer.id = this.player.id;
+        this.client.socket.emit("movement", data);
     }
     removeTank(tankId) {
         this.tanks = this.tanks.filter(tank => {
@@ -222,16 +225,16 @@ export default class Scene {
         window.addEventListener("keydown", event => {
             switch (event.keyCode) {
                 case 65:
-                    this.flagsMovePlayer.left = true;
+                    this.movementPlayer.left = true;
                     break;
                 case 68:
-                    this.flagsMovePlayer.right = true;
+                    this.movementPlayer.right = true;
                     break;
                 case 87:
-                    this.flagsMovePlayer.top = true;
+                    this.movementPlayer.top = true;
                     break;
                 case 83:
-                    this.flagsMovePlayer.bottom = true;
+                    this.movementPlayer.bottom = true;
                     break;
                 default:
                     break;
@@ -240,33 +243,42 @@ export default class Scene {
         window.addEventListener("keyup", event => {
             switch (event.keyCode) {
                 case 65:
-                    this.flagsMovePlayer.left = false;
+                    this.movementPlayer.left = false;
                     break;
                 case 68:
-                    this.flagsMovePlayer.right = false;
+                    this.movementPlayer.right = false;
                     break;
                 case 87:
-                    this.flagsMovePlayer.top = false;
+                    this.movementPlayer.top = false;
                     break;
                 case 83:
-                    this.flagsMovePlayer.bottom = false;
+                    this.movementPlayer.bottom = false;
                     break;
                 default:
                     break;
             }
         });
         document.onmousemove = event => {
-            this.mouse.x = event.clientX;
-            this.mouse.y = event.clientY;
-            this.setAimPosition(this.mouse);
-            let angle =
-                Math.atan2(this.mouse.y - 450, this.mouse.x - 700) *
-                180 /
-                Math.PI;
-            this.player.player.rotateTower(-angle);
+            if (this.player !== null) {
+                this.movementPlayer.mouse = {
+                    x: event.clientX,
+                    y: event.clientY,
+                    id: this.player.id
+                };
+                this.setAimPosition(this.movementPlayer.mouse);
+            }
         };
         window.onbeforeunload = () => {
             this.client.socket.emit("leaveGame", this.player.id);
+        };
+        window.onresize = () => {
+            if (this.player !== null) {
+                this.client.socket.emit("updateWindowInfo", {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    id: this.player.id
+                });
+            }
         };
         this.client = new IOClient();
         this.client.socket.on("connect", () => {
@@ -283,8 +295,8 @@ export default class Scene {
                 tank.z
             );
         });
-        this.client.socket.on("updateGame", gameServerData => {
-            this.updateGame(gameServerData);
+        this.client.socket.on("updateMovement", data => {
+            this.updateMovement(data);
         });
         this.client.socket.on("removeTank", tankId => {
             this.removeTank(tankId);
@@ -324,18 +336,6 @@ export default class Scene {
     }
     animate() {
         if (this.player !== null) {
-            if (this.flagsMovePlayer.top) {
-                this.player.moveTop();
-            }
-            if (this.flagsMovePlayer.left) {
-                this.player.moveLeft();
-            }
-            if (this.flagsMovePlayer.right) {
-                this.player.moveRight();
-            }
-            if (this.flagsMovePlayer.bottom) {
-                this.player.moveBottom();
-            }
             // this.player.detectCollision();
             if (this.player !== null) {
                 // this.checkElevator(this.player.player, this.map.elevators);
@@ -344,7 +344,7 @@ export default class Scene {
                     .add(new THREE.Vector3(0, 850, 700));
                 this.camera.lookAt(this.player.player.tank.position);
             }
-            this.updateTanksPosition();
+            this.movementToServer(this.movementPlayer);
         }
         this.stats.update();
         this.animationId = requestAnimationFrame(this.animate.bind(this));

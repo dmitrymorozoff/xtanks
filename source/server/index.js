@@ -1,6 +1,7 @@
 import getRandomInt from "../utils/index";
 import config from "./config";
 import GameServer from "./components/GameServer.js";
+import { DEG_TO_RAD } from "../client/app/constants/index";
 let socket = require("socket.io");
 let express = require("express");
 let path = require("path");
@@ -51,41 +52,41 @@ io.sockets.on("connection", function(client) {
         let initX = getRandomInt(1, 10);
         let initY = 1;
         let initZ = getRandomInt(1, 11);
+        let initAngle = -180;
+        let initTowerAngle = 0;
         let tankId = guid();
-        client.emit("addTank", {
-            id: tankId,
-            type: tank.type,
-            isMe: true,
-            x: initX,
-            y: initY,
-            z: initZ,
-            health: config.TANK_INIT_HP
-        });
-        client.broadcast.emit("addTank", {
+        let initTank = {
             id: tankId,
             type: tank.type,
             isMe: false,
             x: initX,
             y: initY,
             z: initZ,
-            health: config.TANK_INIT_HP
-        });
-        game.addTank({
-            id: tankId,
-            type: tank.type,
-            health: config.TANK_INIT_HP
-        });
+            health: config.TANK_INIT_HP,
+            angle: initAngle * DEG_TO_RAD,
+            towerAngle: initTowerAngle,
+            windowInfo: {
+                width: 800,
+                height: 500
+            }
+        };
+        client.emit("addTank", { ...initTank, isMe: true });
+        client.broadcast.emit("addTank", initTank);
+        game.addTank(initTank);
     });
     client.on("leaveGame", tankId => {
         console.log(tankId + " покинул игру");
         game.removeTank(tankId);
         client.broadcast.emit("removeTank", tankId);
     });
-    client.on("updateGame", data => {
-        if (data.tank !== undefined) {
-            game.updateTanksPosition(data.tank);
+    client.on("movement", data => {
+        if (data.id !== undefined) {
+            game.setMovement(data);
         }
-        client.emit("updateGame", game.getData());
-        client.broadcast.emit("updateGame", game.getData());
+        client.emit("updateMovement", game.getData());
+        client.broadcast.emit("updateMovement", game.getData());
+    });
+    client.on("updateWindowInfo", data => {
+        game.updateWindowInfo(data);
     });
 });
