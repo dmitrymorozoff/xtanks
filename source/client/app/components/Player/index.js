@@ -62,37 +62,14 @@ export default class Player {
         position.set(this.x, this.y, this.z);
         return position;
     }
-    moveLeft() {
-        let newAngleLeft = this.speed * 0.0174533;
-        this.player.corps.rotation.y += newAngleLeft;
-        this.camera.rotation.y += newAngleLeft;
-        this.angle += newAngleLeft;
-    }
-    moveRight() {
-        let newAngleRight = this.speed * 0.0174533;
-        this.player.corps.rotation.y -= newAngleRight;
-        this.camera.rotation.y -= newAngleRight;
-        this.angle -= newAngleRight;
-    }
-    moveTop() {
-        this.player.tank.position.x += Math.sin(this.angle) * this.speed;
-        this.player.tank.position.z += Math.cos(-this.angle) * this.speed;
-        this.x = this.player.tank.position.x;
-        this.z = this.player.tank.position.z;
-    }
-    moveUp(newPosition) {
-        this.player.tank.position.y = newPosition;
-    }
-    moveBottom() {
-        this.player.tank.position.x -= Math.sin(this.angle) * this.speed;
-        this.player.tank.position.z -= Math.cos(-this.angle) * this.speed;
-        this.x = this.player.tank.position.x;
-        this.z = this.player.tank.position.z;
-    }
-    rotateGun(x, y) {
-        let angle = Math.atan2(y - this.y, x - this.x);
-        let newAngle = angle * this.speed - this.angle;
-        this.player.tank.rotation.y = newAngle;
+    setNewData(data) {
+        this.x = data.x;
+        this.z = data.z;
+        this.angle = data.angle;
+        this.player.tower.rotation.y = data.towerAngle;
+        this.player.corps.rotation.y = data.angle;
+        this.player.tank.position.x = data.x;
+        this.player.tank.position.z = data.z;
     }
     detectCollision() {
         let originPoint = this.player.tank.position.clone();

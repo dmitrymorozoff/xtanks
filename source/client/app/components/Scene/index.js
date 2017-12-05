@@ -112,55 +112,49 @@ export default class Scene {
         }
     }
     addTank(id, name, type, isMe, x, y, z, health) {
+        let tankData = {
+            id,
+            name,
+            type,
+            isMe,
+            x: x * this.cubeSize,
+            y: y * this.cubeSize,
+            z: z * this.cubeSize,
+            health
+        };
         if (isMe) {
             this.player = new Player(this.scene, {
                 camera: this.camera,
                 size: this.cubeSize,
-                x: x * this.cubeSize,
-                y: y * this.cubeSize,
-                z: z * this.cubeSize,
                 color: 0x4b0082,
                 collidableMeshList: this.map.collidableMeshList,
-                id,
-                name,
-                type,
-                isMe,
-                health
+                ...tankData
             });
             this.player.draw();
             this.tanks.push(this.player.player);
         } else {
-            let tank = new Supertank(this.scene, {
-                id,
-                name,
-                type,
-                isMe,
-                x: x * this.cubeSize,
-                y: y * this.cubeSize,
-                z: z * this.cubeSize,
-                health
-            });
+            let tank = new Supertank(this.scene, tankData);
             tank.initModel();
             tank.draw();
             this.tanks.push(tank);
         }
-        this.client.socket.emit("updateWindowInfo", {
-            width: window.innerWidth,
-            height: window.innerHeight,
-            id: this.player.id
-        });
+        if (this.player !== null) {
+            this.client.socket.emit("updateWindowInfo", {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                id: this.player.id
+            });
+        }
     }
     updateMovement(dataFromServer) {
         let self = this;
         dataFromServer.tanks.forEach(tankFromServer => {
             let isFound = false;
             self.tanks.forEach(clientTank => {
-                console.log(tankFromServer);
                 if (clientTank.id === tankFromServer.id) {
                     clientTank.x = tankFromServer.x;
                     clientTank.z = tankFromServer.z;
                     clientTank.angle = tankFromServer.angle;
-                    console.log(tankFromServer.towerAngle);
                     clientTank.tower.rotation.y = tankFromServer.towerAngle;
                     clientTank.corps.rotation.y = tankFromServer.angle;
                     clientTank.tank.position.x = tankFromServer.x;
@@ -189,9 +183,13 @@ export default class Scene {
         this.client.socket.emit("movement", data);
     }
     removeTank(tankId) {
+        console.log(this.player, tankId);
+        console.log(this.tanks);
         this.tanks = this.tanks.filter(tank => {
             return tank.id !== tankId;
         });
+        console.log(this.tanks);
+
         this.scene.remove(this.scene.getObjectByName(tankId));
     }
     draw() {
