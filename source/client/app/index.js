@@ -15,6 +15,33 @@ export default class Game {
     }
 
     start() {
+        THREE.RGBShiftShader = {
+            uniforms: {
+                tDiffuse: { value: null },
+                amount: { value: 0.05 },
+                angle: { value: 0.5 },
+            },
+            vertexShader: [
+                "varying vec2 vUv;",
+                "void main() {",
+                "vUv = uv;",
+                "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                "}",
+            ].join("\n"),
+            fragmentShader: [
+                "uniform sampler2D tDiffuse;",
+                "uniform float amount;",
+                "uniform float angle;",
+                "varying vec2 vUv;",
+                "void main() {",
+                "vec2 offset = amount * vec2( cos(angle), sin(angle));",
+                "vec4 cr = texture2D(tDiffuse, vUv + offset);",
+                "vec4 cga = texture2D(tDiffuse, vUv);",
+                "vec4 cb = texture2D(tDiffuse, vUv - offset);",
+                "gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+                "}",
+            ].join("\n"),
+        };
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010101, 0.0002);
         const camera = new THREE.PerspectiveCamera(
@@ -29,7 +56,7 @@ export default class Game {
         scene.add(new THREE.AmbientLight(0x333333));
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x000000, 1);
 
@@ -45,12 +72,17 @@ export default class Game {
         composer.addPass(new RenderPass(scene, camera));
 
         const shaderPass = new ShaderPass(fxaa());
-        shaderPass.renderToScreen = true;
+        shaderPass.renderToScreen = false;
         composer.addPass(shaderPass);
 
         // const filmPass = new FilmPass();
         // filmPass.renderToScreen = true;
         // composer.addPass(filmPass);
+
+        var effect = new ShaderPass(THREE.RGBShiftShader);
+        effect.uniforms["amount"].value = 0.002;
+        effect.renderToScreen = true;
+        composer.addPass(effect);
 
         const gameScene = new Scene(scene, camera, composer, shaderPass);
         gameScene.draw();

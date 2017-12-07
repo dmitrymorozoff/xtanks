@@ -183,7 +183,7 @@ export default class Map {
                                 j * this.cubeSize - centerMapI,
                                 this.colors.lampColors[1],
                             );
-                            sphere.load();
+                            // sphere.load();
                             break;
                         case MOVING_CUBE:
                             let movingCube = new MovingCube(

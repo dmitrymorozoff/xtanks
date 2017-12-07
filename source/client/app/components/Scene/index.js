@@ -346,7 +346,7 @@ export default class Scene {
                 // this.checkElevator(this.player.player, this.map.elevators);
                 this.camera.position
                     .copy(this.player.player.tank.position)
-                    .add(new THREE.Vector3(0, 850, 700));
+                    .add(new THREE.Vector3(0, 700, 550));
                 this.camera.lookAt(this.player.player.tank.position);
             }
             this.movementToServer(this.movementPlayer);
