@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import Scene from "./components/Scene/index.js";
+import Scene from "./components/Scene/index";
 import EffectComposer, {
     RenderPass,
-    ShaderPass
+    ShaderPass,
 } from "three-effectcomposer-es6";
+import { FilmPass } from "postprocessing";
 const fxaa = require("three-shader-fxaa");
 window.THREE = THREE;
 
@@ -12,6 +13,7 @@ export default class Game {
         this.settings = settings;
         this.controls = null;
     }
+
     start() {
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010101, 0.0002);
@@ -19,7 +21,7 @@ export default class Game {
             70,
             window.innerWidth / window.innerHeight,
             1,
-            10000
+            10000,
         );
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
@@ -29,11 +31,11 @@ export default class Game {
         const renderer = new THREE.WebGLRenderer({ antialias: false });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x020313, 1);
+        renderer.setClearColor(0x000000, 1);
 
         const target = new THREE.WebGLRenderTarget(
             window.innerWidth * window.devicePixelRatio,
-            window.innerHeight * window.devicePixelRatio
+            window.innerHeight * window.devicePixelRatio,
         );
         target.format = THREE.RGBFormat;
         target.minFilter = THREE.LinearFilter;
@@ -46,11 +48,16 @@ export default class Game {
         shaderPass.renderToScreen = true;
         composer.addPass(shaderPass);
 
+        // const filmPass = new FilmPass();
+        // filmPass.renderToScreen = true;
+        // composer.addPass(filmPass);
+
         const gameScene = new Scene(scene, camera, composer, shaderPass);
         gameScene.draw();
         gameScene.animate();
 
         document.body.appendChild(renderer.domElement);
+
         function resize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -58,6 +65,7 @@ export default class Game {
             target.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
         }
+
         addEventListener("resize", resize);
     }
 }

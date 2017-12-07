@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Supertank from "../Supertank/index.js";
+import Supertank from "../Supertank/index";
 
 export default class Player {
     constructor(
@@ -16,8 +16,8 @@ export default class Player {
             name: "",
             type: "",
             isMe: "",
-            health: 100
-        }
+            health: 100,
+        },
     ) {
         this.scene = scene;
         this.size = params.size;
@@ -48,7 +48,7 @@ export default class Player {
             y: this.y - this.size / 8,
             z: this.z,
             health: this.health,
-            rotate: this.rotate
+            rotate: this.rotate,
         });
         console.log(this.camera);
         this.player.initModel();
@@ -57,9 +57,23 @@ export default class Player {
     setSpeed(delta) {
         this.speed = 1000 * delta;
     }
+    shoot() {
+        const bulletGeometry = new THREE.SphereGeometry(15, 15, 15);
+        const bulletMaterial = new THREE.MeshLambertMaterial({
+            color: 0x777777,
+        });
+        const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
+        bullet.position.set(
+            500 * Math.sin(this.player.towerAngle + 1.5708),
+            150,
+            500 * Math.cos(-(this.player.towerAngle + 1.5708)),
+        );
+        console.log(this.player.towerAngle);
+        this.scene.add(bullet);
+    }
     getPosition() {
         let position = new THREE.Vector3();
-        position.set(this.x, this.y, this.z);
+        position.set(this.player.x, this.player.y, this.player.z);
         return position;
     }
     setNewData(data) {
@@ -80,22 +94,22 @@ export default class Player {
                 vertexIndex < this.player.corps.geometry.vertices.length;
                 vertexIndex++
             ) {
-                var localVertex = this.player.corps.geometry.vertices[
+                let localVertex = this.player.corps.geometry.vertices[
                     vertexIndex
                 ].clone();
                 let globalVertex = localVertex.applyMatrix4(
-                    this.player.tank.matrix
+                    this.player.tank.matrix,
                 );
                 let directionVector = globalVertex.sub(
-                    this.player.tank.position
+                    this.player.tank.position,
                 );
                 let ray = new THREE.Raycaster(
                     originPoint,
-                    directionVector.clone().normalize()
+                    directionVector.clone().normalize(),
                 );
                 let intersects = ray.intersectObjects(
                     this.collidableMeshList,
-                    true
+                    true,
                 );
                 if (
                     intersects.length > 0 &&

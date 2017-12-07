@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import getRandomInt from "../../../../utils/index.js";
+import getRandomInt from "../../../../utils/index";
 
 export default class Particles {
     constructor(scene, width, height, depth, color, particleCount) {
@@ -13,7 +13,7 @@ export default class Particles {
     draw() {
         const particleMaterial = new THREE.PointCloudMaterial({
             color: this.color,
-            size: 15
+            size: 15,
         });
         const particleGeometry = new THREE.Geometry();
         let x, y, z;
@@ -25,7 +25,7 @@ export default class Particles {
         }
         const pointCloud = new THREE.PointCloud(
             particleGeometry,
-            particleMaterial
+            particleMaterial,
         );
         this.scene.add(pointCloud);
     }

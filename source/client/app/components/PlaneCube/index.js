@@ -83,8 +83,8 @@ export default class PlaneCube {
             geometry,
             new THREE.MeshLambertMaterial({
                 color: this.color,
-                vertexColors: THREE.VertexColors
-            })
+                vertexColors: THREE.VertexColors,
+            }),
         );
         cube.position.x = this.x;
         cube.position.y = this.y;

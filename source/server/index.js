@@ -1,6 +1,6 @@
 import getRandomInt from "../utils/index";
 import config from "./config";
-import GameServer from "./components/GameServer.js";
+import GameServer from "./components/GameServer";
 import { DEG_TO_RAD, CUBE_SIZE } from "../client/app/constants/index";
 let socket = require("socket.io");
 let express = require("express");
@@ -36,7 +36,7 @@ app.set("port", config.port);
 app.use(express.static("dist/client"));
 
 app.get("/", (request, response) => {
-    response.sendFile(path.join(__dirname, "dist/client/index.html"));
+    response.sendfile(path.resolve("dist/client/index.html"));
 });
 
 server.listen(config.port, () => {

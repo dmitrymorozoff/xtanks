@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import model from "./myT.js";
+import model from "./myT";
 
 const DEG_TO_RAD = 0.0174533;
 
@@ -14,8 +14,8 @@ export default class Tank {
             x: 0,
             y: 0,
             z: 0,
-            health: 100
-        }
+            health: 100,
+        },
     ) {
         this.scene = scene;
         this.x = params.x;
@@ -79,18 +79,18 @@ export default class Tank {
                             colorId = modelObjects[mapValue].colorId;
 
                             geometries[geometryId].rotateX(
-                                modelObjects[mapValue].rotate.x * DEG_TO_RAD
+                                modelObjects[mapValue].rotate.x * DEG_TO_RAD,
                             );
                             geometries[geometryId].rotateY(
-                                modelObjects[mapValue].rotate.y * DEG_TO_RAD
+                                modelObjects[mapValue].rotate.y * DEG_TO_RAD,
                             );
                             geometries[geometryId].rotateZ(
-                                modelObjects[mapValue].rotate.z * DEG_TO_RAD
+                                modelObjects[mapValue].rotate.z * DEG_TO_RAD,
                             );
                             geometries[geometryId].translate(
                                 convertX,
                                 convertY,
-                                convertZ
+                                convertZ,
                             );
                             for (
                                 let k = 0;
@@ -98,23 +98,23 @@ export default class Tank {
                                 k++
                             ) {
                                 geometries[geometryId].faces[k].color.set(
-                                    colors[colorId]
+                                    colors[colorId],
                                 );
                             }
                             mergedObject.merge(geometries[geometryId]);
                             geometries[geometryId].translate(
                                 -convertX,
                                 -convertY,
-                                -convertZ
+                                -convertZ,
                             );
                             geometries[geometryId].rotateZ(
-                                -modelObjects[mapValue].rotate.z * DEG_TO_RAD
+                                -modelObjects[mapValue].rotate.z * DEG_TO_RAD,
                             );
                             geometries[geometryId].rotateY(
-                                -modelObjects[mapValue].rotate.y * DEG_TO_RAD
+                                -modelObjects[mapValue].rotate.y * DEG_TO_RAD,
                             );
                             geometries[geometryId].rotateX(
-                                -modelObjects[mapValue].rotate.x * DEG_TO_RAD
+                                -modelObjects[mapValue].rotate.x * DEG_TO_RAD,
                             );
                         }
                     }
@@ -123,12 +123,12 @@ export default class Tank {
             if (modelMap[i].name === "tower") {
                 this.tower = new THREE.Mesh(
                     mergedObject,
-                    materials[materialId]
+                    materials[materialId],
                 );
                 this.tank.add(this.tower);
             } else {
                 this.corps.add(
-                    new THREE.Mesh(mergedObject, materials[materialId])
+                    new THREE.Mesh(mergedObject, materials[materialId]),
                 );
                 this.corps.rotation.y = -this.rotate / 4 * DEG_TO_RAD;
             }
@@ -148,7 +148,7 @@ export default class Tank {
                     geometries[i] = new THREE.BoxGeometry(
                         modelGeometries[i].size.width,
                         modelGeometries[i].size.height,
-                        modelGeometries[i].size.length
+                        modelGeometries[i].size.length,
                     );
                     break;
                 case 2:
@@ -156,13 +156,13 @@ export default class Tank {
                         modelGeometries[i].size.radiusBegin,
                         modelGeometries[i].size.radiusEnd,
                         modelGeometries[i].size.length,
-                        modelGeometries[i].size.quality
+                        modelGeometries[i].size.quality,
                     );
                     break;
                 case 3:
                     geometries[i] = new THREE.CircleGeometry(
                         modelGeometries[i].size.radius,
-                        modelGeometries[i].size.segments
+                        modelGeometries[i].size.segments,
                     );
                     break;
             }
@@ -179,25 +179,25 @@ export default class Tank {
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
                     materials[i] = new THREE.MeshStandardMaterial(
-                        modelMaterials[i].params
+                        modelMaterials[i].params,
                     );
                     break;
                 case 2:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
                     materials[i] = new THREE.MeshBasicMaterial(
-                        modelMaterials[i].params
+                        modelMaterials[i].params,
                     );
                     break;
                 case 3:
                     const circleTexture = THREE.ImageUtils.loadTexture(
-                        "assets/circle.png"
+                        "assets/circle.png",
                     );
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
                     materials[i] = new THREE.MeshBasicMaterial({
                         ...modelMaterials[i].params,
-                        map: circleTexture
+                        map: circleTexture,
                     });
                     break;
             }

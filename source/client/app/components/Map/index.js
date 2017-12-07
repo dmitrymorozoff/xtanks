@@ -1,14 +1,14 @@
 import * as THREE from "three";
-import { LEVEL_1 } from "./Level/index.js";
-import Light from "../Light/index.js";
-import Lamp from "../Lamp/index.js";
-import RotationCube from "../RotationCube/index.js";
-import EdgesCube from "../EdgesCube/index.js";
-import Coin from "../Bonuses/Coin/index.js";
-import Sphere from "../Sphere/index.js";
-import MovingCube from "../MovingCube/index.js";
-import getRandomInt, { makeCube } from "../../../../utils/index.js";
-import { floorMaterial } from "./GeometryAndMaterials/floor.js";
+import { LEVEL_1 } from "./Level/index";
+import Light from "../Light/index";
+import Lamp from "../Lamp/index";
+import RotationCube from "../RotationCube/index";
+import EdgesCube from "../EdgesCube/index";
+import Coin from "../Bonuses/Coin/index";
+import Sphere from "../Sphere/index";
+import MovingCube from "../MovingCube/index";
+import getRandomInt, { makeCube } from "../../../../utils/index";
+import { floorMaterial } from "./GeometryAndMaterials/floor";
 import {
     FLOOR,
     WALL,
@@ -27,8 +27,8 @@ import {
     BLUE,
     DARK_GRAY,
     DARKNESS_GRAY,
-    LIGHT_GRAY
-} from "../../constants/index.js";
+    LIGHT_GRAY,
+} from "../../constants/index";
 
 export default class Map {
     constructor(scene, x = 0, y = 0, z = 0) {
@@ -44,16 +44,17 @@ export default class Map {
             floorColors: [LIGHT_GRAY, DARK_GRAY, DARK_GRAY, DARKNESS_GRAY],
             wallColors: [
                 DARK_GRAY,
-                DARK_GRAY,
-                LIGHT_GRAY,
+                DARKNESS_GRAY,
                 LIGHT_GRAY,
                 DARK_GRAY,
                 DARK_GRAY,
                 DARKNESS_GRAY,
-                DARKNESS_GRAY
+                DARKNESS_GRAY,
+                DARKNESS_GRAY,
             ],
             lampColors: [RED, BLUE],
-            floorBottomColors: [DARK_GRAY, LIGHT_GRAY, DARK_GRAY]
+            floorBottomColors: [DARK_GRAY, LIGHT_GRAY, DARK_GRAY],
+            coinColors: [0xf22368],
         };
         this.collidableMeshList = [];
     }
@@ -69,7 +70,7 @@ export default class Map {
     getCenterMap() {
         return {
             x: LEVEL_1[0].length / 2 * this.cubeSize,
-            y: LEVEL_1[0][0].length / 2 * this.cubeSize
+            y: LEVEL_1[0][0].length / 2 * this.cubeSize,
         };
     }
     load() {
@@ -98,9 +99,9 @@ export default class Map {
                                 this.colors.floorColors[
                                     getRandomInt(
                                         0,
-                                        this.colors.floorColors.length
+                                        this.colors.floorColors.length,
                                     )
-                                ]
+                                ],
                             );
                             break;
                         case WALL:
@@ -114,9 +115,9 @@ export default class Map {
                                 this.colors.wallColors[
                                     getRandomInt(
                                         0,
-                                        this.colors.wallColors.length
+                                        this.colors.wallColors.length,
                                     )
-                                ]
+                                ],
                             );
                             break;
                         case RED_LIGHT:
@@ -129,7 +130,7 @@ export default class Map {
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                lightColor
+                                lightColor,
                             );
                             light.load();
                             break;
@@ -143,7 +144,7 @@ export default class Map {
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
                                 this.cubeSize,
-                                lampColor
+                                lampColor,
                             );
                             lamp.load();
                             break;
@@ -154,7 +155,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                [BLUE, BLUE, BLUE]
+                                [BLUE, BLUE, BLUE],
                             );
                             rotationCube.load();
                             rotationCube.move();
@@ -169,7 +170,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                edgesColor
+                                edgesColor,
                             );
                             edgesCube.load();
                             break;
@@ -180,7 +181,7 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                this.colors.lampColors[1]
+                                this.colors.lampColors[1],
                             );
                             sphere.load();
                             break;
@@ -194,9 +195,9 @@ export default class Map {
                                 this.colors.lampColors[
                                     getRandomInt(
                                         0,
-                                        this.colors.lampColors.length
+                                        this.colors.lampColors.length,
                                     )
-                                ]
+                                ],
                             );
                             movingCube.load();
                             movingCube.move();
@@ -208,12 +209,12 @@ export default class Map {
                                 k * this.cubeSize - centerMapJ,
                                 i * this.cubeSize,
                                 j * this.cubeSize - centerMapI,
-                                this.colors.lampColors[
+                                this.colors.coinColors[
                                     getRandomInt(
                                         0,
-                                        this.colors.lampColors.length
+                                        this.colors.coinColors.length,
                                     )
-                                ]
+                                ],
                             );
                             coin.load();
                             coin.move();

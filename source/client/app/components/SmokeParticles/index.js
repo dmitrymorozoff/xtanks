@@ -20,7 +20,7 @@ export default class SmokeParticles {
             let particle = new THREE.Vector3(
                 getRandomInt(5, 800),
                 getRandomInt(5, 300),
-                getRandomInt(5, 800)
+                getRandomInt(5, 800),
             );
             smokeParticles.vertices.push(particle);
         }
@@ -29,7 +29,7 @@ export default class SmokeParticles {
             transparent: true,
             blending: THREE.AdditiveBlending,
             size: this.size,
-            color: this.color
+            color: this.color,
         });
         this.smoke = new THREE.ParticleSystem(smokeParticles, smokeMaterial);
         this.smoke.sortParticles = true;

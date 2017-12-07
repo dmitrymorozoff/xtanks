@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { DEG_TO_RAD } from "../../../constants/index.js";
+import { DEG_TO_RAD } from "../../../constants/index";
 
 export default class Coin {
     constructor(scene, size, x = 0, y = 0, z = 0, color) {
@@ -12,14 +12,14 @@ export default class Coin {
         this.coin = null;
     }
     load() {
-        const coinMaterial = new THREE.MeshBasicMaterial({
-            color: this.color
+        const coinMaterial = new THREE.MeshStandardMaterial({
+            color: this.color,
         });
         const coinGeometry = new THREE.CylinderGeometry(
             this.size,
             this.size,
             this.size / 2,
-            32
+            32,
         );
         this.coin = new THREE.Mesh(coinGeometry, coinMaterial);
         this.coin.position.x = this.x;
@@ -33,7 +33,7 @@ export default class Coin {
             z: 360 * DEG_TO_RAD,
             repeat: -1,
             yoyo: true,
-            ease: Power1.easeInOut
+            ease: Power1.easeInOut,
         });
     }
 }

@@ -1,31 +1,38 @@
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const path = require("path");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 let config = {
-    entry: ["./source/client/app.js"],
+    entry: ['./source/client/app.js'],
     output: {
-        path: path.resolve(__dirname, "../dist/client"),
-        publicPath: "",
-        filename: "bundle.js",
-        crossOriginLoading: "anonymous"
+        path: path.resolve(__dirname, '../dist/client'),
+        publicPath: '',
+        filename: 'bundle.js',
+        crossOriginLoading: 'anonymous',
     },
     module: {
         rules: [
             {
                 test: [/\.js?$/],
-                loader: "babel-loader"
-            }
-        ]
+                loader: 'eslint-loader',
+                exclude: /node_modules/,
+                options: {
+                    emitErrors: true,
+                },
+            },
+            {
+                test: [/\.js?$/],
+                loader: 'babel-loader',
+            },
+        ],
     },
     resolve: {
-        extensions: [".js", ".css", ".scss", ".sass", ".less"],
-        modules: [path.resolve("./source/client"), "node_modules"]
+        extensions: ['.js', '.css', '.scss', '.sass', '.less'],
+        modules: [path.resolve('./source/client'), 'node_modules'],
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./source/client/index-template.html",
+            template: './source/client/index-template.html',
             minify: {
                 removeComments: true,
                 collapseWhitespace: true,
@@ -35,24 +42,29 @@ let config = {
                 removeEmptyAttributes: true,
                 removeScriptTypeAttributes: true,
                 removeStyleLinkTypeAttributes: true,
-                removeOptionalTags: true
+                removeOptionalTags: true,
             },
-            hash: true
+            hash: true,
         }),
-        new CopyWebpackPlugin([{
-            from: "source/client/assets",
-            to: "assets",
-        }], {})
+        new CopyWebpackPlugin(
+            [
+                {
+                    from: 'source/client/assets',
+                    to: 'assets',
+                },
+            ],
+            {},
+        ),
     ],
     devServer: {
         port: 3000,
-        host: "localhost",
+        host: 'localhost',
         hot: true,
         open: true,
         inline: true,
-        openPage: "",
-        historyApiFallback: true
-    }
+        openPage: '',
+        historyApiFallback: true,
+    },
 };
 
 module.exports = config;

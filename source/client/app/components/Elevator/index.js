@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SECOND_FLOOR_HEIGHT } from "../../constants/index.js";
+import { SECOND_FLOOR_HEIGHT } from "../../constants/index";
 
 export default class Elevator {
     constructor(scene, size, x = 0, y = 0, z = 0, color) {
@@ -15,10 +15,10 @@ export default class Elevator {
         const mainGeometry = new THREE.BoxGeometry(
             this.size * 2,
             this.size,
-            this.size * 2
+            this.size * 2,
         );
         const mainMaterial = new THREE.MeshLambertMaterial({
-            color: this.color
+            color: this.color,
         });
         this.elevator = new THREE.Mesh(mainGeometry, mainMaterial);
         this.elevator.position.x = this.x - this.size / 2;
@@ -32,7 +32,7 @@ export default class Elevator {
             y: newY,
             repeat: -1,
             yoyo: true,
-            ease: Power1.easeInOut
+            ease: Power1.easeInOut,
         });
     }
 }

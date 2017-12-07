@@ -1,13 +1,13 @@
 import Stats from "stats.js";
-import Map from "../Map/index.js";
-import Particles from "../Particles/index.js";
-import Player from "../Player/index.js";
-import SmokeParticles from "../SmokeParticles/index.js";
+import Map from "../Map/index";
+import Particles from "../Particles/index";
+import Player from "../Player/index";
+import SmokeParticles from "../SmokeParticles/index";
 import getRandomInt from "../../../../utils/index";
 import IOClient from "../../IOClient/index";
 import Supertank from "../Supertank/index";
 import * as THREE from "three";
-import { BACKGROUND, RED, DEG_TO_RAD } from "../../constants/index";
+import { BACKGROUND, RED } from "../../constants/index";
 
 export default class Scene {
     constructor(scene, camera, composer, shaderPass) {
@@ -24,8 +24,8 @@ export default class Scene {
             bottom: false,
             mouse: {
                 x: 0,
-                y: 0
-            }
+                y: 0,
+            },
         };
         this.camPos = new THREE.Vector3(0, 0, 0);
         this.targetPos = new THREE.Vector3(0, 200, 300);
@@ -55,11 +55,11 @@ export default class Scene {
             window.innerWidth * 10,
             window.innerHeight * 12,
             98,
-            98
+            98,
         );
         this.material = new THREE.MeshLambertMaterial({
             color: BACKGROUND,
-            shading: THREE.FlatShading
+            shading: THREE.FlatShading,
         });
         const inception = () => {
             for (let i = 0; i < this.geometry.vertices.length; i++) {
@@ -79,13 +79,13 @@ export default class Scene {
     drawBackground() {
         const iosahedronGeometry = new THREE.IcosahedronGeometry(3700, 1);
         const icosahedronMaterial = new THREE.MeshPhongMaterial({
-            color: 0x222222,
+            color: 0x000000,
             shading: THREE.FlatShading,
-            side: THREE.BackSide
+            side: THREE.BackSide,
         });
         const icosahedron = new THREE.Mesh(
             iosahedronGeometry,
-            icosahedronMaterial
+            icosahedronMaterial,
         );
         this.scene.add(icosahedron);
     }
@@ -95,7 +95,7 @@ export default class Scene {
             { x: 8, y: 1, z: -16 },
             { x: -14, y: 1, z: -9 },
             { x: 0, y: 1, z: -7 },
-            { x: -12, y: 1, z: 6 }
+            { x: -12, y: 1, z: 6 },
         ];
         for (let i = 0; i < coordsSmoke.length; i++) {
             let smoke = new SmokeParticles(
@@ -103,10 +103,10 @@ export default class Scene {
                 coordsSmoke[i].x * this.cubeSize + Math.random() * 250 - 16,
                 coordsSmoke[i].y * this.cubeSize,
                 coordsSmoke[i].z * this.cubeSize + Math.random() * 250 - 16,
-                getRandomInt(50, 500),
+                getRandomInt(10, 50),
                 "./assets/smoke.png",
-                800,
-                0x720000
+                400,
+                0x720000,
             );
             smoke.draw();
         }
@@ -120,7 +120,7 @@ export default class Scene {
             x: x * this.cubeSize,
             y: y * this.cubeSize,
             z: z * this.cubeSize,
-            health
+            health,
         };
         if (isMe) {
             this.player = new Player(this.scene, {
@@ -128,7 +128,7 @@ export default class Scene {
                 size: this.cubeSize,
                 color: 0x4b0082,
                 collidableMeshList: this.map.collidableMeshList,
-                ...tankData
+                ...tankData,
             });
             this.player.draw();
             this.tanks.push(this.player.player);
@@ -137,13 +137,12 @@ export default class Scene {
             tank.initModel();
             tank.draw();
             this.tanks.push(tank);
-            console.log(tank.tank.position);
         }
         if (this.player !== null) {
             this.client.socket.emit("updateWindowInfo", {
                 width: window.innerWidth,
                 height: window.innerHeight,
-                id: this.player.id
+                id: this.player.id,
             });
         }
     }
@@ -152,11 +151,11 @@ export default class Scene {
         dataFromServer.tanks.forEach(tankFromServer => {
             let isFound = false;
             self.tanks.forEach(clientTank => {
-                console.log(tankFromServer.x, tankFromServer.z);
                 if (clientTank.id === tankFromServer.id) {
                     clientTank.x = tankFromServer.x;
                     clientTank.z = tankFromServer.z;
                     clientTank.angle = tankFromServer.angle;
+                    clientTank.towerAngle = tankFromServer.towerAngle;
                     clientTank.tower.rotation.y = tankFromServer.towerAngle;
                     clientTank.corps.rotation.y = tankFromServer.angle;
                     clientTank.tank.position.x = tankFromServer.x;
@@ -176,7 +175,7 @@ export default class Scene {
                     tankFromServer.isMe,
                     tankFromServer.x,
                     tankFromServer.y,
-                    tankFromServer.z
+                    tankFromServer.z,
                 );
             }
         });
@@ -206,17 +205,18 @@ export default class Scene {
 
         // this.genesisDevice();
         // this.drawSmoke();
+        // this.drawBackground();
 
         const particles = new Particles(this.scene, 2500, 500, 2500, RED, 400);
         particles.draw();
         this.camera.lookAt({
             x: 0,
             y: 0,
-            z: 0
+            z: 0,
         });
         const cameraBoxGeometry = new THREE.BoxGeometry(3000, 3000, 300);
         const cameraBoxMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff00
+            color: 0x00ff00,
         });
 
         const cameraBox = new THREE.Mesh(cameraBoxGeometry, cameraBoxMaterial);
@@ -259,12 +259,16 @@ export default class Scene {
                     break;
             }
         });
+        document.onclick = (event) => {
+            this.player.shoot();
+            console.log("shoot");
+        }
         document.onmousemove = event => {
             if (this.player !== null) {
                 this.movementPlayer.mouse = {
                     x: event.clientX,
                     y: event.clientY,
-                    id: this.player.id
+                    id: this.player.id,
                 };
                 this.setAimPosition(this.movementPlayer.mouse);
             }
@@ -277,7 +281,7 @@ export default class Scene {
                 this.client.socket.emit("updateWindowInfo", {
                     width: window.innerWidth,
                     height: window.innerHeight,
-                    id: this.player.id
+                    id: this.player.id,
                 });
             }
         };
@@ -293,7 +297,7 @@ export default class Scene {
                 tank.isMe,
                 tank.x,
                 tank.y,
-                tank.z
+                tank.z,
             );
         });
         this.client.socket.on("updateMovement", data => {
@@ -352,7 +356,7 @@ export default class Scene {
         this.composer.render();
         this.shaderPass.uniforms.resolution.value.set(
             window.innerWidth,
-            window.innerHeight
+            window.innerHeight,
         );
     }
 }

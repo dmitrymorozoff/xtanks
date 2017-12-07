@@ -23,7 +23,7 @@ export default class GameServer {
                     ) *
                     180 /
                     Math.PI;
-                tank.towerAngle = (-angle) * DEG_TO_RAD;
+                tank.towerAngle = -angle * DEG_TO_RAD;
                 if (data.left) {
                     let newAngleLeft = config.TANK_INIT_SPEED * DEG_TO_RAD;
                     tank.angle += newAngleLeft;

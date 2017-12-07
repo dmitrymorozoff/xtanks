@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "npm run clean && concurrently --kill-others \"npm run devServer\" \"npm run devApi\"",
-        "devServer": "npm update && rimraf dist/client/* && webpack-dev-server --hot",
+        "devServer": "npm update && rimraf dist/client/* && webpack-dev-server",
         "devApi": "rimraf dist/server.js* && concurrently --kill-others \"webpack --watch\" \"nodemon --inspect=5858 ./dist/server.js\"",
         "clean": "rimraf dist/*"
     },
@@ -14,19 +14,24 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "babel-eslint": "^8.0.3",
         "babel-polyfill": "^6.26.0",
         "concurrently": "^3.5.1",
         "copy-webpack-plugin": "^4.2.3",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-plugin-prettier": "^2.3.1",
         "event-emitter": "^0.3.5",
         "express": "3.12.0",
         "gsap": "^1.20.3",
         "html-webpack-plugin": "^2.30.1",
         "http": "0.0.0",
-        "nodemon": "^1.12.4",
+        "nodemon": "^1.12.5",
         "normalize-css": "^2.3.1",
         "orbit-controls-es6": "^1.0.10",
         "path": "^0.12.7",
         "physijs": "^0.0.4",
+        "postprocessing": "^3.1.0",
+        "prettier": "^1.9.1",
         "rimraf": "^2.6.2",
         "socket.io": "^2.0.4",
         "stats.js": "^0.17.0",
@@ -42,7 +47,9 @@
         "babel-preset-env": "^1.4.0",
         "browser-sync": "^2.18.8",
         "browser-sync-webpack-plugin": "^1.1.4",
+        "eslint": "^4.12.1",
+        "eslint-loader": "^1.9.0",
         "webpack": "^3.10.0",
-        "webpack-dev-server": "^2.9.4"
+        "webpack-dev-server": "^2.9.7"
     }
 }

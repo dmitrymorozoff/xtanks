@@ -15,11 +15,11 @@ export default class EdgesCube {
         const cubeGeometry = new THREE.BoxGeometry(
             this.size,
             this.size,
-            this.size
+            this.size,
         );
         const material = new THREE.MeshLambertMaterial({
             color: DARKNESS_GRAY,
-            shading: THREE.FlatShading
+            shading: THREE.FlatShading,
         });
         this.cube = new THREE.Mesh(cubeGeometry, material);
         this.cube.position.x = this.x;
@@ -28,7 +28,7 @@ export default class EdgesCube {
         const geo = new THREE.EdgesGeometry(this.cube.geometry);
         const mat = new THREE.LineBasicMaterial({
             color: this.color,
-            linewidth: 3
+            linewidth: 5,
         });
         const wireframe = new THREE.LineSegments(geo, mat);
         this.cube.add(wireframe);

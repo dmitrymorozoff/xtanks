@@ -17,7 +17,7 @@ export default class MovingCube {
             this.size
         );
         const material = new THREE.MeshBasicMaterial({
-            color: 0xffffff
+            color: 0xffffff,
         });
         this.cube = new THREE.Mesh(cubeGeometry, material);
         this.cube.position.x = this.x;
@@ -31,7 +31,7 @@ export default class MovingCube {
             y: newY,
             repeat: -1,
             yoyo: true,
-            ease: Power1.easeInOut
+            ease: Power1.easeInOut,
         });
     }
 }

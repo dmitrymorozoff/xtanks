@@ -1,13 +1,12 @@
 {
     "parserOptions": {
         "sourceType": "module",
-        "ecmaVersion": 6,
+        "ecmaVersion": 8,
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true
         }
     },
     "rules": {
-        "max-len": ["error", 80],
         "no-duplicate-imports": 2,
         "no-duplicate-case": 2,
         "no-trailing-spaces": 2,
@@ -15,8 +14,7 @@
         "camelcase": 2,
         "no-empty-function": 2,
         "no-mixed-spaces-and-tabs": 2,
-        "spaced-comment": 2,
-        "no-unused-vars": 2
+        "spaced-comment": 2
     },
     "env": {}
 }

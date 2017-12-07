@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { TweenMax } from "gsap";
-import { DEG_TO_RAD } from "../../constants/index.js";
+import { DEG_TO_RAD } from "../../constants/index";
 
 export default class RotationCube {
     constructor(scene, size, x = 0, y = 0, z = 0, colors) {
@@ -20,12 +20,12 @@ export default class RotationCube {
         const cubeGeometry = new THREE.BoxGeometry(
             this.size,
             this.size / 3 - sizeBetweenParts,
-            this.size
+            this.size,
         );
         const cubeMaterial = new THREE.MeshLambertMaterial({
             color: 0xffffff,
             shading: THREE.SmoothShading,
-            vertexColors: THREE.VertexColors
+            vertexColors: THREE.VertexColors,
         });
         let part = null;
         let mergedGeometry = new THREE.Geometry();
@@ -39,12 +39,11 @@ export default class RotationCube {
             part.updateMatrix();
             mergedGeometry.merge(part.geometry, part.matrix);
         }
-        const rotationCube = new THREE.Mesh(mergedGeometry, cubeMaterial);
-        this.rotationCube = rotationCube;
+        this.rotationCube = new THREE.Mesh(mergedGeometry, cubeMaterial);
         this.rotationCube.position.set(
             this.x,
             this.y - sizeBetweenParts,
-            this.z
+            this.z,
         );
         this.scene.add(this.rotationCube);
     }
@@ -53,7 +52,7 @@ export default class RotationCube {
             y: 360 * DEG_TO_RAD,
             repeat: -1,
             yoyo: true,
-            ease: Back.easeInOut.config(1.7)
+            ease: Back.easeInOut.config(1.7),
         });
     }
 }
