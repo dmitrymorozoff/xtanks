@@ -351,7 +351,7 @@ export default class Scene {
                 );
                 this.camera.position
                     .copy(vec3)
-                    .add(new THREE.Vector3(0, 650, 400));
+                    .add(new THREE.Vector3(0, 750, 500));
                 this.camera.lookAt(vec3);
             }
             this.movementToServer(this.movementPlayer);
