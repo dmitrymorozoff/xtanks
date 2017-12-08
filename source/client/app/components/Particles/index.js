@@ -13,7 +13,7 @@ export default class Particles {
     draw() {
         const particleMaterial = new THREE.PointCloudMaterial({
             color: this.color,
-            size: 15,
+            size: 9,
         });
         const particleGeometry = new THREE.Geometry();
         let x, y, z;

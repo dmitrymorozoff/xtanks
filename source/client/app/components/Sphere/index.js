@@ -11,12 +11,11 @@ export default class Sphere {
         this.cube = null;
     }
     load() {
-        const sphereGeometry = new THREE.SphereBufferGeometry(200, 200, 200);
+        const sphereGeometry = new THREE.SphereBufferGeometry(200, 4, 6);
         const sphereMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
         });
-        const sphereLight = new THREE.PointLight(this.color, 10, 1500, 2.0);
-        sphereLight.add(new THREE.Mesh(sphereGeometry, sphereMaterial));
+        const sphereLight = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphereLight.position.set(this.x, this.y, this.z);
         this.scene.add(sphereLight);
     }

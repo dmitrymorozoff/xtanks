@@ -50,7 +50,6 @@ export default class Player {
             health: this.health,
             rotate: this.rotate,
         });
-        console.log(this.camera);
         this.player.initModel();
         this.player.draw();
     }
@@ -58,16 +57,21 @@ export default class Player {
         this.speed = 1000 * delta;
     }
     shoot() {
-        const bulletGeometry = new THREE.SphereGeometry(15, 15, 15);
+        const bulletGeometry = new THREE.SphereGeometry(7, 7, 7);
         const bulletMaterial = new THREE.MeshLambertMaterial({
             color: 0x777777,
         });
         const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
-        bullet.position.set(
-            500 * Math.sin(this.player.towerAngle + 1.5708),
-            150,
-            500 * Math.cos(-(this.player.towerAngle + 1.5708)),
-        );
+        var speedX = 20 * Math.sin(this.player.towerAngle + 1.5708);
+        var speedY = 20 * Math.cos(-(this.player.towerAngle + 1.5708));
+        let newX = this.player.x;
+        let newY = this.player.z;
+        setInterval(() => {
+            newX += speedX;
+            newY += speedY;
+            bullet.position.set(newX, 150, newY);
+        }, 10);
+
         console.log(this.player.towerAngle);
         this.scene.add(bullet);
     }

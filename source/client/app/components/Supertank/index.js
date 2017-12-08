@@ -127,10 +127,9 @@ export default class Tank {
                 );
                 this.tank.add(this.tower);
             } else {
-                this.corps.add(
-                    new THREE.Mesh(mergedObject, materials[materialId]),
-                );
-                this.corps.rotation.y = -this.rotate / 4 * DEG_TO_RAD;
+                let corp = new THREE.Mesh(mergedObject, materials[materialId]);
+                corp.rotation.y = 90 * DEG_TO_RAD;
+                this.corps.add(corp);
             }
         }
         this.tank.add(this.corps);
@@ -178,7 +177,7 @@ export default class Tank {
                 case 1:
                     modelMaterials[i].params["vertexColors"] =
                         THREE.VertexColors;
-                    materials[i] = new THREE.MeshStandardMaterial(
+                    materials[i] = new THREE.MeshLambertMaterial(
                         modelMaterials[i].params,
                     );
                     break;

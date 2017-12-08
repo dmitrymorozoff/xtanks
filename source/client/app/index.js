@@ -43,7 +43,7 @@ export default class Game {
             ].join("\n"),
         };
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x010101, 0.0002);
+        scene.fog = new THREE.FogExp2(0x000034, 0.0004);
         const camera = new THREE.PerspectiveCamera(
             70,
             window.innerWidth / window.innerHeight,
@@ -53,12 +53,12 @@ export default class Game {
         camera.position.x = this.settings.camera.x;
         camera.position.y = this.settings.camera.y;
         camera.position.z = this.settings.camera.z;
-        scene.add(new THREE.AmbientLight(0x333333));
+        scene.add(new THREE.AmbientLight(0x555555));
 
         const renderer = new THREE.WebGLRenderer({ antialias: false });
         // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 1);
+        renderer.setClearColor(0x000029, 0.25);
 
         const target = new THREE.WebGLRenderTarget(
             window.innerWidth * window.devicePixelRatio,

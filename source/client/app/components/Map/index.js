@@ -42,16 +42,7 @@ export default class Map {
         this.elevators = [];
         this.colors = {
             floorColors: [LIGHT_GRAY, DARK_GRAY, DARK_GRAY, DARKNESS_GRAY],
-            wallColors: [
-                DARK_GRAY,
-                DARKNESS_GRAY,
-                LIGHT_GRAY,
-                DARK_GRAY,
-                DARK_GRAY,
-                DARKNESS_GRAY,
-                DARKNESS_GRAY,
-                DARKNESS_GRAY,
-            ],
+            wallColors: [DARKNESS_GRAY],
             lampColors: [RED, BLUE],
             floorBottomColors: [DARK_GRAY, LIGHT_GRAY, DARK_GRAY],
             coinColors: [0xf22368],
@@ -183,7 +174,7 @@ export default class Map {
                                 j * this.cubeSize - centerMapI,
                                 this.colors.lampColors[1],
                             );
-                            // sphere.load();
+                            sphere.load();
                             break;
                         case MOVING_CUBE:
                             let movingCube = new MovingCube(

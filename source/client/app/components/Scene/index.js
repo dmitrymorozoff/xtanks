@@ -8,6 +8,7 @@ import IOClient from "../../IOClient/index";
 import Supertank from "../Supertank/index";
 import * as THREE from "three";
 import { BACKGROUND, RED } from "../../constants/index";
+import { Vector3 } from "three";
 
 export default class Scene {
     constructor(scene, camera, composer, shaderPass) {
@@ -36,7 +37,7 @@ export default class Scene {
         this.flagElevatorTop = false;
         this.onElevator = false;
         this.sphereBackground = null;
-        this.mouse = {};
+        this.mouseDeviationToCam = {};
         this.intersectPoint = new THREE.Vector3();
         this.raycaster = new THREE.Raycaster();
         this.shaderPass = shaderPass;
@@ -185,12 +186,9 @@ export default class Scene {
         this.client.socket.emit("movement", data);
     }
     removeTank(tankId) {
-        console.log(this.player, tankId);
-        console.log(this.tanks);
         this.tanks = this.tanks.filter(tank => {
             return tank.id !== tankId;
         });
-        console.log(this.tanks);
 
         this.scene.remove(this.scene.getObjectByName(tankId));
     }
@@ -259,10 +257,10 @@ export default class Scene {
                     break;
             }
         });
-        document.onclick = (event) => {
+        document.onclick = event => {
             this.player.shoot();
             console.log("shoot");
-        }
+        };
         document.onmousemove = event => {
             if (this.player !== null) {
                 this.movementPlayer.mouse = {
@@ -344,10 +342,17 @@ export default class Scene {
             // this.player.detectCollision();
             if (this.player !== null) {
                 // this.checkElevator(this.player.player, this.map.elevators);
+                let mouseDiffX = this.movementPlayer.mouse.x / 10;
+                let mouseDiffY = this.movementPlayer.mouse.y / 10;
+                let vec3 = new Vector3(
+                    this.player.player.tank.position.x + mouseDiffX,
+                    this.player.player.tank.position.y,
+                    this.player.player.tank.position.z + mouseDiffY,
+                );
                 this.camera.position
-                    .copy(this.player.player.tank.position)
-                    .add(new THREE.Vector3(0, 700, 550));
-                this.camera.lookAt(this.player.player.tank.position);
+                    .copy(vec3)
+                    .add(new THREE.Vector3(0, 650, 400));
+                this.camera.lookAt(vec3);
             }
             this.movementToServer(this.movementPlayer);
         }
