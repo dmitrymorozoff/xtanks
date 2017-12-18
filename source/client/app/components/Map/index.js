@@ -8,7 +8,7 @@ import Coin from "../Bonuses/Coin/index";
 import Sphere from "../Sphere/index";
 import MovingCube from "../MovingCube/index";
 import getRandomInt, { makeCube } from "../../../../utils/index";
-import { floorMaterial } from "./GeometryAndMaterials/floor";
+import { floorMaterial, lightCubeMaterial } from "./GeometryAndMaterials/floor";
 import {
     FLOOR,
     WALL,
@@ -28,6 +28,8 @@ import {
     DARK_GRAY,
     DARKNESS_GRAY,
     LIGHT_GRAY,
+    RED_LIGHT_CUBE,
+    BLUE_LIGHT_CUBE,
 } from "../../constants/index";
 
 export default class Map {
@@ -66,16 +68,19 @@ export default class Map {
     }
     load() {
         let lightColor = null;
+        let lightCubeColor = null;
         let lampColor = null;
         let edgesColor = null;
         const centerMapI = this.getCenterMap().x;
         const centerMapJ = this.getCenterMap().y;
         let mergedFloorGeometry = new THREE.Geometry();
         let mergedWallGeometry = new THREE.Geometry();
+        let mergedLightWallGeometry = new THREE.Geometry();
         for (let i = 0; i < LEVEL_1.length; i++) {
             for (let j = 0; j < LEVEL_1[i].length; j++) {
                 for (let k = 0; k < LEVEL_1[i][j].length; k++) {
                     lightColor = null;
+                    lightCubeColor = null;
                     lampColor = null;
                     edgesColor = null;
                     switch (LEVEL_1[i][j][k]) {
@@ -109,6 +114,21 @@ export default class Map {
                                         this.colors.wallColors.length,
                                     )
                                 ],
+                            );
+                            break;
+                        case RED_LIGHT_CUBE:
+                            lightCubeColor = RED;
+                        case BLUE_LIGHT_CUBE:
+                            lightCubeColor =
+                                lightCubeColor === null ? BLUE : RED;
+                            this.generateMergedObject(
+                                mergedLightWallGeometry,
+                                k,
+                                i,
+                                j,
+                                centerMapI,
+                                centerMapJ,
+                                lightCubeColor,
                             );
                             break;
                         case RED_LIGHT:
@@ -224,8 +244,14 @@ export default class Map {
         });
         const floor = new THREE.Mesh(mergedFloorGeometry, floorMaterial);
         const wall = new THREE.Mesh(mergedWallGeometry, floorMaterial);
+        const lightWall = new THREE.Mesh(
+            mergedLightWallGeometry,
+            lightCubeMaterial,
+        );
         this.collidableMeshList.push(wall);
+        this.collidableMeshList.push(lightWall);
         this.scene.add(floor);
+        this.scene.add(lightWall);
         this.scene.add(wall);
     }
 }

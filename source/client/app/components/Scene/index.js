@@ -333,7 +333,7 @@ export default class Scene {
                 }
                 if (this.onElevator) {
                     this.player.moveUp(Math.ceil(elevatorPosY) + tank.size);
-                }
+                }ыы
             }
         }
     }
@@ -351,7 +351,7 @@ export default class Scene {
                 );
                 this.camera.position
                     .copy(vec3)
-                    .add(new THREE.Vector3(0, 750, 500));
+                    .add(new THREE.Vector3(0, 800, 450));
                 this.camera.lookAt(vec3);
             }
             this.movementToServer(this.movementPlayer);
